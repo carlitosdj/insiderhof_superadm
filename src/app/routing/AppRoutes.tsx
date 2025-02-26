@@ -31,8 +31,8 @@ const AppRoutes: FC = () => {
 
   const me = useSelector((state: ApplicationState) => state.me);
   //Cookies:
-  const [cookies, setCookie] = useCookies(["userAdm"]);
-  const cookieUser: User = cookies.userAdm;
+  const [cookies, setCookie] = useCookies(["userAdmINSIDER"]);
+  const cookieUser: User = cookies.userAdmINSIDER;
   const dispatch = useDispatch();
 
   // Para o refresh da página:
@@ -47,7 +47,7 @@ const AppRoutes: FC = () => {
     var date = new Date();
     date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000); //Days *
     //Seta cookie:
-    setCookie("userAdm", me.me, {
+    setCookie("userAdmINSIDER", me.me, {
       path: "/",
       expires: date, //maxAge?
     });

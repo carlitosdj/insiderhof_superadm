@@ -8,10 +8,10 @@ import { useEffect } from "react";
 export function Logout() {
   const dispatch = useDispatch();
 
-  const [cookies, setCookie, removeCookie] = useCookies(["userAdm"]);
-  // const cookieUser: User = cookies.userAdm;
+  const [cookies, setCookie, removeCookie] = useCookies(["userAdmINSIDER"]);
+  // const cookieUser: User = cookies.userAdmINSIDER;
   // console.log("########### cookies Começo", cookies);
-  removeCookie("userAdm", { path: "/" });
+  removeCookie("userAdmINSIDER", { path: "/" });
   dispatch(logoutUser());
   localStorage.removeItem("TOKEN");
   useEffect(() => {
