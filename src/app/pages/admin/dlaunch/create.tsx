@@ -43,7 +43,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
     "Quero participar da Semana InsiderHOF"
   );
   const [eventGroupLink, setEventGroupLink] = useState(
-    "https://insiderhof.com.br/viawhats/esculturalabial"
+    "https://insiderhof.com.br/viawhats/insiderhof"
   );
 
   const [expertName, setExpertName] = useState("Dra. Vanessa Defelícibus");
