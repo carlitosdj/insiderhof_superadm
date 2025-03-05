@@ -13,6 +13,16 @@ import {Cart} from './types'
 export function* loadCarts(payload: ReturnType<typeof createCartRequest>) {
   try {
     put(createCartRequest(payload.payload))
+    const response: Cart[] = yield call(api.get, 'cart')
+    yield put(loadCartSuccess(response))
+  } catch (error: any) {
+    yield put(loadCartFailure(error.response.message))
+  }
+}
+
+export function* loadCart(payload: ReturnType<typeof createCartRequest>) {
+  try {
+    put(createCartRequest(payload.payload))
     const response: Cart[] = yield call(api.get, 'cart/'+ payload.payload)
     yield put(loadCartSuccess(response))
   } catch (error: any) {

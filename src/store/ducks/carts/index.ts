@@ -8,6 +8,15 @@ const INITIAL_STATE: CartsState = {
 
 const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
+
+    //Load
+    case CartsTypes.LOAD_CARTS_REQUEST:
+      return {...state, loading: true}
+    case CartsTypes.LOAD_CARTS_SUCCESS:
+      return {...state, loading: false, error: false, data: action.payload.data} //2x .data oO
+    case CartsTypes.LOAD_CARTS_FAILURE:
+      return {...state, loading: false, error: action.payload, data: []}
+
     //Load
     case CartsTypes.LOAD_CART_REQUEST:
       return {...state, loading: true}

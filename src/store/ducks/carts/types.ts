@@ -6,6 +6,11 @@ import { Launch } from "../component/types"
  */
 export enum CartsTypes {
   //Load
+  LOAD_CARTS_REQUEST = '@cart/LOAD_CARTS_REQUEST',
+  LOAD_CARTS_SUCCESS = '@cart/LOAD_CARTS_SUCCESS',
+  LOAD_CARTS_FAILURE = '@cart/LOAD_CARTS_FAILURE',
+    
+  //Load
   LOAD_CART_REQUEST = '@cart/LOAD_CART_REQUEST',
   LOAD_CART_SUCCESS = '@cart/LOAD_CART_SUCCESS',
   LOAD_CART_FAILURE = '@cart/LOAD_CART_FAILURE',

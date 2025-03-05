@@ -106,11 +106,26 @@ const PrivateRoutes = () => {
     []
   );
 
+  const Sells = useMemo(
+    () => lazy(() => import("../pages/admin/sells/Manage")),
+    []
+  );
+
   return (
     <Routes>
       <Route element={<MasterLayout />}>
         {/* Redirect to Dashboard after success login/registartion */}
         <Route path="auth/*" element={<Navigate to="/dashboard" />} />
+
+        <Route
+          path="sells"
+          element={
+            <SuspensedView>
+              <Sells />
+            </SuspensedView>
+          }
+        ></Route>
+
         {/* Pages */}
         <Route path="dashboard" element={<DashboardWrapper />} />
         <Route path="builder" element={<BuilderPageWrapper />} />
