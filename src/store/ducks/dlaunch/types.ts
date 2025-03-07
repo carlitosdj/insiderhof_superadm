@@ -49,6 +49,12 @@ export interface Launch {
   status?: string | undefined;
   ownerId?: number | undefined;
 
+  installments?: string | undefined
+  renovationTime?: number | undefined;
+  renovationPrice?: number | undefined;
+  renovationDescription?: string | undefined;
+  renovationInstallments?: string | undefined;
+
   launchhasoffers?: LaunchHasOffers[] | undefined;
   phases? : LaunchPhases[] | undefined;
 

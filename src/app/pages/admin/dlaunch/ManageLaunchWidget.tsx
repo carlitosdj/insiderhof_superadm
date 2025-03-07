@@ -181,6 +181,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-100px">FASES</th>
                   <th className="min-w-20px">PREÇO</th>
                   <th className="min-w-20px">TIPO</th>
+                  <th className="min-w-20px">RENOVAÇÃO</th>
                   <th className="min-w-20px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -365,6 +366,14 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           </td>
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
                             {child.type}
+                          </td>
+
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            installments: {child.installments}<br/>
+                            renovationDescription: {child.renovationDescription}<br/>
+                            renovationInstallments: {child.renovationInstallments}<br/>
+                            renovationPrice: R$ {child.renovationPrice},00<br/>
+                            renovationTime: {child.renovationTime} meses<br/>
                           </td>
 
                           <td>

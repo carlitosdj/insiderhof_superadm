@@ -48,17 +48,17 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
   const [expertName, setExpertName] = useState("Dra. Vanessa Defelícibus");
 
-  
-  
   const [cartOpenDate, setCartOpenDate] = useState(new Date());
   const [cartCloseDate, setCartCloseDate] = useState(new Date());
 
   const [leadSignUpStartDate, setLeadSignUpStartDate] = useState(new Date());
   const [leadSignUpEndDate, setLeadSignUpEndDate] = useState(new Date());
 
-  const [leadForm, setLeadForm] = useState("https://forms.gle/pa8KqCmTAyNEdYDb6");
+  const [leadForm, setLeadForm] = useState(
+    "https://forms.gle/pa8KqCmTAyNEdYDb6"
+  );
   const [domain, setDomain] = useState("https://insiderhof.com.br");
-  
+
   const [dateCpl1, setDateCpl1] = useState("");
   const [dateCpl2, setDateCpl2] = useState("");
   const [dateCpl3, setDateCpl3] = useState("");
@@ -100,9 +100,15 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [installments, setInstallments] = useState("12");
   const [aviso, setAviso] = useState("");
 
+  const [renovationTime, setRenovationTime] = useState(12);
+  const [renovationPrice, setRenovationPrice] = useState(0);
+  const [renovationDescription, setRenovationDescription] =
+    useState("Renovação");
+  const [renovationInstallments, setRenovationInstallments] = useState("12");
+
   useEffect(() => {
     const d = new Date();
-    d.setDate(d.getDate() + (((1 + 7 - d.getDay()) % 7) || 7)); //next monday
+    d.setDate(d.getDate() + ((1 + 7 - d.getDay()) % 7 || 7)); //next monday
     setDates(d);
   }, []);
 
@@ -207,6 +213,13 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
         leadForm,
         domain,
+
+        installments,
+        renovationTime,
+        renovationPrice,
+        renovationDescription,
+        renovationInstallments,
+      
       };
 
       dispatch(createLaunchRequest(product));
@@ -509,7 +522,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
           </div>
           <div className="flex-row py-lg-2 px-lg-6" style={{ flex: 1 }}>
             <Form.Group controlId="fromName">
@@ -725,7 +737,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Parcelas
@@ -741,10 +752,70 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                Aviso: Ex: REFERENTE À ENTRADA PARA MATRÍCULA, O RESTANTE NO DIA DO CURSO.
+                renovationTime
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={renovationTime}
+                onChange={(e: any) => setRenovationTime(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as Parcelas
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                renovationPrice
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={renovationPrice}
+                onChange={(e: any) => setRenovationPrice(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as Parcelas
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                renovationDescriptionxxx
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={renovationDescription}
+                onChange={(e: any) => setRenovationDescription(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as Parcelas
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                renovationInstallmentsyyy
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={renovationInstallments}
+                onChange={(e: any) => setRenovationInstallments(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as Parcelas
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Aviso: Ex: REFERENTE À ENTRADA PARA MATRÍCULA, O RESTANTE NO DIA
+                DO CURSO.
               </Form.Label>
               <Form.Control
                 placeholder=""

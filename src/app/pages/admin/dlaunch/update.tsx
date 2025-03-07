@@ -28,6 +28,12 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [oldPrice, setOldPrice] = useState(0);
   const [type, setType] = useState("");
 
+  const [installments, setInstallments] = useState("");
+  const [renovationTime, setRenovationTime] = useState(0);
+  const [renovationPrice, setRenovationPrice] = useState(0);
+  const [renovationDescription, setRenovationDescription] = useState("");
+  const [renovationInstallments, setRenovationInstallments] = useState("");
+
   useEffect(() => {
     setName(child.name);
     setDescription(child.description);
@@ -35,6 +41,13 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setPrice(child.price!);
     setOldPrice(child.oldPrice!);
     setType(child.type!);
+
+    setInstallments(child.installments!);
+    setRenovationTime(child.renovationTime!);
+    setRenovationPrice(child.renovationPrice!);
+    setRenovationDescription(child.renovationDescription!);
+    setRenovationInstallments(child.renovationInstallments!);
+
   }, [child.name, child.description]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,6 +67,12 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         price: Number(price),
         oldPrice: Number(oldPrice),
         type,
+
+        installments,
+        renovationTime: Number(renovationTime),
+        renovationPrice: Number(renovationPrice),
+        renovationDescription,
+        renovationInstallments
       };
       dispatch(updateLaunchRequest(componentToUpdate));
       handleClose();
@@ -156,6 +175,101 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
+
+
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Parcelas
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={installments}
+                onChange={(e: any) => setInstallments(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              renovationTime
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={renovationTime}
+                onChange={(e: any) => setRenovationTime(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              renovationPrice
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={renovationPrice}
+                onChange={(e: any) => setRenovationPrice(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              renovationDescription
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={renovationDescription}
+                onChange={(e: any) => setRenovationDescription(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              renovationInstallments
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={renovationInstallments}
+                onChange={(e: any) => setRenovationInstallments(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+           
+
+
             
           </div>
           
