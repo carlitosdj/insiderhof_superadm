@@ -43,6 +43,9 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-120px">USUÁRIO</th>
                   <th className="min-w-100px">TREINAMENTO</th>
                   <th className="min-w-20px">PREÇO</th>
+                  <th className="min-w-20px">PARCELAS</th>
+                  <th className="min-w-20px">GATEWAY</th>
+                  <th className="min-w-20px">REF</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,6 +95,15 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               currency: "BRL",
                             })}
                             ,00
+                          </td>
+                          <td>
+                            {child.installments}
+                          </td>
+                          <td>
+                            {child.gateway}
+                          </td>
+                          <td>
+                            {child.idreference}
                           </td>
                         </tr>
                       );

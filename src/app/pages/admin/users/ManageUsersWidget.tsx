@@ -428,7 +428,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <div>
-                          {now.diff(createdAt, "years", true) > 1 ? (
+                          {/* {now.diff(createdAt, "years", true) > 1 ? (
                             <span className="badge badge-light-danger justify-content-center">
                               Expirado{" "}
                               {(
@@ -444,7 +444,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               ).toFixed(2)}
                               %
                             </span>
-                          )}
+                          )} */}
                           <span className="text-muted fw-bold d-block fs-7">
                             {createdAt.format("DD/MM/YYYY HH:mm")}
                           </span>

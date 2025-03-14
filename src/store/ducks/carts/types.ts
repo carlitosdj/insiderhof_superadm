@@ -49,6 +49,7 @@ export interface Cart {
   price?: number
   launch?: Launch
   user?: User
+  idreference?: string
 }
 
 /**
