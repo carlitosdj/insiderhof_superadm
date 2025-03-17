@@ -50,6 +50,12 @@ export interface Cart {
   launch?: Launch
   user?: User
   idreference?: string
+
+  total_paid_amount?: string ;
+  net_received_amount?: string ;
+  installment_amount?: string ;
+  mercadopago_fee?: string ;
+  financing_fee?: string ;
 }
 
 /**

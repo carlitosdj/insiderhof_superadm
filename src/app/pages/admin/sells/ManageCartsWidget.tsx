@@ -42,10 +42,17 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-120px">DATA</th>
                   <th className="min-w-120px">USUÁRIO</th>
                   <th className="min-w-100px">TREINAMENTO</th>
-                  <th className="min-w-20px">PREÇO</th>
+                  <th className="min-w-100px">PREÇO BASE</th>
                   <th className="min-w-20px">PARCELAS</th>
                   <th className="min-w-20px">GATEWAY</th>
                   <th className="min-w-20px">REF</th>
+
+                  <th className="min-w-20px">PREÇO PAGO</th>
+                  <th className="min-w-20px">PREÇO RECEBIDO</th>
+                  <th className="min-w-20px">PREÇO DA PARCELA</th>
+                  <th className="min-w-20px">TAXA MERCADO PAGO</th>
+                  <th className="min-w-20px">TAXA DA MAQUININHA (PARCELAMENTO)</th>
+                 
                 </tr>
               </thead>
               <tbody>
@@ -105,6 +112,12 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           <td>
                             {child.idreference}
                           </td>
+                          <td>{child.total_paid_amount}</td>
+                          <td>{child.net_received_amount}</td>
+                          <td>{child.installment_amount}</td>
+                          <td>{child.mercadopago_fee}</td>
+                          <td>{child.financing_fee}</td>
+                         
                         </tr>
                       );
                     })}
