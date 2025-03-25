@@ -102,6 +102,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
   const [renovationTime, setRenovationTime] = useState(12);
   const [renovationPrice, setRenovationPrice] = useState(0);
+  const [antecipateRenovationPrice, setAntecipateRenovationPrice] = useState(0);
   const [renovationDescription, setRenovationDescription] =
     useState("Renovação");
   const [renovationInstallments, setRenovationInstallments] = useState("12");
@@ -217,6 +218,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
         installments,
         renovationTime,
         renovationPrice,
+        antecipateRenovationPrice,
         renovationDescription,
         renovationInstallments,
       
@@ -775,6 +777,21 @@ const Create = ({ handleClose }: handleCloseProps) => {
                 placeholder=""
                 value={renovationPrice}
                 onChange={(e: any) => setRenovationPrice(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as Parcelas
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              antecipateRenovationPrice
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={antecipateRenovationPrice}
+                onChange={(e: any) => setAntecipateRenovationPrice(e.target.value)}
                 className="form-control form-control-lg form-control-solid"
               />
               <Form.Control.Feedback type="invalid">

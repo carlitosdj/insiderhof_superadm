@@ -31,6 +31,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [installments, setInstallments] = useState("");
   const [renovationTime, setRenovationTime] = useState(0);
   const [renovationPrice, setRenovationPrice] = useState(0);
+  const [antecipateRenovationPrice, setAntecipateRenovationPrice] = useState(0);
   const [renovationDescription, setRenovationDescription] = useState("");
   const [renovationInstallments, setRenovationInstallments] = useState("");
 
@@ -45,6 +46,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setInstallments(child.installments!);
     setRenovationTime(child.renovationTime!);
     setRenovationPrice(child.renovationPrice!);
+    setAntecipateRenovationPrice(child.antecipateRenovationPrice!);
     setRenovationDescription(child.renovationDescription!);
     setRenovationInstallments(child.renovationInstallments!);
 
@@ -71,6 +73,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         installments,
         renovationTime: Number(renovationTime),
         renovationPrice: Number(renovationPrice),
+        antecipateRenovationPrice: Number(antecipateRenovationPrice),
         renovationDescription,
         renovationInstallments
       };
@@ -222,6 +225,23 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 //required
                 value={renovationPrice}
                 onChange={(e: any) => setRenovationPrice(e.target.value)}
+                name="description"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a descrição do produto
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="formDescription">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+              antecipateRenovationPrice
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={antecipateRenovationPrice}
+                onChange={(e: any) => setAntecipateRenovationPrice(e.target.value)}
                 name="description"
                 className="form-control form-control-lg form-control-solid"
               />

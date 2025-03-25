@@ -374,6 +374,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             renovationInstallments: {child.renovationInstallments}<br/>
                             renovationPrice: R$ {child.renovationPrice},00<br/>
                             renovationTime: {child.renovationTime} meses<br/>
+                            antecipateRenovationPrice: R$ {child.antecipateRenovationPrice},00<br/>
                           </td>
 
                           <td>

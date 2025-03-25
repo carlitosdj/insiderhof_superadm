@@ -52,6 +52,7 @@ export interface Launch {
   installments?: string | undefined
   renovationTime?: number | undefined;
   renovationPrice?: number | undefined;
+  antecipateRenovationPrice?: number | undefined;
   renovationDescription?: string | undefined;
   renovationInstallments?: string | undefined;
 
