@@ -323,7 +323,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
                   const regex = /\('([^']+)',\)/g;
                   const whats =
-                    "55" + child.whatsapp?.replace(/[|&;$%@"<>()+,-]/g, "");
+                    child.whatsapp?.replace(/[|&;$%@"<>()+,-]/g, "");
                   let check = users.selectedUsers?.filter(
                     (item) => item.id === child.id
                   );
