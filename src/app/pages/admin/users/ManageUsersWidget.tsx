@@ -35,6 +35,7 @@ const formatter = buildFormatter(portugueseStrings);
 const MOMENT = require("moment");
 import "moment-timezone";
 import { Overview } from "./profile/components/Overview";
+import { Cart } from "../../../../store/ducks/carts/types";
 
 type Props = {
   className: string;
@@ -63,8 +64,6 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const dispatch = useDispatch();
   console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
   console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
-
- 
 
   const handleClose = () => {
     setShow(false);
@@ -322,8 +321,10 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                     : "";
                   var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
                   const regex = /\('([^']+)',\)/g;
-                  const whats =
-                    child.whatsapp?.replace(/[|&;$%@"<>()+,-]/g, "");
+                  const whats = child.whatsapp?.replace(
+                    /[|&;$%@"<>()+,-]/g,
+                    ""
+                  );
                   let check = users.selectedUsers?.filter(
                     (item) => item.id === child.id
                   );
@@ -464,7 +465,13 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           Intertico
                         </a> */}
                         <span className="text-muted fw-bold d-block fs-7">
-                          {child.numTurma}
+                          {child.cart.map((cart: Cart, index: number) => (
+                            <span key={index}>
+                              {index+1}. {" "+cart.launch?.name}
+                              {/* {index < child.cart.length - 1 && ","} */}
+                              <br />
+                            </span>
+                          ))}
                         </span>
                       </td>
 
