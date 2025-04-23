@@ -109,6 +109,8 @@ import { LaunchPhasesTypes } from './dlaunchphase/types'
 import { createLaunchPhase, deleteLaunchPhase, loadLaunchPhase, loadMyLaunchPhase, updateLaunchPhase } from './dlaunchphase/sagas'
 import { LaunchPhaseExtrasTypes } from './dlaunchphaseextras/types'
 import { createLaunchPhaseExtra, deleteLaunchPhaseExtra, loadLaunchPhaseExtra, loadMyLaunchPhaseExtra, updateLaunchPhaseExtra } from './dlaunchphaseextras/sagas'
+import { PreUsersTypes } from './preusers/types'
+import { createPreUser, deletePreUser, filterPreUser, loadPreUser, loadPreUsers, searchPreUser, selectPreUsersAdd, selectPreUsersRemove, updatePreUser } from './preusers/sagas'
 
 
 
@@ -137,6 +139,18 @@ export default function* rootSaga() {
     takeLatest(UsersTypes.FILTER_USERS_REQUEST, filterUser),
     takeLatest(UsersTypes.SELECTED_USER_ADD, selectUsersAdd),
     takeLatest(UsersTypes.SELECTED_USER_REMOVE, selectUsersRemove),
+
+
+    //Users
+    takeLatest(PreUsersTypes.LOAD_PREUSERS_REQUEST, loadPreUsers),
+    takeLatest(PreUsersTypes.LOAD_PREUSER_REQUEST, loadPreUser),
+    takeLatest(PreUsersTypes.UPDATE_PREUSER_REQUEST, updatePreUser),
+    takeLatest(PreUsersTypes.CREATE_PREUSER_REQUEST, createPreUser),
+    takeLatest(PreUsersTypes.DELETE_PREUSER_REQUEST, deletePreUser),
+    takeLatest(PreUsersTypes.SEARCH_PREUSERS_REQUEST, searchPreUser),
+    takeLatest(PreUsersTypes.FILTER_PREUSERS_REQUEST, filterPreUser),
+    takeLatest(PreUsersTypes.SELECTED_PREUSER_ADD, selectPreUsersAdd),
+    takeLatest(PreUsersTypes.SELECTED_PREUSER_REMOVE, selectPreUsersRemove),
     
     //Components
     takeLatest(ComponentTypes.LOAD_COMPONENT_REQUEST, loadComponent),

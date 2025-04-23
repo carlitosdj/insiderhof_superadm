@@ -2,6 +2,7 @@ import {combineReducers} from 'redux'
 // import repositories from './repositories';
 import carts from './carts'
 import users from './users'
+import preusers from './preusers'
 import me from './me'
 import component from './component'
 import extras from './extras'
@@ -36,6 +37,7 @@ import launchphaseextra from './dlaunchphaseextras'
 export default combineReducers({
   carts,
   users,
+  preusers,
   me,
   component,
   extras,

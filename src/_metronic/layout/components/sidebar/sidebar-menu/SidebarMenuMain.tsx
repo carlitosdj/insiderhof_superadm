@@ -112,6 +112,12 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.USERS" })}
       />
       <SidebarMenuItem
+        to="/preusers/1/100"
+        icon="profile-user"
+        fontIcon="bi-app-indicator"
+        title={intl.formatMessage({ id: "MENU.PREUSERS" })}
+      />
+      <SidebarMenuItem
         to="/annotations"
         icon="message-edit"
         fontIcon="bi-app-indicator"

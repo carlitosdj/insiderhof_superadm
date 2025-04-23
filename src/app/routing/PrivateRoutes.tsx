@@ -48,6 +48,7 @@ const PrivateRoutes = () => {
   );
   const Leads = useMemo(() => lazy(() => import("../pages/admin/leads")), []);
   const Users = useMemo(() => lazy(() => import("../pages/admin/users")), []);
+  const PreUsers = useMemo(() => lazy(() => import("../pages/admin/preusers")), []);
   const EmailsEnviados = useMemo(
     () => lazy(() => import("../pages/admin/emailsenviados")),
     []
@@ -275,6 +276,14 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <Users />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path="preusers/:page/:take"
+          element={
+            <SuspensedView>
+              <PreUsers />
             </SuspensedView>
           }
         />
