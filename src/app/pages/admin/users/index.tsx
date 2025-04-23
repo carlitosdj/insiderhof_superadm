@@ -23,6 +23,7 @@ type Props = {
   users: UsersState;
   page?: string;
   take?: string;
+  hasCart?: string;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   currentPage: number;
 };
@@ -31,6 +32,7 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
   users,
   page,
   take,
+  hasCart,
   setCurrentPage,
   currentPage,
 }) => (
@@ -46,6 +48,7 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
             className="card-xxl-stretch mb-5 mb-xxl-8"
             page={page}
             take={take}
+            hasCart={hasCart}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
           />
@@ -59,6 +62,9 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
 type ParamTypes = {
   take: string;
   page: string;
+  hasCart: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
@@ -66,15 +72,15 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
 
   const dispatch = useDispatch();
   const users = useSelector((state: ApplicationState) => state.users);
-  const { page, take } = useParams<ParamTypes>();
+  const { page, take, hasCart, startDate, endDate } = useParams<ParamTypes>();
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(loadUsersRequest(+page!, +take!));
-  }, [dispatch, page, take]);
+    dispatch(loadUsersRequest(+page!, +take!, hasCart!));
+  }, [dispatch, page, take, hasCart, startDate, endDate]);
 
   if (users.loading) return <Loading />;
-
+  console.log("USERS", users);
   return (
     <>
       {/* <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.MODULES'})} </PageTitle> */}
@@ -83,6 +89,7 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
         users={users}
         page={page}
         take={take}
+        hasCart={hasCart}
         setCurrentPage={setCurrentPage}
         currentPage={currentPage}
       />

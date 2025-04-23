@@ -14,7 +14,7 @@ import { Comment } from './types'
 export function* loadComments(payload: ReturnType<typeof loadCommentsRequest>) {
   try {
     put(loadCommentsRequest())
-    const response: Comment = yield call(api.get, 'componentcomment')
+    const response: Comment = yield call(api.get, 'dcomment')
     yield put(loadCommentsSuccess(response))
   } catch (error: any) {
     yield put(loadCommentsFailure(error.response.data))

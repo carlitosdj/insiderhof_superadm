@@ -45,11 +45,20 @@ import {User} from '../me/types'
 //Load all users from api
 export function* loadUsers(payload: ReturnType<typeof loadUsersRequest>) {
   try {
-    put(loadUsersRequest(payload.payload.page, payload.payload.take))
-    const response: User[] = yield call(
-      api.get,
-      `user/all/${payload.payload.page}/${payload.payload.take}`
-    )
+    put(loadUsersRequest(payload.payload.page, payload.payload.take, payload.payload.hasCart, payload.payload.startDate, payload.payload.endDate))
+    let response: User[];
+    if(payload.payload.startDate && payload.payload.endDate) {
+      response = yield call(
+        api.get,
+        `user/all/${payload.payload.page}/${payload.payload.take}/${payload.payload.hasCart}/${payload.payload.startDate}/${payload.payload.endDate}`,
+      )
+    } else {
+       response = yield call(
+        api.get,
+        `user/all/${payload.payload.page}/${payload.payload.take}/${payload.payload.hasCart}`,
+      )
+    }
+    
     console.log('Response', response)
     yield put(loadUsersSuccess(response))
   } catch (error: any) {

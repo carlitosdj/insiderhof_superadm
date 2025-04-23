@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
-import { loadLastClassRequest } from "../../../../store/ducks/component/actions";
+//import { loadLastClassRequest } from "../../../../store/ducks/component/actions";
 import { User } from "../../../../store/ducks/me/types";
 
 import { loadUserRequest } from "../../../../store/ducks/users/actions";
@@ -35,7 +35,7 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadLastClassRequest(child.id!));
+    //dispatch(loadLastClassRequest(child.id!));
     dispatch(loadUserRequest(child.id!));
     dispatch(loadconnectedTimeGroupedByHourByIdRequest(child.id!));
     dispatch(loadconnectedTimeGroupedByHourRequest());
@@ -47,7 +47,7 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
 
    const [selectedTab, setSelectedTab] = useState(0);
 
-  const component = useSelector((state: ApplicationState) => state.component);
+  //const component = useSelector((state: ApplicationState) => state.component);
   const users = useSelector((state: ApplicationState) => state.users);
   const onlineusers = useSelector(
     (state: ApplicationState) => state.onlineusers
@@ -60,11 +60,11 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
   const { id, image, name, email, completed, whatsapp } = users.user;
 
   let urlLastClass: string | undefined = "";
-  let checkLastClass = component.lastclass?.extras?.filter(
-    (extra: any) => extra.keyExtra === "url"
-  )[0]; //Checa se tem o 'extra' de url.
-  if (checkLastClass) urlLastClass = checkLastClass.valueExtra;
-  console.log("component", component);
+  //let checkLastClass = component.lastclass?.extras?.filter(
+  //   (extra: any) => extra.keyExtra === "url"
+  // )[0]; //Checa se tem o 'extra' de url.
+  // if (checkLastClass) urlLastClass = checkLastClass.valueExtra;
+  // console.log("component", component);
   console.log("************LOADED USER************", users.user);
 
   // var data = new Date(apiResponse.createdAt*1000);

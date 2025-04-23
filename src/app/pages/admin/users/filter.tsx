@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { ApplicationState } from '../../../../store'
-import { loadLastClassRequest } from '../../../../store/ducks/component/actions'
+//import { loadLastClassRequest } from '../../../../store/ducks/component/actions'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {User} from '../../../../store/ducks/me/types'
 import { Button, Form } from 'react-bootstrap'
 import { registerLocale, setDefaultLocale } from  "react-datepicker";
-import ptBR from 'date-fns/locale/pt-BR';
+//import ptBR from 'date-fns/locale/pt-BR';
 import { filterUserRequest, selectUsersRemoveRequest } from '../../../../store/ducks/users/actions'
+import { useNavigate, useParams } from 'react-router-dom';
 
 // registerLocale('ptBR', ptBR)
 const MOMENT = require('moment') 
@@ -18,6 +19,12 @@ interface handleCloseProps {
   handleClose: () => void
 }
 
+type ParamTypes = {
+  take: string;
+  page: string;
+  hasCart: string;
+
+};
 const Filter = ({handleClose}: handleCloseProps) => {
   // const {id} = useParams();
   const dispatch = useDispatch()
@@ -27,6 +34,12 @@ const Filter = ({handleClose}: handleCloseProps) => {
   const [endDateInt, setEndDateInt] = useState(0);
   const [validated, setValidated] = useState(false)
 
+  const params = useParams()
+  const { page, take, hasCart} = useParams<ParamTypes>();
+
+  const navigate = useNavigate()
+  console.log("startDateInt", startDateInt)
+  console.log("endDateInt", endDateInt)
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget
     event.preventDefault()
@@ -37,12 +50,15 @@ const Filter = ({handleClose}: handleCloseProps) => {
     console.log('handleSubmit')
     console.log("Filters", { startDateInt, endDateInt})
 
-    dispatch(filterUserRequest(startDateInt, endDateInt))
+    //dispatch(filterUserRequest(startDateInt, endDateInt))
 
     //Assim que selecionar um filtro: remove os usuarios que estao marcados
     users.data.map((child)=>{
       dispatch(selectUsersRemoveRequest(child))
     })
+
+    //redireciona:
+    navigate(`/users/${page}/${take}/${hasCart}/${startDateInt}/${endDateInt}`)
 
     handleClose()
 

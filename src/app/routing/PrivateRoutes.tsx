@@ -34,10 +34,7 @@ const PrivateRoutes = () => {
   const UsersPage = lazy(
     () => import("../modules/apps/user-management/UsersPage")
   );
-  const Manage = useMemo(
-    () => lazy(() => import("../pages/admin/component/Manage")),
-    []
-  );
+
   const Wppcamp = useMemo(
     () => lazy(() => import("../pages/admin/wppcamp")),
     []
@@ -48,7 +45,7 @@ const PrivateRoutes = () => {
   );
   const Leads = useMemo(() => lazy(() => import("../pages/admin/leads")), []);
   const Users = useMemo(() => lazy(() => import("../pages/admin/users")), []);
-  const PreUsers = useMemo(() => lazy(() => import("../pages/admin/preusers")), []);
+  
   const EmailsEnviados = useMemo(
     () => lazy(() => import("../pages/admin/emailsenviados")),
     []
@@ -132,14 +129,7 @@ const PrivateRoutes = () => {
         <Route path="builder" element={<BuilderPageWrapper />} />
         <Route path="menu-test" element={<MenuTestPage />} />
 
-        <Route
-          path="manage/:id"
-          element={
-            <SuspensedView>
-              <Manage />
-            </SuspensedView>
-          }
-        />
+      
 
         <Route
           path="launches"
@@ -272,21 +262,14 @@ const PrivateRoutes = () => {
         />
 
         <Route
-          path="users/:page/:take"
+          path="users/:page/:take/:hasCart/:startDate?/:endDate?"
           element={
             <SuspensedView>
               <Users />
             </SuspensedView>
           }
         />
-        <Route
-          path="preusers/:page/:take"
-          element={
-            <SuspensedView>
-              <PreUsers />
-            </SuspensedView>
-          }
-        />
+       
         <Route
           path="emailsenviados"
           element={

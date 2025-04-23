@@ -1,3 +1,6 @@
+import { Class } from "../dclass/types"
+import { User } from "../me/types"
+
 /**
  * Action types
  */
@@ -25,6 +28,9 @@ export interface Annotation {
   status?: string
   parentUser?: any | undefined
   parentComponent?: any | undefined
+
+  class?: Class
+  user?: User
 }
 
 export interface Error {

@@ -1,4 +1,5 @@
 import {Annotation} from '../annotation/types'
+import { Class } from '../dclass/types'
 /**
  * Action types
  */
@@ -18,6 +19,8 @@ export interface Comment {
   status?: string
   parentUser?: any | undefined
   parentComponent?: any | undefined
+
+  class?: Class
 }
 
 /**

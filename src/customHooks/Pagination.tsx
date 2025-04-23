@@ -11,14 +11,15 @@ const Pagination = (props:any) => {
     currentPage,
     pageSize,
     className,
-    link
+    link,
+    hasCart
   } = props;
 
   const paginationRange = usePagination({
     currentPage,
     totalCount,
     siblingCount,
-    pageSize
+    pageSize,
   });
 
   if(!paginationRange) return null
@@ -49,7 +50,7 @@ const Pagination = (props:any) => {
         })}
         onClick={onPrevious}
       >
-        <Link to={'/'+ link + '/' + (currentPage-1) + '/' + pageSize} className="page-link">
+        <Link to={'/'+ link + '/' + (currentPage-1) + '/' + pageSize + '/' + hasCart} className="page-link">
               <i className='previous'></i>
         </Link>
       </li>
@@ -70,7 +71,7 @@ const Pagination = (props:any) => {
             onClick={() => onPageChange(pageNumber)}
             key={"b"+index}
           >
-            <Link to={'/'+ link + '/' + (pageNumber) + '/' + pageSize} className="page-link">
+            <Link to={'/'+ link + '/' + (pageNumber) + '/' + pageSize + '/' + hasCart} className="page-link">
               {pageNumber}
             </Link>
           </li>
@@ -83,7 +84,7 @@ const Pagination = (props:any) => {
         })}
         onClick={onNext}
       >
-        <Link to={'/'+ link + '/' + (currentPage+1) + '/' + pageSize} className="page-link">
+        <Link to={'/'+ link + '/' + (currentPage+1) + '/' + pageSize + '/' + hasCart} className="page-link">
           <i className='next'></i>
         </Link>
       </li>

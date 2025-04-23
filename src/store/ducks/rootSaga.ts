@@ -20,27 +20,8 @@ import {
 import {MeTypes} from './me/types'
 import {loginUser, createMe, updateMe, deleteMe, recoveryUser, loadMe} from './me/sagas'
 
-import {ComponentTypes} from './component/types'
-import {
-  loadComponent,
-  createComponent,
-  updateComponent,
-  deleteComponent,
-  createExtra,
-  updateExtra,
-  deleteExtra,
-  loadComponentByDescription,
-  loadModules,
-  loadClasses,
-  createAulaConcluida,
-  deleteAulaConcluida,
-  loadLastClass,
-  loadComponentWithAccess,
-  createComponentAccess,
-  updateComponentAccess,
-  createLaunch,
-  // uploadExtra
-} from './component/sagas'
+
+
 
 import {LeadTypes} from './lead/types'
 import {loadLead, createLead, confirmLead, notDisturbLead} from './lead/sagas'
@@ -109,8 +90,8 @@ import { LaunchPhasesTypes } from './dlaunchphase/types'
 import { createLaunchPhase, deleteLaunchPhase, loadLaunchPhase, loadMyLaunchPhase, updateLaunchPhase } from './dlaunchphase/sagas'
 import { LaunchPhaseExtrasTypes } from './dlaunchphaseextras/types'
 import { createLaunchPhaseExtra, deleteLaunchPhaseExtra, loadLaunchPhaseExtra, loadMyLaunchPhaseExtra, updateLaunchPhaseExtra } from './dlaunchphaseextras/sagas'
-import { PreUsersTypes } from './preusers/types'
-import { createPreUser, deletePreUser, filterPreUser, loadPreUser, loadPreUsers, searchPreUser, selectPreUsersAdd, selectPreUsersRemove, updatePreUser } from './preusers/sagas'
+
+
 
 
 
@@ -141,38 +122,6 @@ export default function* rootSaga() {
     takeLatest(UsersTypes.SELECTED_USER_REMOVE, selectUsersRemove),
 
 
-    //Users
-    takeLatest(PreUsersTypes.LOAD_PREUSERS_REQUEST, loadPreUsers),
-    takeLatest(PreUsersTypes.LOAD_PREUSER_REQUEST, loadPreUser),
-    takeLatest(PreUsersTypes.UPDATE_PREUSER_REQUEST, updatePreUser),
-    takeLatest(PreUsersTypes.CREATE_PREUSER_REQUEST, createPreUser),
-    takeLatest(PreUsersTypes.DELETE_PREUSER_REQUEST, deletePreUser),
-    takeLatest(PreUsersTypes.SEARCH_PREUSERS_REQUEST, searchPreUser),
-    takeLatest(PreUsersTypes.FILTER_PREUSERS_REQUEST, filterPreUser),
-    takeLatest(PreUsersTypes.SELECTED_PREUSER_ADD, selectPreUsersAdd),
-    takeLatest(PreUsersTypes.SELECTED_PREUSER_REMOVE, selectPreUsersRemove),
-    
-    //Components
-    takeLatest(ComponentTypes.LOAD_COMPONENT_REQUEST, loadComponent),
-    takeLatest(ComponentTypes.LOAD_COMPONENT_WITH_ACCESS_REQUEST, loadComponentWithAccess),
-    takeLatest(ComponentTypes.LOAD_COMPONENT_BY_DESC_REQUEST, loadComponentByDescription),
-    takeLatest(ComponentTypes.CREATE_COMPONENT_REQUEST, createComponent),
-    takeLatest(ComponentTypes.CREATE_LAUNCH_REQUEST, createLaunch),
-    takeLatest(ComponentTypes.CREATE_COMPONENTACCESS_REQUEST, createComponentAccess),
-    takeLatest(ComponentTypes.UPDATE_COMPONENT_REQUEST, updateComponent),
-    takeLatest(ComponentTypes.UPDATE_COMPONENTACCESS_REQUEST, updateComponentAccess),
-    takeLatest(ComponentTypes.DELETE_COMPONENT_REQUEST, deleteComponent),
-    takeLatest(ComponentTypes.LOAD_MODULES_REQUEST, loadModules),
-    takeLatest(ComponentTypes.LOAD_CLASSES_REQUEST, loadClasses),
-    takeLatest(ComponentTypes.LOAD_LASTCLASS_REQUEST, loadLastClass),
-
-
-    //Extras
-    takeLatest(ComponentTypes.CREATE_EXTRA_REQUEST, createExtra),
-    takeLatest(ComponentTypes.UPDATE_EXTRA_REQUEST, updateExtra),
-    takeLatest(ComponentTypes.DELETE_EXTRA_REQUEST, deleteExtra),
-    // takeLatest(ComponentTypes.UPLOAD_EXTRA_REQUEST,uploadExtra),
-
     //Lead
     takeLatest(LeadTypes.LOAD_LEAD_REQUEST, loadLead),
     takeLatest(LeadTypes.CREATE_LEAD_REQUEST, createLead),
@@ -199,9 +148,7 @@ export default function* rootSaga() {
     //Comments
     takeLatest(CommentsTypes.LOAD_COMMENTS_REQUEST, loadComments),
 
-    //AulaConcluida
-    takeLatest(ComponentTypes.CREATE_AULACONCLUIDA_REQUEST, createAulaConcluida),
-    takeLatest(ComponentTypes.DELETE_AULACONCLUIDA_REQUEST, deleteAulaConcluida),
+
 
     //Support
     takeLatest(SupportsTypes.LOAD_ALLSUPPORT_REQUEST, loadAllsupports),

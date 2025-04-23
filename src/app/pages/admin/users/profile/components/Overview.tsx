@@ -72,7 +72,7 @@ export function Overview({ user }: overviewProps) {
   } = user;
 
   let formatedcreatedAt = MOMENT(createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
-  const component = useSelector((state: ApplicationState) => state.component);
+  //const component = useSelector((state: ApplicationState) => state.component);
   const onlineusers = useSelector(
     (state: ApplicationState) => state.onlineusers
   )
@@ -173,7 +173,7 @@ export function Overview({ user }: overviewProps) {
               Turma: {numTurma}
             </div>
 
-            {component.loadingLastClass ? (
+            {/* {component.loadingLastClass ? (
               <Loading />
             ) : (
               <div className="d-flex align-items-center text-gray-500  me-5 mb-2">
@@ -183,7 +183,7 @@ export function Overview({ user }: overviewProps) {
                 {component.lastclass?.parent?.name} -{" "}
                 {component.lastclass?.name}
               </div>
-            )}
+            )} */}
 
             <div className="d-flex align-items-center text-gray-500  me-5 mb-2">
               <KTIcon iconName="geolocation" className="fs-4 me-1" />

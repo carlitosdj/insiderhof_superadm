@@ -81,9 +81,9 @@ const CommentWidget: React.FC<React.PropsWithChildren<Props>> = ({className, com
               <thead>
                 <tr className='fw-bolder text-muted'>
                   <th className='min-w-50px'>ID</th>
-                  <th className='min-w-150px'>REGISTRO</th>
-                  <th className='min-w-400px'>COMENTÁRIO</th>
-                  <th className='min-w-200px'>AULA</th>
+                  <th className='min-w-100px'>REGISTRO</th>
+                  <th className='min-w-100px'>COMENTÁRIO</th>
+                  <th className='min-w-100px'>AULA</th>
                   
                   <th className='min-w-120px'>USUÁRIO</th>
                   {/* <th className='min-w-120px'>Status</th>
@@ -113,9 +113,9 @@ const CommentWidget: React.FC<React.PropsWithChildren<Props>> = ({className, com
                       </td>
                       <td>
                         <span className='text-muted fw-bold d-block fs-7'>
-                          {comment.parentComponent?.parent?.parent?.name} {'>'}{' '}
-                          {comment.parentComponent?.parent?.name} {'>'}{' '}
-                          {comment.parentComponent?.name}
+                        {comment.class?.module?.product?.name}{" > "}
+                            {comment.class?.module?.name}{" > "}
+                            {comment.class?.name}
                         </span>
                       </td>
                       

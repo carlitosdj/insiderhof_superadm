@@ -105,18 +105,21 @@ const SidebarMenuMain = () => {
         title="Vendas"
       />
      
+     <SidebarMenuItem
+        to="/users/1/100/false"
+        icon="profile-user"
+        fontIcon="bi-app-indicator"
+        //title={intl.formatMessage({ id: "MENU.USERS" })}\
+        title="Prospectos"
+      />
+
       <SidebarMenuItem
-        to="/users/1/100"
+        to="/users/1/100/true"
         icon="profile-user"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.USERS" })}
       />
-      <SidebarMenuItem
-        to="/preusers/1/100"
-        icon="profile-user"
-        fontIcon="bi-app-indicator"
-        title={intl.formatMessage({ id: "MENU.PREUSERS" })}
-      />
+      
       <SidebarMenuItem
         to="/annotations"
         icon="message-edit"

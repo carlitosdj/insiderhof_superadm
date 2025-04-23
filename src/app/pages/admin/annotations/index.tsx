@@ -59,7 +59,7 @@ const Annotations: FC<React.PropsWithChildren<unknown>> = () => {
   }, [dispatch])
 
   if (emailList.loading) return <Loading />
-
+  console.log("ANNOTATIONS", annotations)
   return (
     <>
       {/* <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.MODULES'})} </PageTitle> */}

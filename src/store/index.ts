@@ -8,7 +8,7 @@ import {CartsState} from './ducks/carts/types'
 import {UsersState} from './ducks/users/types'
 
 import {MeState} from './ducks/me/types'
-import {ComponentState} from './ducks/component/types'
+
 import {ExtrasState} from './ducks/extras/types'
 import {LeadState} from './ducks/lead/types'
 import {LeadsState} from './ducks/leads/types'
@@ -34,16 +34,16 @@ import { ProductState } from './ducks/dproduct/types'
 import { LaunchHasOffersState } from './ducks/dlaunchhasoffers/types'
 import { LaunchPhasesState } from './ducks/dlaunchphase/types'
 import { LaunchPhaseExtrasState } from './ducks/dlaunchphaseextras/types'
-import { PreUsersState } from './ducks/preusers/types'
+
 
 
 
 export interface ApplicationState {
   carts: CartsState
   users: UsersState
-  preusers: PreUsersState
+  
   me: MeState
-  component: ComponentState
+
   extras: ExtrasState
   lead: LeadState
   leads: LeadsState

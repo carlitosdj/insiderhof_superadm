@@ -42,6 +42,7 @@ type Props = {
   users: UsersState;
   page?: string;
   take?: string;
+  hasCart?: string;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   currentPage: number;
 };
@@ -51,6 +52,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   users,
   page,
   take,
+  hasCart,
   setCurrentPage,
   currentPage,
 }) => {
@@ -109,7 +111,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const searchUser = () => {
     console.log("search", search);
     if (search) dispatch(searchUserRequest(search));
-    else dispatch(loadUsersRequest(+page!, +take!));
+    else dispatch(loadUsersRequest(+page!, +take!, hasCart!));
   };
 
   const selectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -300,13 +302,14 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   </th>
                   {/* <th className="w-20px">ID</th> */}
                   <th className="min-w-100px">NOME</th>
-                  <th className="min-w-150px">ÚLTIMO LOGIN</th>
-                  <th className="min-w-120px">WHATSAPP</th>
-                  <th className="min-w-150px">REGISTRO</th>
+                  <th className="min-w-200px">ENDEREÇO</th>
+                  <th className="min-w-100px">LOGIN EM</th>
+                  <th className="min-w-100px">WHATSAPP</th>
+                  <th className="min-w-100px">REGISTRO</th>
 
                   {/* <th className='min-w-120px'>Última aula assistida</th> */}
-                  <th className="min-w-120px">TURMA</th>
-                  <th className="min-w-120px">AÇÕES</th>
+                  <th className="min-w-100px">TURMA</th>
+                  <th className="min-w-100px">AÇÕES</th>
                 </tr>
               </thead>
               {/* end::Table head */}
@@ -332,7 +335,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                     check.length || isAllChecked ? true : false;
 
                   return (
-                    <tr key={index}>
+                    <tr key={index} style={{ height: "100%" }}>
                       {/* <td>
                         <div className='form-check form-check-sm form-check-custom form-check-solid'>
                           <input className='form-check-input widget-9-check' type='checkbox' value='1' />
@@ -363,38 +366,59 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         </div>
                       </td> */}
 
-                      <td className="d-flex align-items-center border-0">
-                        <div className="symbol symbol-circle symbol-50px overflow-hidden me-3 ">
-                          <div className="symbol-label">
-                            <img
-                              //src={users.user.image}
-                              //src={ image?.includes('https://') ? image : '../../files/' + image}
-                              src={
-                                child.image?.includes("https://")
-                                  ? child.image
-                                  : "https://app.insiderhof.com.br/files/" +
-                                    child.image
-                              }
-                              style={{ width: "100%" }}
-                              onError={({ currentTarget }) => {
-                                currentTarget.onerror = null; // prevents looping
-                                currentTarget.src =
-                                  "https://app.insiderhof.com.br/files/notfound.jpg";
-                              }}
-                            />
+                      <td>
+                        <div className="d-flex align-items-center">
+                          <div className="symbol symbol-circle symbol-50px overflow-hidden me-3 ">
+                            <div className="symbol-label">
+                              <img
+                                //src={users.user.image}
+                                //src={ image?.includes('https://') ? image : '../../files/' + image}
+                                src={
+                                  child.image?.includes("https://")
+                                    ? child.image
+                                    : "https://app.insiderhof.com.br/files/" +
+                                      child.image
+                                }
+                                style={{ width: "100%" }}
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null; // prevents looping
+                                  currentTarget.src =
+                                    "https://app.insiderhof.com.br/files/notfound.jpg";
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div className="d-flex flex-column">
+                            <a
+                              href="#!"
+                              onClick={() => infoUser(child)}
+                              className="text-gray-800 fw-bold mb-1 text-hover-primary fs-6"
+                            >
+                              {child.name}
+                            </a>
+
+                            <span className="text-muted">{child.email}</span>
                           </div>
                         </div>
-                        <div className="d-flex flex-column">
-                          <a
-                            href="#!"
-                            onClick={() => infoUser(child)}
-                            className="text-gray-800 fw-bold mb-1 text-hover-primary fs-6"
-                          >
-                            {child.name}
-                          </a>
-
-                          <span className="text-muted">{child.email}</span>
-                        </div>
+                      </td>
+                      <td>
+                        {child.address && (
+                          <div className="d-flex flex-column">
+                            <div
+                              //onClick={() => infoUser(child)}
+                              className="text-gray-800 fw-bold mb-1  fs-6"
+                            >
+                              {child.address}, {child.addressNumber},{" "}
+                              {child.addressDistrict}
+                              {child.addressComplement
+                                ? ", " + child.addressComplement
+                                : ""}
+                            </div>
+                            <span className="text-muted">
+                              {child.city?.name}/{child.state?.state}
+                            </span>
+                          </div>
+                        )}
                       </td>
                       <td>
                         {lastLoginAt && (
@@ -467,7 +491,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <span className="text-muted fw-bold d-block fs-7">
                           {child.cart.map((cart: Cart, index: number) => (
                             <span key={index}>
-                              {index+1}. {" "+cart.launch?.name}
+                              {index + 1}. {" " + cart.launch?.name}
                               {/* {index < child.cart.length - 1 && ","} */}
                               <br />
                             </span>
@@ -607,6 +631,8 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
       {currentPage!}
       {count}
       {take} */}
+      {hasCart!?'TEM CART': 'NAO TEM CART'}
+      {hasCart!}
       {users.showPagination ? (
         <Pagination
           className=""
@@ -615,6 +641,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
           pageSize={take}
           onPageChange={(page: any) => setCurrentPage(page)}
           link="users"
+          hasCart={hasCart}
         />
       ) : (
         ""

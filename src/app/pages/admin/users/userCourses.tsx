@@ -2,16 +2,16 @@ import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useDispatch} from 'react-redux'
 import {ApplicationState} from '../../../../store'
-import {
-  createComponentAccessRequest,
-  //createComponentAccessSuccess,
-  loadComponentWithAccessRequest,
-  //loadLastClassRequest,
-} from '../../../../store/ducks/component/actions'
+// import {
+//   createComponentAccessRequest,
+//   //createComponentAccessSuccess,
+//   loadComponentWithAccessRequest,
+//   //loadLastClassRequest,
+// } from '../../../../store/ducks/component/actions'
 import {User} from '../../../../store/ducks/me/types'
 import Loading from '../../../loading'
 import {Button, Col, Form} from 'react-bootstrap'
-import {Component} from '../../../../store/ducks/component/types'
+// import {Component} from '../../../../store/ducks/component/types'
 //import {getAllJSDocTagsOfKind} from 'typescript'
 
 const MOMENT = require('moment')
@@ -24,37 +24,34 @@ interface handleCloseProps {
 const UserCourses = ({handleClose, child}: handleCloseProps) => {
   // const {id} = useParams();
   const dispatch = useDispatch()
-  const component = useSelector((state: ApplicationState) => state.component)
+  //const component = useSelector((state: ApplicationState) => state.component)
   const [componentsSelected, setComponentsSelected] = useState<any[]>([])
 
-  useEffect(() => {
-    console.log('CHAMOU PRIMEIRO USEEFFECT')
-    //dispatch(loadLastClassRequest(child.id!))
-    dispatch(loadComponentWithAccessRequest('2', child.id?.toString()!, 'desc'))
-    // setCount((prev) => {
-    //   return prev + 1
-    // })
-  }, [component.data.id, child.id])
+  // useEffect(() => {
+  //   console.log('CHAMOU PRIMEIRO USEEFFECT')
+  //   // dispatch(loadComponentWithAccessRequest('2', child.id?.toString()!, 'desc'))
 
-  useEffect(() => {
-    console.log('CHAMOU SEGUNDO USEEFFECT')
-    console.log("component antes", component)
-    setComponentsSelected(
-      component.data.children
-        ?.filter((comp) => comp.access?.length > 0)
-        ?.map((comp) => ({userId: child.id, componentId: comp.id, status: '1'}))!
-    )
-    //cleanup
-    return () => {
-      setComponentsSelected([])
-    }
-  }, [component.loadingAccess, child.id])
+  // }, [component.data.id, child.id])
+
+  // useEffect(() => {
+  //   console.log('CHAMOU SEGUNDO USEEFFECT')
+  //   //console.log("component antes", component)
+  //   // setComponentsSelected(
+  //   //   component.data.children
+  //   //     ?.filter((comp) => comp.access?.length > 0)
+  //   //     ?.map((comp) => ({userId: child.id, componentId: comp.id, status: '1'}))!
+  //   // )
+  //   //cleanup
+  //   return () => {
+  //     setComponentsSelected([])
+  //   }
+  // }, [component.loadingAccess, child.id])
 
   const handleSubmit = () => {
     //console.log("componentsSelected", componentsSelected)
     componentsSelected.map((access) => {
       console.log('ACCESS', access)
-      dispatch(createComponentAccessRequest(access))
+      // dispatch(createComponentAccessRequest(access))
       handleClose()
     })
   }
@@ -65,67 +62,67 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
   }
 
   console.log('componentsSelectedxxxx', componentsSelected)
-  console.log(
-    'component-access',
-    component.data.children
-      ?.filter((comp) => comp.access?.length > 0)
-      ?.map((comp) => ({userId: child.id, componentId: comp.id, status: '1'}))!
-  )
+  // console.log(
+  //   'component-access',
+  //   component.data.children
+  //     ?.filter((comp) => comp.access?.length > 0)
+  //     ?.map((comp) => ({userId: child.id, componentId: comp.id, status: '1'}))!
+  // )
 
-  const handleMultiSelect = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    componentSelected: Component
-  ) => {
-    console.log('component-selected', componentSelected)
-    if (event.target.checked) {
-      //setComponentsSelected([...componentsSelected, componentSelected])
-      //Verifica se existe o par ComponentId e UserId dentro de componentsSelected
+  // const handleMultiSelect = (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  //   componentSelected: Component
+  // ) => {
+  //   console.log('component-selected', componentSelected)
+  //   if (event.target.checked) {
+  //     //setComponentsSelected([...componentsSelected, componentSelected])
+  //     //Verifica se existe o par ComponentId e UserId dentro de componentsSelected
 
-      if (
-        checkArrayInArray(componentsSelected, {
-          userId: child.id,
-          componentId: componentSelected.componentId,
-          status: 0,
-        })
-      ) {
-        setComponentsSelected((current: any) =>
-          Object.assign([], current, {
-            ...current.map((item: any) => {
-              if (item.componentId === componentSelected.componentId) {
-                console.log('ACHEI', componentSelected)
-                return {userId: child.id, componentId: componentSelected.componentId, status: '1'}
-              }
-              return item
-            }),
-          })
-        )
-      } else {
-        setComponentsSelected([
-          ...componentsSelected,
-          {userId: child.id, componentId: componentSelected.componentId, status: '1'},
-        ])
-      }
-    } else {
-      setComponentsSelected((current: any) =>
-        Object.assign([], current, {
-          ...current.map((item: any) => {
-            if (item.componentId === componentSelected.componentId) {
-              console.log('ACHEI', componentSelected)
-              return {userId: child.id, componentId: componentSelected.componentId, status: 0}
-            }
-            return item
-          }),
-        })
-      )
-    }
-  }
+  //     if (
+  //       checkArrayInArray(componentsSelected, {
+  //         userId: child.id,
+  //         componentId: componentSelected.componentId,
+  //         status: 0,
+  //       })
+  //     ) {
+  //       setComponentsSelected((current: any) =>
+  //         Object.assign([], current, {
+  //           ...current.map((item: any) => {
+  //             if (item.componentId === componentSelected.componentId) {
+  //               console.log('ACHEI', componentSelected)
+  //               return {userId: child.id, componentId: componentSelected.componentId, status: '1'}
+  //             }
+  //             return item
+  //           }),
+  //         })
+  //       )
+  //     } else {
+  //       setComponentsSelected([
+  //         ...componentsSelected,
+  //         {userId: child.id, componentId: componentSelected.componentId, status: '1'},
+  //       ])
+  //     }
+  //   } else {
+  //     setComponentsSelected((current: any) =>
+  //       Object.assign([], current, {
+  //         ...current.map((item: any) => {
+  //           if (item.componentId === componentSelected.componentId) {
+  //             console.log('ACHEI', componentSelected)
+  //             return {userId: child.id, componentId: componentSelected.componentId, status: 0}
+  //           }
+  //           return item
+  //         }),
+  //       })
+  //     )
+  //   }
+  // }
 
-  let urlLastClass: string | undefined = ''
-  let checkLastClass = component.lastclass?.extras?.filter(
-    (extra: any) => extra.keyExtra === 'url'
-  )[0] //Checa se tem o 'extra' de url.
-  if (checkLastClass) urlLastClass = checkLastClass.valueExtra
-  console.log('component', component)
+  // let urlLastClass: string | undefined = ''
+  // let checkLastClass = component.lastclass?.extras?.filter(
+  //   (extra: any) => extra.keyExtra === 'url'
+  // )[0] //Checa se tem o 'extra' de url.
+  // if (checkLastClass) urlLastClass = checkLastClass.valueExtra
+  // console.log('component', component)
 
   // var data = new Date(apiResponse.createdAt*1000);
   // let createdAt = MOMENT(child.createdAt) //.format('DD/MM/YYYY HH:mm')
@@ -136,10 +133,10 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
 
   //return <div>oi</div>
 
-  if (component.loadingAccess) {
-    console.log('carregando acessos')
-    return <Loading />
-  }
+  // if (component.loadingAccess) {
+  //   console.log('carregando acessos')
+  //   return <Loading />
+  // }
   return (
     <>
       <div className='row g-5 gx-xxl-12'>
@@ -164,7 +161,7 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
           <span>{child.email}</span>
           <br />
           <br />
-          {component.loadingAccess ? (
+          {/* {component.loadingAccess ? (
             <Loading />
           ) : (
             <div>
@@ -189,7 +186,7 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
                 })}
               </Form.Group>
             </div>
-          )}
+          )} */}
         </div>
         <br />
         <Button variant='primary' type='button' onClick={handleSubmit}>

@@ -3,7 +3,7 @@ import {UsersTypes} from './types'
 import {User} from '../me/types'
 
 //All
-export const loadUsersRequest = (page: number, take: number) => action(UsersTypes.LOAD_USERS_REQUEST, {page, take})
+export const loadUsersRequest = (page: number, take: number, hasCart: string, startDate?: number, endDate?: number) => action(UsersTypes.LOAD_USERS_REQUEST, {page, take, hasCart, startDate, endDate})
 export const loadUsersSuccess = (data: User[]) => action(UsersTypes.LOAD_USERS_SUCCESS, data)
 export const loadUsersFailure = (err:any[]) => action(UsersTypes.LOAD_USERS_FAILURE, err)
 

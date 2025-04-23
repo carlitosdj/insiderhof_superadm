@@ -39,10 +39,10 @@ const AnnotationWidget: React.FC<React.PropsWithChildren<Props>> = ({
               <thead>
                 <tr className="fw-bolder text-muted">
                   <th className="min-w-50px">ID</th>
-                  <th className="min-w-150px">REGISTRO</th>
-                  <th className="min-w-300px">ANOTAÇÃO</th>
-                  <th className="min-w-300px">AULA</th>
-                  <th className="min-w-200px">USUÁRIO</th>
+                  <th className="min-w-100px">REGISTRO</th>
+                  <th className="min-w-100px">ANOTAÇÃO</th>
+                  <th className="min-w-100px">AULA</th>
+                  <th className="min-w-120px">USUÁRIO</th>
                 </tr>
               </thead>
               <tbody>
@@ -71,14 +71,15 @@ const AnnotationWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         </td>
                         <td>
                           <span className="text-muted fw-bold d-block fs-7">
-                            {annotation.parentComponent.parent.parent.name}{" "}
-                            {">"} {annotation.parentComponent.parent.name} {">"}{" "}
-                            {annotation.parentComponent.name}
+                           
+                            {annotation.class?.module?.product?.name}{" > "}
+                            {annotation.class?.module?.name}{" > "}
+                            {annotation.class?.name}
                           </span>
                         </td>
                         <td>
                           <span className="text-muted fw-bold d-block fs-7">
-                            {annotation.parentUser.name}
+                            {annotation.user?.name}
                           </span>
                         </td>
                       </tr>
