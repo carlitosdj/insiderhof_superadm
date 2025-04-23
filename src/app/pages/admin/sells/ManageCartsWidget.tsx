@@ -29,6 +29,12 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
+
+  let precobasetotal = 0;
+  let precopagototal = 0;
+  let recebidototal = 0.
+  let taxamaquinatotal = 0;
+  let taxaparcelamentototal = 0;
   //const [child, setChild] = useState<User>({});
 
   const filter = () => {
@@ -167,6 +173,11 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                   {carts.data.length !== 0 &&
                     carts.data?.map((child: Cart, index: number) => {
+
+                      //TODO: AQUIIIII fazer o somatorio
+                      precobasetotal += child.price!;
+                      precopagototal += Number(child.total_paid_amount)!
+
                       return (
                         <tr>
                           <td>{child.id}</td>

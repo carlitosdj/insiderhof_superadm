@@ -17,8 +17,8 @@ export function* loadCarts(payload: ReturnType<typeof loadCartsRequest>) {
     let response: Cart[];
     if(payload.payload.startDate && payload.payload.endDate)
     {
-      console.log("entrou", `cart/${payload.payload.startDate}/${payload.payload.endDate}`)
-      response = yield call(api.get, `cart/${payload.payload.startDate}/${payload.payload.endDate}`)
+      //console.log("entrou", `cart/all/${payload.payload.startDate}/${payload.payload.endDate}`)
+      response = yield call(api.get, `cart/all/${payload.payload.startDate}/${payload.payload.endDate}`)
     }else{
       response = yield call(api.get, 'cart')
     }
