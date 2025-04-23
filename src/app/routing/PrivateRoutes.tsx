@@ -45,7 +45,7 @@ const PrivateRoutes = () => {
   );
   const Leads = useMemo(() => lazy(() => import("../pages/admin/leads")), []);
   const Users = useMemo(() => lazy(() => import("../pages/admin/users")), []);
-  
+
   const EmailsEnviados = useMemo(
     () => lazy(() => import("../pages/admin/emailsenviados")),
     []
@@ -58,18 +58,7 @@ const PrivateRoutes = () => {
     () => lazy(() => import("../pages/admin/annotations")),
     []
   );
-  const Launch = useMemo(
-    () => lazy(() => import("../pages/admin/launch/Launch")),
-    []
-  );
-  const Fases = useMemo(
-    () => lazy(() => import("../pages/admin/launch/fases/Fases")),
-    []
-  );
-  const LaunchExtra = useMemo(
-    () => lazy(() => import("../pages/admin/launch/launchextra/LaunchExtra")),
-    []
-  );
+
   const Contact = useMemo(
     () => lazy(() => import("../pages/admin/contact")),
     []
@@ -116,7 +105,7 @@ const PrivateRoutes = () => {
         <Route path="auth/*" element={<Navigate to="/dashboard" />} />
 
         <Route
-          path="sells"
+          path="sells/:startDate?/:endDate?"
           element={
             <SuspensedView>
               <Sells />
@@ -128,8 +117,6 @@ const PrivateRoutes = () => {
         <Route path="dashboard" element={<DashboardWrapper />} />
         <Route path="builder" element={<BuilderPageWrapper />} />
         <Route path="menu-test" element={<MenuTestPage />} />
-
-      
 
         <Route
           path="launches"
@@ -204,35 +191,6 @@ const PrivateRoutes = () => {
         />
 
         <Route
-          path="launch"
-          element={
-            <SuspensedView>
-              <Launch />
-            </SuspensedView>
-          }
-        />
-        <Route path="fases">
-          <Route
-            path=":id"
-            element={
-              <SuspensedView>
-                <Fases />
-              </SuspensedView>
-            }
-          />
-        </Route>
-        <Route path="launchextra">
-          <Route
-            path=":id"
-            element={
-              <SuspensedView>
-                <LaunchExtra />
-              </SuspensedView>
-            }
-          />
-        </Route>
-
-        <Route
           path="/wppcamp"
           element={
             <SuspensedView>
@@ -269,7 +227,7 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-       
+
         <Route
           path="emailsenviados"
           element={

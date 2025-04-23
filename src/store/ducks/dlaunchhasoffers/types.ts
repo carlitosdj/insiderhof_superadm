@@ -1,4 +1,5 @@
-import { Launch } from "../component/types";
+//import { Launch } from "../component/types";
+import { Launch } from "../dlaunch/types";
 import { Offer } from "../doffer/types";
 
 

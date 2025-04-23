@@ -97,6 +97,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setChild(user);
   };
 
+
   const userCourses = (user: User) => {
     setAction("userCourses");
     setShow(true);

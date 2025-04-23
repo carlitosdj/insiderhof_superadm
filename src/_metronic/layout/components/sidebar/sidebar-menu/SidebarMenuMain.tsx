@@ -97,6 +97,7 @@ const SidebarMenuMain = () => {
           </span>
         </div>
       </div>
+
       <SidebarMenuItem
         to="/sells"
         icon="dollar"
@@ -104,8 +105,16 @@ const SidebarMenuMain = () => {
         //title={intl.formatMessage({ id: "MENU.SELLS" })}
         title="Vendas"
       />
-     
-     <SidebarMenuItem
+
+      <SidebarMenuItem
+        to="/users/1/100/true"
+        icon="profile-user"
+        fontIcon="bi-app-indicator"
+        //title={intl.formatMessage({ id: "MENU.USERS" })}
+        title="Alunos"
+      />
+
+      <SidebarMenuItem
         to="/users/1/100/false"
         icon="profile-user"
         fontIcon="bi-app-indicator"
@@ -114,12 +123,19 @@ const SidebarMenuMain = () => {
       />
 
       <SidebarMenuItem
-        to="/users/1/100/true"
-        icon="profile-user"
+        to="/leads/1/100"
+        icon="people"
         fontIcon="bi-app-indicator"
-        title={intl.formatMessage({ id: "MENU.USERS" })}
+        title={intl.formatMessage({ id: "MENU.LEADS" })}
       />
-      
+
+      <div className="menu-item">
+        <div className="menu-content pt-8 pb-2">
+          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+            COMUNICAÇÃO
+          </span>
+        </div>
+      </div>
       <SidebarMenuItem
         to="/annotations"
         icon="message-edit"
@@ -142,6 +158,7 @@ const SidebarMenuMain = () => {
           </span>
         </div>
       </div>
+
       {/* <SidebarMenuItem
         //to='/manage/510'
         to="/launch"
@@ -149,12 +166,7 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.MYLAUNCHES" })}
       /> */}
-      <SidebarMenuItem
-        to="/leads/1/100"
-        icon="people"
-        fontIcon="bi-app-indicator"
-        title={intl.formatMessage({ id: "MENU.LEADS" })}
-      />
+
       <SidebarMenuItem
         to="/wppcamp"
         icon="whatsapp"

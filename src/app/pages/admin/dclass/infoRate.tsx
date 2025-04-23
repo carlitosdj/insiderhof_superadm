@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux'
 import {useDispatch} from 'react-redux'
 import {ApplicationState} from '../../../../store'
 
-import {Component} from '../../../../store/ducks/component/types'
+// import {Component} from '../../../../store/ducks/component/types'
 import momentDurationFormatSetup from 'moment-duration-format';
 import { Class } from '../../../../store/ducks/dclass/types'
 
@@ -21,7 +21,7 @@ const InfoRate = ({handleClose, child}: handleCloseProps) => {
   // useEffect(() => {
   //   dispatch(loadLastClassRequest(child.id!))
   // }, [])
-  const component = useSelector((state: ApplicationState) => state.component)
+  //const component = useSelector((state: ApplicationState) => state.component)
   console.log(child)
   //return <div>oi</div>
   return (

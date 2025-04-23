@@ -1,5 +1,7 @@
-import { User } from "../../../app/modules/apps/user-management/users-list/core/_models"
-import { Launch } from "../component/types"
+
+import { Launch } from "../dlaunch/types"
+import { User } from "../me/types"
+//import { Launch } from "../component/types"
 
 /**
  * Action types

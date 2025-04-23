@@ -12,6 +12,7 @@ import Loading from "../../../loading";
 import { ManageCartsWidget } from "./ManageCartsWidget";
 import { loadCartRequest, loadCartsRequest } from "../../../../store/ducks/carts/actions";
 import { CartsState } from "../../../../store/ducks/carts/types";
+import { useParams } from "react-router-dom";
 
 type Props = {
   carts: CartsState;
@@ -36,14 +37,28 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ carts }) => (
   </div>
 );
 
+type ParamTypes = {
+
+  startDate?: string;
+  endDate?: string;
+};
+
+
 const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
   const carts = useSelector((state: ApplicationState) => state.carts);
 
+   const { startDate, endDate } = useParams<ParamTypes>();
+
   useEffect(() => {
-    dispatch(loadCartsRequest()); //Puxa componentes com seus filhos primários
-  }, [dispatch]);
+    if(startDate && endDate){
+      dispatch(loadCartsRequest(startDate, endDate));
+    }else{
+      dispatch(loadCartsRequest());
+    }
+     //Puxa componentes com seus filhos primários
+  }, [dispatch, startDate, endDate]);
 
   console.log("carts", carts);
   if (carts.loading) return <Loading />;

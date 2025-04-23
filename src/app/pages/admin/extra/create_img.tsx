@@ -3,11 +3,11 @@ import { Form, Button } from "react-bootstrap";
 // import {useParams} from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
-import { createExtraRequest } from "../../../../store/ducks/component/actions";
+//import { createExtraRequest } from "../../../../store/ducks/component/actions";
 import { Extras } from "../../../../store/ducks/extras/types";
 import axios from "axios";
 import api from "../../../../services/api";
-import { Component } from "../../../../store/ducks/component/types";
+//import { Component } from "../../../../store/ducks/component/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 // type ParamTypes = {
@@ -16,10 +16,10 @@ import { KTIcon } from "../../../../_metronic/helpers";
 
 interface createImgProps {
   handleClose: () => void;
-  component: Component;
+  //component: Component;
 }
 
-const Extra = ({ handleClose, component }: createImgProps) => {
+const Extra = ({ handleClose }: createImgProps) => {
   // const [sending, setSending] = useState(false)
   // const [keyExtra, setkeyExtra] = useState('image')
   // const [valueExtra, setvalueExtra] = useState('')
@@ -57,14 +57,14 @@ const Extra = ({ handleClose, component }: createImgProps) => {
         const extra: Extras = {
           keyExtra: "img",
           valueExtra: res.data.filename,
-          componentId: component.id,
+          //componentId: component.id,
           //createdAt: date.getTime() / 1000,
           status: "1",
         };
         console.log("extra to save:", extra);
-        console.log("component:", component);
+        //console.log("component:", component);
 
-        dispatch(createExtraRequest(extra));
+        //dispatch(createExtraRequest(extra));
         handleClose();
       });
     }

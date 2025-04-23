@@ -20,7 +20,7 @@ interface handleCloseProps {
 
 const Update = ({ handleClose, child }: handleCloseProps) => {
   const dispatch = useDispatch();
-  const component = useSelector((state: ApplicationState) => state.component);
+  //const component = useSelector((state: ApplicationState) => state.component);
 
   const [validated, setValidated] = useState(false);
   const [name, setName] = useState<string | undefined>("");
@@ -41,7 +41,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   }, [child.name, child.description]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submit", component.data.id);
+    //console.log("submit", component.data.id);
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {

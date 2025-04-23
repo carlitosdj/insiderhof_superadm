@@ -4,20 +4,20 @@ import { Form, Button } from "react-bootstrap";
 // import {useParams, useNavigate} from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
-import { updateExtraRequest } from "../../../../store/ducks/component/actions";
+//import { updateExtraRequest } from "../../../../store/ducks/component/actions";
 
 import { Extras } from "../../../../store/ducks/extras/types";
 import { CKEditor } from "ckeditor4-react";
-import { Component } from "../../../../store/ducks/component/types";
+//import { Component } from "../../../../store/ducks/component/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 interface updateProps {
   handleClose: () => void;
   child: Extras;
-  component: Component;
+  //component: Component;
 }
 
-const Update = ({ handleClose, child, component }: updateProps) => {
+const Update = ({ handleClose, child }: updateProps) => {
   const [validated, setValidated] = useState(false);
   //const component = useSelector((state: ApplicationState) => state.component)
   const [keyExtra, setkeyExtra] = useState<string | undefined>("");
@@ -32,7 +32,7 @@ const Update = ({ handleClose, child, component }: updateProps) => {
   }, [child.keyExtra, child.valueExtra]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("submit", component.id);
+    //console.log("submit", component.id);
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {
@@ -50,7 +50,7 @@ const Update = ({ handleClose, child, component }: updateProps) => {
       };
       console.log("------------------ COMPONENT TO UPDATE", extraToUpdate);
 
-      dispatch(updateExtraRequest(extraToUpdate));
+      //dispatch(updateExtraRequest(extraToUpdate));
       handleClose();
     }
   };

@@ -3,7 +3,7 @@ import {CartsTypes, Cart} from './types'
 
 
 //Load
-export const loadCartsRequest = () => action(CartsTypes.LOAD_CARTS_REQUEST)
+export const loadCartsRequest = (startDate?: string, endDate?: string) => action(CartsTypes.LOAD_CARTS_REQUEST, { startDate, endDate }) 
 export const loadCartsSuccess = (data: Cart[]) => action(CartsTypes.LOAD_CARTS_SUCCESS, data) //payload dps de LOAD_REQUEST
 export const loadCartsFailure = (err: any[]) => action(CartsTypes.LOAD_CARTS_FAILURE, err)
 

@@ -5,10 +5,11 @@ import { ApplicationState } from "../../../../store";
 
 import { User } from "../../../../store/ducks/me/types";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { ComponentToPrint } from "./ComponentToPrint";
+
 import * as XLSX from "xlsx";
 import { Button } from "react-bootstrap";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { ComponentToPrint } from "./ComponentToPrint";
 
 const MOMENT = require("moment");
 
@@ -16,7 +17,7 @@ interface handleCloseProps {
   handleClose: () => void;
 }
 
-const ExportUser = ({ handleClose }: handleCloseProps) => {
+const ExportSell = ({ handleClose }: handleCloseProps) => {
   // const {id} = useParams();
   //const dispatch = useDispatch();
   useEffect(() => {}, []);
@@ -189,4 +190,4 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
     </>
   );
 };
-export default ExportUser;
+export default ExportSell;

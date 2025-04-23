@@ -11,7 +11,7 @@ type progressProps = {
 };
 
 export function Progress({ user }: progressProps) {
-  const { image, name, email, completed } = user;
+  //const { image, name, email, completed } = user;
   const [array, setArray] = useState<any>([]);
 
   //const { id } = useParams();
@@ -20,7 +20,7 @@ export function Progress({ user }: progressProps) {
     //if (user.id === +id!) {
     //console.log("asdasdasd: ", users.user.id);
 
-    console.log("VER AQUI ****************", user.completed);
+    //console.log("VER AQUI ****************", user.completed);
     const sort = _.orderBy(
       user.completed,
       ["class.module.product.order", "class.order", "class.id"],

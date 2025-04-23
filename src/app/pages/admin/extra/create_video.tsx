@@ -3,10 +3,10 @@ import { Form, Button } from "react-bootstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { createExtraRequest } from "../../../../store/ducks/component/actions";
+//import { createExtraRequest } from "../../../../store/ducks/component/actions";
 import { Extras } from "../../../../store/ducks/extras/types";
 import { ApplicationState } from "../../../../store";
-import { Component } from "../../../../store/ducks/component/types";
+//import { Component } from "../../../../store/ducks/component/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 // interface ParamTypes {
@@ -15,10 +15,10 @@ import { KTIcon } from "../../../../_metronic/helpers";
 
 interface createVideoProps {
   handleClose: () => void;
-  component: Component;
+  //component: Component;
 }
 
-const Create = ({ handleClose, component }: createVideoProps) => {
+const Create = ({ handleClose }: createVideoProps) => {
   const [keyExtra, setkeyExtra] = useState("url");
   const [valueExtra, setvalueExtra] = useState("");
   const [validated, setValidated] = useState(false);
@@ -27,7 +27,7 @@ const Create = ({ handleClose, component }: createVideoProps) => {
   const dispatch = useDispatch();
   // const component = useSelector((state: ApplicationState) => state.component)
 
-  console.log("Component inside - create", component);
+  //console.log("Component inside - create", component);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -41,14 +41,14 @@ const Create = ({ handleClose, component }: createVideoProps) => {
       const extra: Extras = {
         keyExtra,
         valueExtra,
-        componentId: component.id,
+        //componentId: component.id,
         //createdAt: data.getTime() / 1000,
         status: "1",
       };
       console.log("extra to save:", extra);
-      console.log("component:", component);
+      //console.log("component:", component);
 
-      dispatch(createExtraRequest(extra));
+      //dispatch(createExtraRequest(extra));
 
       handleClose();
       /* history.goBack() */

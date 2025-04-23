@@ -43,7 +43,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   // const intl = useIntl()
 
   const dispatch = useDispatch()
-  const component = useSelector((state: ApplicationState) => state.component)
+  //const component = useSelector((state: ApplicationState) => state.component)
   // let { id } = useParams<ParamTypes>();
   const wppcamp = useSelector((state: ApplicationState) => state.wppcamp)
 

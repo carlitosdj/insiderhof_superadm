@@ -3,19 +3,19 @@ import { Form, Button } from "react-bootstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { createExtraRequest } from "../../../../store/ducks/component/actions";
+//import { createExtraRequest } from "../../../../store/ducks/component/actions";
 import { Extras } from "../../../../store/ducks/extras/types";
 import { ApplicationState } from "../../../../store";
 import { CKEditor } from "ckeditor4-react";
-import { Component } from "../../../../store/ducks/component/types";
+//import { Component } from "../../../../store/ducks/component/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 interface createProps {
-  component: Component;
+  //component: Component;
   handleClose: () => void;
 }
 
-const Create = ({ handleClose, component }: createProps) => {
+const Create = ({ handleClose }: createProps) => {
   const [keyExtra, setkeyExtra] = useState("");
   const [valueExtra, setvalueExtra] = useState("");
   const [validated, setValidated] = useState(false);
@@ -26,7 +26,7 @@ const Create = ({ handleClose, component }: createProps) => {
   const dispatch = useDispatch();
   //const component = useSelector((state: ApplicationState) => state.component)
 
-  console.log("Component inside - create", component);
+  //console.log("Component inside - create", component);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -40,14 +40,14 @@ const Create = ({ handleClose, component }: createProps) => {
       const extra: Extras = {
         keyExtra,
         valueExtra,
-        componentId: component.id,
+        //componentId: component.id,
         // createdAt: data.getTime() / 1000,
         // status: '1',
       };
       console.log("extra to save:", extra);
       // console.log('component:', component)
 
-      dispatch(createExtraRequest(extra));
+      //dispatch(createExtraRequest(extra));
       handleClose();
       /* history.goBack() */
     }

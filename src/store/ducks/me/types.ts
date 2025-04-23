@@ -1,5 +1,6 @@
 import { City } from "../city/types"
-import { Completed } from "../component/types"
+import { Completed } from "../dclass/types"
+//import { Completed } from "../component/types"
 import { State } from "../state/types"
 
 /**
