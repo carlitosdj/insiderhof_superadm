@@ -32,7 +32,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   let precobasetotal = 0;
   let precopagototal = 0;
-  let recebidototal = 0.
+  let recebidototal = 0;
   let taxamaquinatotal = 0;
   let taxaparcelamentototal = 0;
   //const [child, setChild] = useState<User>({});
@@ -52,7 +52,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <>
-     <Modal size="xl" show={show} onHide={handleClose}>
+      <Modal size="xl" show={show} onHide={handleClose}>
         <div className="modal-header">
           <h2>
             {action === "showExport" ? "Exportar" : ""}
@@ -83,7 +83,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="card-header border-0 pt-5">
           <div className="card-title">
             {/* begin::Search */}
-            <div className="d-flex align-items-center position-relative my-1">
+            {/* <div className="d-flex align-items-center position-relative my-1">
               <KTIcon
                 iconName="magnifier"
                 className="fs-1 position-absolute ms-6"
@@ -99,7 +99,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 //   if (e.key === "Enter") searchUser();
                 // }}
               />
-            </div>
+            </div> */}
             {/* end::Search */}
           </div>
           <div className="card-toolbar">
@@ -128,7 +128,6 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
               {/* end::Export */}
 
               {/* begin::Add user */}
-         
             </div>
           </div>
         </div>
@@ -148,14 +147,15 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                   <th className="min-w-100px">PRODUTO</th>
                   <th className="min-w-100px">PREÇO/BASE</th>
-                  <th className="min-w-20px">PARCELAS</th>
+                  <th className="min-w-20px">N/PARCELAS</th>
+                  <th className="min-w-20px">PARCELA</th>
                   <th className="min-w-20px">GATEWAY</th>
                   <th className="min-w-20px">MÉTODO</th>
                   <th className="min-w-20px">REF</th>
 
                   <th className="min-w-20px">PREÇO/PAGO</th>
                   <th className="min-w-20px">RECEBIDO</th>
-                  <th className="min-w-20px">PARCELA</th>
+                  
                   <th className="min-w-20px">TAXA/MAQUINA</th>
                   <th className="min-w-20px">TAXA/PARCELAMENTO</th>
                 </tr>
@@ -173,11 +173,12 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                   {carts.data.length !== 0 &&
                     carts.data?.map((child: Cart, index: number) => {
-
                       //TODO: AQUIIIII fazer o somatorio
-                      precobasetotal += child.price!;
-                      precopagototal += Number(child.total_paid_amount)!
-
+                      precobasetotal += Number(child.price)!;
+                      precopagototal += Number(child.total_paid_amount)!;
+                      recebidototal += Number(child.net_received_amount);
+                      taxamaquinatotal += Number(child.mercadopago_fee);
+                      taxaparcelamentototal += Number(child.financing_fee);
                       return (
                         <tr>
                           <td>{child.id}</td>
@@ -248,25 +249,97 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             </div>
                           </td>
                           <td>
-                            R${" "}
-                            {child.price?.toLocaleString("pt-BR", {
+                            
+                            {Number(child.price)?.toLocaleString("pt-BR", {
                               style: "currency",
                               currency: "BRL",
                             })}
-                            ,00
+                            
                           </td>
                           <td>{child.installments}</td>
+                          <td>
+                            {Number(child.installment_amount)?.toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })}
+                          </td>
                           <td>{child.gateway}</td>
                           <td>{child.paymentmethod}</td>
                           <td>{child.idreference}</td>
-                          <td>{child.total_paid_amount}</td>
-                          <td>{child.net_received_amount}</td>
-                          <td>{child.installment_amount}</td>
-                          <td>{child.mercadopago_fee}</td>
-                          <td>{child.financing_fee}</td>
+                          <td>
+                            {Number(child.total_paid_amount)?.toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })}
+                          </td>
+                          <td>
+                            {Number(child.net_received_amount)?.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          </td>
+                          
+                          <td>
+                            {Number(child.mercadopago_fee)?.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          </td>
+                          <td>
+                            {Number(child.financing_fee)?.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          </td>
+                          
                         </tr>
                       );
                     })}
+                  <tr className="bg-info text-white">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      {precobasetotal?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      {precopagototal?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td>
+                      {recebidototal?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    
+                    <td>
+                      {taxamaquinatotal?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                    <td>
+                      {taxaparcelamentototal?.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </td>
+                  </tr>
                 </AnimatePresence>
               </tbody>
             </table>

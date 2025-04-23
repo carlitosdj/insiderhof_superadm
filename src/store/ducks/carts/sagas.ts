@@ -20,7 +20,7 @@ export function* loadCarts(payload: ReturnType<typeof loadCartsRequest>) {
       //console.log("entrou", `cart/all/${payload.payload.startDate}/${payload.payload.endDate}`)
       response = yield call(api.get, `cart/all/${payload.payload.startDate}/${payload.payload.endDate}`)
     }else{
-      response = yield call(api.get, 'cart')
+      response = yield call(api.get, 'cart/all')
     }
     
     

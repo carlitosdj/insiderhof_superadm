@@ -63,27 +63,42 @@ const Filter = ({handleClose}: handleCloseProps) => {
     handleClose()
 
   }
-  const setStartDateFunc = (data:any) => {
-    console.log("dataStart",data)
+  const setStartDateFunc = (data: any) => {
+    console.log("dataStart", data);
     const d1 = new Date(data);
+  
+    // Define para 00:00:01
+    d1.setHours(0);
+    d1.setMinutes(0);
+    d1.setSeconds(1);
+    d1.setMilliseconds(0);
+  
     console.log(d1);
-
-    // converting to number
-    const result = d1.getTime()/1000;
-    setStartDateInt(result)
-    setStartDate(data)
-  }
-  const setEndDateFunc = (data:any) => {
-    console.log("dataEnd",data)
+  
+    // Convertendo para timestamp em segundos
+    const result = d1.getTime() / 1000;
+    setStartDateInt(result);
+    setStartDate(d1); // Aqui é melhor passar o objeto atualizado
+  };
+  const setEndDateFunc = (data: any) => {
+    console.log("dataEnd", data);
     const d1 = new Date(data);
+  
+    // Define para 23:59:59
+    d1.setHours(23);
+    d1.setMinutes(59);
+    d1.setSeconds(59);
+    d1.setMilliseconds(0); // opcional, pode deixar 999 se quiser o último ms do dia
+  
     console.log(d1);
-
-    // converting to number
-    const result = d1.getTime()/1000;
-    console.log("dataEnd",result)
-    setEndDateInt(result)
-    setEndDate(data)
-  }
+  
+    // Convertendo para timestamp em segundos
+    const result = d1.getTime() / 1000;
+    console.log("dataEnd", result);
+  
+    setEndDateInt(result);
+    setEndDate(d1); // usa o objeto Date com o horário ajustado
+  };
 
   useEffect(() => {
 
