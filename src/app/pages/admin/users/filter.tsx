@@ -87,7 +87,7 @@ const Filter = ({handleClose}: handleCloseProps) => {
 
   useEffect(() => {
 
-    //Se nao tiver dados da redux: seta ontem e hoje como data range:
+    //Se nao tiver dados da redux: seta ontem e 7 dias atras como data range:
     if(users.filterStartDate && users.filterEndDate) {
 
       setStartDate(new Date(users.filterStartDate * 1000))
@@ -98,7 +98,7 @@ const Filter = ({handleClose}: handleCloseProps) => {
     } else {
       const d1 = new Date();
       var yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setDate(yesterday.getDate() - 7);
       setStartDate(yesterday)
       setStartDateInt(Math.floor(yesterday.getTime()/1000))
       setEndDate(d1)

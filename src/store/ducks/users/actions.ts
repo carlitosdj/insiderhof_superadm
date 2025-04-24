@@ -39,7 +39,6 @@ export const deleteUserSuccess = (data: User) => action(UsersTypes.DELETE_USER_S
 export const deleteUserFailure = (err:any[]) => action(UsersTypes.DELETE_USER_FAILURE, err)
 
 //Selected users
-//Delete
 export const selectUsersAddRequest = (data: User) => action(UsersTypes.SELECTED_USER_ADD, data)
 export const selectUsersAddSuccess = (data: User) => action(UsersTypes.SELECTED_USER_ADD_SUCCESS, data)
 export const selectUsersRemoveRequest = (data: User) => action(UsersTypes.SELECTED_USER_REMOVE, data)

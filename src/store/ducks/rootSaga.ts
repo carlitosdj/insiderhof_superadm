@@ -1,7 +1,7 @@
 import {all, takeLatest} from 'redux-saga/effects'
 
 import {CartsTypes} from './carts/types'
-import {loadCarts, createCart, loadCart} from './carts/sagas'
+import {loadCarts, createCart, loadCart, selectCartsAdd, selectCartsRemove} from './carts/sagas'
 
 import {UsersTypes} from './users/types'
 import {
@@ -100,6 +100,8 @@ export default function* rootSaga() {
     takeLatest(CartsTypes.LOAD_CARTS_REQUEST, loadCarts),
     takeLatest(CartsTypes.LOAD_CART_REQUEST, loadCart),
     takeLatest(CartsTypes.CREATE_CART_REQUEST, createCart),
+    takeLatest(CartsTypes.SELECTED_CART_ADD, selectCartsAdd),
+    takeLatest(CartsTypes.SELECTED_CART_REMOVE, selectCartsRemove),
     //takeLatest(UsersTypes.CREATE_USER_REQUEST, createUser),
 
     //Me

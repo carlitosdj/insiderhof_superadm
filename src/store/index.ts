@@ -36,14 +36,11 @@ import { LaunchPhasesState } from './ducks/dlaunchphase/types'
 import { LaunchPhaseExtrasState } from './ducks/dlaunchphaseextras/types'
 
 
-
-
 export interface ApplicationState {
   carts: CartsState
   users: UsersState
-  
+ 
   me: MeState
-
   extras: ExtrasState
   lead: LeadState
   leads: LeadsState

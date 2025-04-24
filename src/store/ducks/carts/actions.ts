@@ -3,7 +3,7 @@ import {CartsTypes, Cart} from './types'
 
 
 //Load
-export const loadCartsRequest = (startDate?: string, endDate?: string) => action(CartsTypes.LOAD_CARTS_REQUEST, { startDate, endDate }) 
+export const loadCartsRequest = (startDate?: string, endDate?: string, launchId?: string) => action(CartsTypes.LOAD_CARTS_REQUEST, { startDate, endDate, launchId }) 
 export const loadCartsSuccess = (data: Cart[]) => action(CartsTypes.LOAD_CARTS_SUCCESS, data) //payload dps de LOAD_REQUEST
 export const loadCartsFailure = (err: any[]) => action(CartsTypes.LOAD_CARTS_FAILURE, err)
 
@@ -16,3 +16,11 @@ export const loadCartFailure = (err: any[]) => action(CartsTypes.LOAD_CART_FAILU
 export const createCartRequest = (newCart: Cart) => action(CartsTypes.CREATE_CART_REQUEST, newCart)
 export const createCartSuccess = (cart: Cart) => action(CartsTypes.CREATE_CART_SUCCESS, cart)
 export const createCartFailure = (err: any[]) => action(CartsTypes.CREATE_CART_SUCCESS, err)
+
+
+
+//Selected carts
+export const selectCartsAddRequest = (data: Cart) => action(CartsTypes.SELECTED_CART_ADD, data)
+export const selectCartsAddSuccess = (data: Cart) => action(CartsTypes.SELECTED_CART_ADD_SUCCESS, data)
+export const selectCartsRemoveRequest = (data: Cart) => action(CartsTypes.SELECTED_CART_REMOVE, data)
+export const selectCartsRemoveSuccess = (data: Cart) => action(CartsTypes.SELECTED_CART_REMOVE_SUCCESS, data)

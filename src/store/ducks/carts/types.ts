@@ -21,6 +21,12 @@ export enum CartsTypes {
   CREATE_CART_REQUEST = '@cart/CREATE_CART_REQUEST',
   CREATE_CART_SUCCESS = '@cart/CREATE_CART_SUCCESS',
   CREATE_CART_FAILURE = '@cart/CREATE_CART_FAILURE',
+
+  //Selected users
+  SELECTED_CART_ADD = '@cart/SELECTED_CART_ADD',
+  SELECTED_CART_ADD_SUCCESS = '@cart/SELECTED_CART_ADD_SUCCESS',
+  SELECTED_CART_REMOVE = '@cart/SELECTED_CART_REMOVE',
+  SELECTED_CART_REMOVE_SUCCESS = '@cart/SELECTED_CART_REMOVE_SUCCESS',
 }
 
 /**
@@ -67,4 +73,5 @@ export interface CartsState {
   readonly data: Cart[]
   readonly loading: boolean
   readonly error: boolean
+  selectedCarts: Cart[]
 }

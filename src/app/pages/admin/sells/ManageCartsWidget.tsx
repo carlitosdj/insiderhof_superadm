@@ -11,6 +11,7 @@ import { Cart, CartsState } from "../../../../store/ducks/carts/types";
 import { Modal } from "react-bootstrap";
 import Filter from "./filter";
 import ExportSell from "./export";
+import { selectCartsAddRequest, selectCartsRemoveRequest } from "../../../../store/ducks/carts/actions";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -29,6 +30,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
   let precobasetotal = 0;
   let precopagototal = 0;
@@ -50,6 +52,38 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(false);
   };
 
+  const selectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setIsAllChecked(true);
+      carts.data.map((child) => {
+        dispatch(selectCartsRemoveRequest(child)); //Remove antes, pra nao dar duplicação
+        dispatch(selectCartsAddRequest(child));
+      });
+    } else {
+      setIsAllChecked(false);
+      carts.data.map((child) => {
+        dispatch(selectCartsRemoveRequest(child));
+      });
+    }
+  };
+
+  const setSelected = (e: React.ChangeEvent<HTMLInputElement>, child: Cart) => {
+    //console.log("CHILD!", child)
+    //dispatch(selectUsersAddRequest(child))
+    console.log("****ENTREI AQUI****");
+    console.log("Checked", e.target.checked);
+    console.log("child", child);
+    if (e.target.checked) {
+      dispatch(selectCartsAddRequest(child));
+      //e.target.checked = false
+    } else {
+      setIsAllChecked(false);
+      dispatch(selectCartsRemoveRequest(child));
+      //e.target.checked = true
+    }
+  };
+
+    console.log("Carts Selected", carts.selectedCarts)
   return (
     <>
       <Modal size="xl" show={show} onHide={handleClose}>
@@ -137,15 +171,26 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
             <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
               <thead>
                 <tr className="fw-bolder text-muted">
+                  <th>
+                    <div className="form-check form-check-custom form-check-solid">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="kt_settings_notification_email"
+                        onChange={(e: any) => selectAll(e)}
+                      />
+                    </div>
+                  </th>
                   <th className="min-w-120px">ID</th>
                   <th className="min-w-120px">DATA</th>
-                  <th className="min-w-120px">USUÁRIO</th>
+                  <th className="min-w-200px">USUÁRIO</th>
+                  <th className="min-w-120px">EMAIL</th>
 
                   <th className="min-w-120px">DOCUMENTO</th>
-                  <th className="min-w-250px">ENDEREÇO</th>
+                  <th className="min-w-200px">ENDEREÇO</th>
                   <th className="min-w-120px">TELEFONE</th>
 
-                  <th className="min-w-100px">PRODUTO</th>
+                  <th className="min-w-200px">PRODUTO</th>
                   <th className="min-w-100px">PREÇO/BASE</th>
                   <th className="min-w-20px">N/PARCELAS</th>
                   <th className="min-w-20px">PARCELA</th>
@@ -155,7 +200,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                   <th className="min-w-20px">PREÇO/PAGO</th>
                   <th className="min-w-20px">RECEBIDO</th>
-                  
+
                   <th className="min-w-20px">TAXA/MAQUINA</th>
                   <th className="min-w-20px">TAXA/PARCELAMENTO</th>
                 </tr>
@@ -179,8 +224,30 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       recebidototal += Number(child.net_received_amount);
                       taxamaquinatotal += Number(child.mercadopago_fee);
                       taxaparcelamentototal += Number(child.financing_fee);
+
+                      let check = carts.selectedCarts?.filter(
+                        (item) => item.id === child.id
+                      );
+                      let defaultChecked =
+                        check.length || isAllChecked ? true : false;
+
                       return (
-                        <tr>
+                        <tr key={index}>
+                          <td>
+                            <div className="d-flex align-items-center">
+                              <div className="form-check form-check-custom form-check-solid">
+                                {/* <img src={'https://app.insiderhof.com.br/files/1678819623100-vf.jpg'} alt='' /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id="selectusers"
+                                  //defaultChecked={defaultChecked}
+                                  checked={defaultChecked}
+                                  onChange={(e: any) => setSelected(e, child)}
+                                />
+                              </div>
+                            </div>
+                          </td>
                           <td>{child.id}</td>
                           <td>
                             <div className="d-flex align-items-center border-0">
@@ -199,13 +266,23 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               </div>
                             </div>
                           </td>
+                          <td>
+                            <div className="d-flex align-items-center border-0">
+                              <div>
+                                <div className="text-gray-900 fw-bold d-block fs-6">
+                                  {/* {child.name} */}
+                                  {child.user?.email}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
 
                           <td>
                             <div className="d-flex align-items-center border-0">
                               <div>
                                 <div className="text-gray-900 fw-bold d-block fs-6">
                                   {/* {child.name} */}
-                                  {child.user?.type}: {child.user?.cpf}
+                                  {child.user?.type} {child.user?.cpf}
                                 </div>
                               </div>
                             </div>
@@ -243,59 +320,74 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                           <td>
                             <div className="text-gray-900 fw-bold text-muted d-block fs-7">
-                              {child.description?.length! > 50
+                              {/* {child.description?.length! > 50
                                 ? child.description?.substring(0, 50) + "..."
-                                : child.description}
+                                : child.description} */}
+                                {child.launch?.name}
                             </div>
                           </td>
                           <td>
-                            
                             {Number(child.price)?.toLocaleString("pt-BR", {
                               style: "currency",
                               currency: "BRL",
                             })}
-                            
                           </td>
                           <td>{child.installments}</td>
                           <td>
-                            {Number(child.installment_amount)?.toLocaleString("pt-BR", {
+                            {Number(child.installment_amount)?.toLocaleString(
+                              "pt-BR",
+                              {
                                 style: "currency",
                                 currency: "BRL",
-                              })}
+                              }
+                            )}
                           </td>
                           <td>{child.gateway}</td>
                           <td>{child.paymentmethod}</td>
                           <td>{child.idreference}</td>
                           <td>
-                            {Number(child.total_paid_amount)?.toLocaleString("pt-BR", {
+                            {Number(child.total_paid_amount)?.toLocaleString(
+                              "pt-BR",
+                              {
                                 style: "currency",
                                 currency: "BRL",
-                              })}
+                              }
+                            )}
                           </td>
                           <td>
-                            {Number(child.net_received_amount)?.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
+                            {Number(child.net_received_amount)?.toLocaleString(
+                              "pt-BR",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}
                           </td>
-                          
+
                           <td>
-                            {Number(child.mercadopago_fee)?.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
+                            {Number(child.mercadopago_fee)?.toLocaleString(
+                              "pt-BR",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}
                           </td>
                           <td>
-                            {Number(child.financing_fee)?.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
+                            {Number(child.financing_fee)?.toLocaleString(
+                              "pt-BR",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}
                           </td>
-                          
                         </tr>
                       );
                     })}
                   <tr className="bg-info text-white">
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -326,7 +418,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         currency: "BRL",
                       })}
                     </td>
-                    
+
                     <td>
                       {taxamaquinatotal?.toLocaleString("pt-BR", {
                         style: "currency",

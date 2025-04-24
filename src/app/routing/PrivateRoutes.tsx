@@ -105,7 +105,7 @@ const PrivateRoutes = () => {
         <Route path="auth/*" element={<Navigate to="/dashboard" />} />
 
         <Route
-          path="sells/:startDate?/:endDate?"
+          path="sells/:startDate?/:endDate?/:launchId?"
           element={
             <SuspensedView>
               <Sells />
