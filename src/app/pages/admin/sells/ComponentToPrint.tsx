@@ -1,8 +1,9 @@
 import React from "react";
+import { Cart } from "../../../../store/ducks/carts/types";
 const MOMENT = require("moment");
 
 interface Props {
-  data: any[];
+  data: Cart[];
 }
 // Using a class component, everything works without issue
 export class ComponentToPrint extends React.Component<Props> {
@@ -10,7 +11,7 @@ export class ComponentToPrint extends React.Component<Props> {
     var now = MOMENT(Date()).utc().format("DD/MM/YYYY HH:mm");
     return (
       <div style={{ color: "black" }}>
-        <h1 style={{ color: "black" }}>Relatório Defelícibus Soluções</h1>
+        <h1 style={{ color: "black" }}>Relatório de Vendas</h1>
         <br />
         <h2 style={{ color: "black" }}>InsiderHOF</h2>
         <span style={{ color: "black" }}>
@@ -21,77 +22,67 @@ export class ComponentToPrint extends React.Component<Props> {
 
         <br />
         <br />
-        {this.props.data.map((user) => {
+        {this.props.data.map((cart) => {
           // var data = new Date(apiResponse.createdAt*1000);
-          let createdAt = MOMENT(Number(user.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
+          let createdAt = MOMENT(Number(cart.user?.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
           var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
           var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
           var dst = "$1.$2.$3-$4";
-          var cpfformat = user.cpf?.replace(src, dst);
+          var cpfformat = cart.user?.cpf?.replace(src, dst);
           return (
             <div>
-              <h2 style={{ color: "black" }}>{user?.name}</h2>
+              <h2 style={{ color: "black" }}>{cart.user?.name}</h2>
               <span style={{ color: "black" }}>
-                Referência Id: {"EL" + user.id}
+                Id da compra: {cart.user?.id}
               </span>
               <br />
-              <span style={{ color: "black" }}>Email: {user.email}</span>
+              <span style={{ color: "black" }}>Data: {cart.createdAt}</span>
               <br />
-              <span style={{ color: "black" }}>Whatsapp: {user.whatsapp}</span>
+              <span style={{ color: "black" }}>Email: {cart.user?.email}</span>
               <br />
-              <span style={{ color: "black" }}>CPF: {cpfformat}</span>
-              <br />
-              <span style={{ color: "black" }}>
-                Endereço: {user.address}, {user.addressNumber},{" "}
-                {user.addressDistrict} - {user.city?.name} / {user.state?.name}{" "}
-                - {user.postalCode}
-              </span>
+              <span style={{ color: "black" }}>Dpcumento: {cart.user?.type} {cpfformat}</span>
               <br />
               <span style={{ color: "black" }}>
-                Última renovação:{" "}
-                {MOMENT(user.createdAt).utc().format("DD/MM/YYYY HH:mm")}
+                Endereço: {cart.user?.address}, {cart.user?.addressNumber},{" "}
+                {cart.user?.addressDistrict} {cart.user?.addressComplement? ", " + cart.user?.addressComplement : ""} - {cart.user?.city?.name} / {cart.user?.state?.name}{" "}
+                - {cart.user?.postalCode}
               </span>
-              <span className="text-gray-900 fw-bold fs-6">Turma: </span>
-                <span className="text-gray-900 fs-6">{user.numTurma}</span>
-              <div>
-                {user.cart?.map((item: any) => (
-                  <div className="p-4">
-                    <span className="text-gray-900 fw-bold fs-6">Data: </span>
-                    <span className="text-gray-900 fs-6">
-                      {MOMENT(item.createdAt).format("DD/MM/YYYY HH:mm")}
-                    </span>
-                    <br />
-                    <span className="text-gray-900 fw-bold fs-6">Método: </span>
-                    <span className="text-gray-900 fs-6">
-                      {item.paymentmethod}
-                    </span>
-                    <br />
-                    <span className="text-gray-900 fw-bold fs-6">
-                      Parcelas:{" "}
-                    </span>
-                    <span className="text-gray-900 fs-6">
-                      {item.installments}
-                    </span>
-                    <br />
-                    <span className="text-gray-900 fw-bold fs-6">
-                      Preço base:{" "}
-                    </span>
-                    <span className="text-gray-900  fs-6">{item.price}</span>
-                    <br />
-                    <span className="text-gray-900 fw-bold fs-6">
-                      Mercado pago:{" "}
-                    </span>
-                    <span className="text-gray-900  fs-6">
-                      {item.idreference}
-                    </span>
-                    <br />
-                  </div>
-                ))}
-              </div>
               <br />
+              <span style={{ color: "black" }}>Telefone: {cart.user?.whatsapp}</span>
               <br />
+              <span style={{ color: "black" }}>Produto: {cart.launch?.name}</span>
+              <br />
+              <span style={{ color: "black" }}>Preço/base: {cart.price}</span>
+              <br />
+              <span style={{ color: "black" }}>N/Parcelas: {cart.installments}</span>
+              <br />
+              <span style={{ color: "black" }}>Parcela: {cart.installment_amount}</span>
+              <br />
+              <span style={{ color: "black" }}>Gateway: {cart.gateway}</span>
+              <br />
+              <span style={{ color: "black" }}>Método: {cart.paymentmethod}</span>
+              <br />
+              <span style={{ color: "black" }}>REF: {cart.idreference}</span>
+              <br />
+              <span style={{ color: "black" }}>Preço/pago: {cart.total_paid_amount}</span>
+              <br />
+              <span style={{ color: "black" }}>Recebido: {cart.net_received_amount}</span>
+              <br />
+              <span style={{ color: "black" }}>Taxa/Maquina: {cart.mercadopago_fee}</span>
+              <br />
+              <span style={{ color: "black" }}>Taxa/Parcelamento: {cart.financing_fee}</span>
               <br />
 
+              
+             
+              {/* <span style={{ color: "black" }}>
+                Última renovação:{" "}
+                {MOMENT(cart.user?.createdAt).utc().format("DD/MM/YYYY HH:mm")}
+              </span> */}
+              
+            
+              <br />
+              <br />
               {/* Última renovação: {createdAt.format('DD/MM/YYYY HH:mm')} */}
             </div>
           );

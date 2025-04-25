@@ -9,8 +9,9 @@ import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar"
 import { ManageClassWidget } from "./ManageClassWidget";
 import { Class } from "../../../../store/ducks/dclass/types";
 import Loading from "../../../loading";
-import { loadModuleRequest } from "../../../../store/ducks/dmodule/actions";
+import { loadModuleRequest, loadModulesRequest } from "../../../../store/ducks/dmodule/actions";
 import { loadClassesRequest } from "../../../../store/ducks/dclass/actions";
+import { loadMyProductsRequest } from "../../../../store/ducks/dproduct/actions";
 
 type Props = {
   classes: Class[];
@@ -36,22 +37,33 @@ const Classes: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const { productId, moduleId } = useParams();
 
-  const product = useSelector((state: ApplicationState) => state.product);
+  const me = useSelector((state: ApplicationState) => state.me);
+  const products = useSelector((state: ApplicationState) => state.product);
   const modules = useSelector((state: ApplicationState) => state.module);
   const classes = useSelector((state: ApplicationState) => state.dclass);
 
-  const selectedProduct = product.myProducts.filter((p) => p.id === Number(productId))[0];
-  const selectedModule = modules.data.filter((m) => m.id === Number(moduleId))[0];
-
-  console.log("Selected Product", selectedProduct);
-  console.log("Selected Module", selectedModule);
+  
 
   useEffect(() => {
+    
     dispatch(loadClassesRequest(Number(moduleId))); //Puxa componentes com seus filhos primários
+    if(products.myProducts.length === 0) dispatch(loadMyProductsRequest(Number(me.me.id)));
+    if(modules.data.length === 0) dispatch(loadModulesRequest(Number(productId)));
+    
   }, [dispatch, moduleId]);
 
+  const selectedProduct = products.myProducts.filter((p) => p.id === Number(productId))[0];
+  const selectedModule = modules.data.filter((m) => m.id === Number(moduleId))[0];
+
+  console.log("productId", productId);
+  console.log("products", products);
+  console.log("modules", modules);
+  
   console.log("classes", classes);
-  if (classes.loading) return <Loading />;
+  console.log("Selected Product", selectedProduct);
+  console.log("Selected Module", selectedModule);
+  if (classes.loading || products.loading || modules.loading) return <Loading />;
+
 
   return (
     <>

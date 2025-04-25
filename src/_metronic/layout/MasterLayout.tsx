@@ -42,7 +42,8 @@ const MasterLayout = () => {
       <InviteUsers />
       <UpgradePlan />
       {/* end:: Modals */}
-      <ScrollTop />
+      
+      {/* <ScrollTop />  */}
     </PageDataProvider>
   )
 }

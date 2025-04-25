@@ -11,8 +11,8 @@ import { loadUsersRequest } from "../../../../store/ducks/users/actions";
 import { useParams } from "react-router-dom";
 import { Content } from "../../../../_metronic/layout/components/content";
 import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar";
-import { UsersListHeader } from "../../../modules/apps/user-management/users-list/components/header/UsersListHeader";
-import { KTIcon } from "../../../../_metronic/helpers";
+// import { UsersListHeader } from "../../../modules/apps/user-management/users-list/components/header/UsersListHeader";
+// import { KTIcon } from "../../../../_metronic/helpers";
 // import { ManageItemExtraWidget } from './ManageItemExtraWidget'
 
 // interface ParamTypes {
@@ -39,7 +39,6 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
   <>
     <ToolbarWrapper />
     <Content>
-      
       {/* begin::Row */}
       <div className="row g-5 gx-xxl-12">
         <div className="col-xxl-12">
@@ -76,8 +75,23 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(loadUsersRequest(+page!, +take!, hasCart!));
-  }, [dispatch, page, take, hasCart, startDate, endDate]);
+    //console.log("Chamei!");
+    const cameFromBack = sessionStorage.getItem("cameFromBack");
+
+    if (cameFromBack) {
+      console.log("Usuário voltou à página anterior");
+      sessionStorage.removeItem("cameFromBack");
+    } else {
+      dispatch(loadUsersRequest(+page!, +take!, hasCart!));
+    }
+
+    window.onpopstate = () => {
+      sessionStorage.setItem("cameFromBack", "true");
+    };
+
+  }, [page, take, hasCart, startDate, endDate]);
+
+ 
 
   if (users.loading) return <Loading />;
   console.log("USERS", users);

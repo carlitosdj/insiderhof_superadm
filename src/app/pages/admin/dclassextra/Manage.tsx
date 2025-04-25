@@ -9,10 +9,11 @@ import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar"
 import { ManageClassExtrasWidget } from "./ManageClassExtrasWidget";
 import { Class } from "../../../../store/ducks/dclass/types";
 import Loading from "../../../loading";
-import { loadModuleRequest } from "../../../../store/ducks/dmodule/actions";
+import { loadModuleRequest, loadModulesRequest } from "../../../../store/ducks/dmodule/actions";
 import { loadClassesRequest } from "../../../../store/ducks/dclass/actions";
 import { loadClassExtrasRequest } from "../../../../store/ducks/dclassextra/actions";
 import { ClassExtra } from "../../../../store/ducks/dclassextra/types";
+import { loadMyProductsRequest } from "../../../../store/ducks/dproduct/actions";
 
 type Props = {
   classextras: ClassExtra[];
@@ -39,14 +40,16 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
 const ClassExtras: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const { productId, moduleId, classId } = useParams();
-  const product = useSelector((state: ApplicationState) => state.product);
+
+  const me = useSelector((state: ApplicationState) => state.me);
+  const products = useSelector((state: ApplicationState) => state.product);
   const modules = useSelector((state: ApplicationState) => state.module);
   const classes = useSelector((state: ApplicationState) => state.dclass);
   const classextras = useSelector(
     (state: ApplicationState) => state.dextraclass
   );
 
-  const selectedProduct = product.myProducts.filter((p) => p.id === Number(productId))[0];
+  const selectedProduct = products.myProducts.filter((p) => p.id === Number(productId))[0];
   const selectedModule = modules.data.filter(
     (m) => m.id === Number(moduleId)
   )[0];
@@ -62,10 +65,14 @@ const ClassExtras: FC<React.PropsWithChildren<unknown>> = () => {
 
   useEffect(() => {
     dispatch(loadClassExtrasRequest(Number(classId))); //Puxa componentes com seus filhos primários
+    if(products.myProducts.length === 0) dispatch(loadMyProductsRequest(Number(me.me.id)));
+    if(modules.data.length === 0) dispatch(loadModulesRequest(Number(productId)));
+    if(classes.data.length === 0) dispatch(loadClassesRequest(Number(moduleId)));
+
   }, [dispatch, classId]);
 
   console.log("classextras", classextras);
-  if (classextras.loading) return <Loading />;
+  if (classextras.loading || products.loading || modules.loading || classes.loading) return <Loading />;
 
   return (
     <>

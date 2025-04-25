@@ -98,6 +98,11 @@ const PrivateRoutes = () => {
     []
   );
 
+  const InfoUser = useMemo(
+    () => lazy(() => import("../pages/admin/users/InfoUser")),
+    []
+  );
+
   return (
     <Routes>
       <Route element={<MasterLayout />}>
@@ -132,6 +137,15 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <LaunchPhases />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="info/:userId"
+          element={
+            <SuspensedView>
+              <InfoUser />
             </SuspensedView>
           }
         ></Route>

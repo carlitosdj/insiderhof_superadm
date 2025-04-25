@@ -10,6 +10,7 @@ import { ManageModuleWidget } from "./ManageModuleWidget";
 import { Module } from "../../../../store/ducks/dmodule/types";
 import { loadModulesRequest } from "../../../../store/ducks/dmodule/actions";
 import Loading from "../../../loading";
+import { loadMyProductsRequest } from "../../../../store/ducks/dproduct/actions";
 
 type Props = {
   modules: Module[];
@@ -35,6 +36,7 @@ const Modules: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
 
+  const me = useSelector((state: ApplicationState) => state.me);
   const products = useSelector((state: ApplicationState) => state.product);
   const modules = useSelector((state: ApplicationState) => state.module);
 
@@ -46,10 +48,11 @@ const Modules: FC<React.PropsWithChildren<unknown>> = () => {
   
   useEffect(() => {
     dispatch(loadModulesRequest(Number(productId)));
+    if(products.myProducts.length === 0) dispatch(loadMyProductsRequest(Number(me.me.id)));
   }, [dispatch, productId]);
-
+  
   console.log("modules", modules);
-  if (modules.loading) return <Loading />;
+  if (modules.loading || products.loading) return <Loading />;
 
   return (
     <>

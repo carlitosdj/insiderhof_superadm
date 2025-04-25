@@ -385,7 +385,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         </tr>
                       );
                     })}
-                  <tr className="bg-info text-white">
+                  <tr className="bg-info text-white" key={'last'}>
                     <td></td>
                     <td></td>
                     <td></td>

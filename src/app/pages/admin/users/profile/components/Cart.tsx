@@ -56,13 +56,12 @@ export function CartPage({ user }: paymentProps) {
                           <th className="min-w-50px">REGISTRO</th>
                           <th className="min-w-50px">STATUS</th>
                           <th className="min-w-140px">GATEWAY</th>
-                          <th className="min-w-140px">METHOD</th>
+                          <th className="min-w-140px">MÉTODO</th>
                           <th className="min-w-140px">PARCELAS</th>
-                          <th className="min-w-140px">PREÇO BASE</th>
+                          <th className="min-w-140px">PREÇO/BASE</th>
                           <th className="min-w-140px">TURMA</th>
                         </tr>
                       </thead>
-
                       <tbody>
                         {user.cart && user.cart.length === 0 && (
                           <tr className="border-0">
@@ -95,7 +94,6 @@ export function CartPage({ user }: paymentProps) {
                               <td>{payment.paymentmethod}</td>
                               <td>{payment.installments}</td>
                               <td>{payment.price}</td>
-                              {/* <td>{payment.launch?.map((launch: any) => launch.name)}</td> */}
                               <td>{payment.launch?.name}</td>
                             </tr>
                           ))}

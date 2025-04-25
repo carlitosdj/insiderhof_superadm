@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { lazy, useMemo, useState } from "react";
+import React, { lazy, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { KTIcon } from "../../../../_metronic/helpers";
@@ -15,16 +15,16 @@ import {
   selectUsersRemoveRequest,
 } from "../../../../store/ducks/users/actions";
 
-import Info from "./info";
+import Info from "./infoUserModal";
 import Create from "./create";
 import Update from "./update";
 
 import ExportUser from "./export";
 import Filter from "./filter";
-import UserCourses from "./userCourses";
+
 import Pagination from "../../../../customHooks/Pagination";
 
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import TimeAgo from "react-timeago";
 
 const portugueseStrings = require("react-timeago/lib/language-strings/pt-br");
@@ -36,6 +36,8 @@ const MOMENT = require("moment");
 import "moment-timezone";
 import { Overview } from "./profile/components/Overview";
 import { Cart } from "../../../../store/ducks/carts/types";
+import { useScrollRestoreAfterBack } from "../../../../customHooks/useScrollRestore";
+//import { useScrollRestore } from "../../../../customHooks/useScrollRestore";
 
 type Props = {
   className: string;
@@ -62,14 +64,18 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [child, setChild] = useState<User>({});
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
 
-  console.log("users", users);
+  useScrollRestoreAfterBack("/admin/users", "scroll-pos");
+
+  //console.log("users", users);
   const dispatch = useDispatch();
-  console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
-  console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
+  //const navigate = useNavigate();
+  //console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
+  //console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
 
   const handleClose = () => {
     setShow(false);
   };
+
 
   const createUser = () => {
     setAction("createUser");
@@ -96,13 +102,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(true);
     setChild(user);
   };
-
-
-  const userCourses = (user: User) => {
-    setAction("userCourses");
-    setShow(true);
-    setChild(user);
-  };
+  
 
   const deleteUser = (user: User) => {
     console.log("deletar", user.id);
@@ -146,6 +146,11 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     }
   };
 
+  const handlePos = () => {
+    //console.log("POS SAVED", String(window.scrollY));
+    sessionStorage.setItem("scroll-pos", String(window.scrollY));
+  };
+
   let count = users.count;
   // let pages = Math.ceil(+count! / +take!)
   let length = users.data?.length;
@@ -155,7 +160,6 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="modal-header">
           <h2>
             {action === "infoUser" ? "Informações do usuário" : ""}
-            {action === "userCourses" ? "userCourses" : ""}
             {action === "editUser" ? "Editar usuário" : ""}
             {action === "createUser" ? "Adicionar usuário" : ""}
             {action === "showExport" ? "Exportar" : ""}
@@ -175,9 +179,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
           {action === "infoUser" && (
             <Info handleClose={handleClose} child={child} />
           )}
-          {action === "userCourses" && (
-            <UserCourses handleClose={handleClose} child={child} />
-          )}
+
           {action === "editUser" && (
             <Update handleClose={handleClose} child={child} />
           )}
@@ -389,17 +391,18 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               />
                             </div>
                           </div>
-                          <div className="d-flex flex-column">
-                            <a
-                              href="#!"
-                              onClick={() => infoUser(child)}
-                              className="text-gray-800 fw-bold mb-1 text-hover-primary fs-6"
-                            >
-                              {child.name}
-                            </a>
+                          <Link to={"/info/" + child.id} onClick={() => handlePos()}>
+                            <div className="d-flex flex-column">
+                              <div
+                                //onClick={() => infoUser(child)}
+                                className="text-gray-800 fw-bold mb-1 text-hover-primary fs-6"
+                              >
+                                {child.name}
+                              </div>
 
-                            <span className="text-muted">{child.email}</span>
-                          </div>
+                              <span className="text-muted">{child.email}</span>
+                            </div>
+                          </Link>
                         </div>
                       </td>
                       <td>
@@ -558,19 +561,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     Informações
                                   </a>
                                 </li>
-                                <li>
-                                  <a
-                                    href="#!"
-                                    onClick={() => userCourses(child)}
-                                    className="dropdown-item"
-                                  >
-                                    <KTIcon
-                                      iconName="verify"
-                                      iconType="outline"
-                                    />{" "}
-                                    Cursos
-                                  </a>
-                                </li>
+
                                 <li>
                                   <hr className="dropdown-divider" />
                                 </li>
@@ -632,8 +623,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
       {currentPage!}
       {count}
       {take} */}
-      {hasCart!?'TEM CART': 'NAO TEM CART'}
-      {hasCart!}
+      
       {users.showPagination ? (
         <Pagination
           className=""

@@ -95,7 +95,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
           <br />
           {/* <span className='text-dark fw-bolder fs-6'>Última renovação: {createdAt!.format('DD/MM/YYYY HH:mm')}</span>
           <br/> */}
-          {users.selectedUsers.map((user) => {
+          {users.selectedUsers.map((user, index) => {
             // var data = new Date(apiResponse.createdAt*1000);
             // let createdAt = MOMENT(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
             // var now = MOMENT(Date()) //.format('DD/MM/YYYY HH:mm')
@@ -103,7 +103,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
             var dst = "$1.$2.$3-$4";
             var cpfformat = user.cpf?.replace(src, dst);
             return (
-              <div>
+              <div key={index}>
                 <h1>{user?.name}</h1>
                 <span className="text-gray-900 fw-bold fs-6">
                   Referência Id:{" "}

@@ -32,7 +32,7 @@ const ExportSell = ({ handleClose }: handleCloseProps) => {
     let taxamaquinatotal = 0;
     let taxaparcelamentototal = 0;
 
-    const MYdata = carts.selectedCarts.map((cart): any => {
+    const MYdata = carts.selectedCarts.map((cart, index): any => {
       precobasetotal += Number(cart.price)!;
       precopagototal += Number(cart.total_paid_amount)!;
       recebidototal += Number(cart.net_received_amount);
@@ -128,7 +128,7 @@ const ExportSell = ({ handleClose }: handleCloseProps) => {
           <br />
           {/* <span className='text-dark fw-bolder fs-6'>Última renovação: {createdAt!.format('DD/MM/YYYY HH:mm')}</span>
           <br/> */}
-          {carts.selectedCarts.map((cart) => {
+          {carts.selectedCarts.map((cart, index) => {
             // var data = new Date(apiResponse.createdAt*1000);
             // let createdAt = MOMENT(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
             // var now = MOMENT(Date()) //.format('DD/MM/YYYY HH:mm')
@@ -136,80 +136,70 @@ const ExportSell = ({ handleClose }: handleCloseProps) => {
             var dst = "$1.$2.$3-$4";
             var cpfformat = cart.user?.cpf?.replace(src, dst);
             return (
-              <div>
+              <div key={index}>
                 <h1>{cart.user?.name}</h1>
                 <span className="text-gray-900 fw-bold fs-6">
-                  Referência Id:{" "}
+                  Id da compra:{" "}
                 </span>
                 <span className="text-gray-900 fs-6">{cart.id}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Data: </span>
+                <span className="text-gray-900 fs-6">{cart.createdAt}</span>
                 <br />
                 <span className="text-gray-900 fw-bold fs-6">Email: </span>
                 <span className="text-gray-900 fs-6">{cart.user?.email}</span>
                 <br />
-                <span className="text-gray-900 fw-bold fs-6">Whatsapp: </span>
-                <span className="text-gray-900 fs-6">
-                  {cart.user?.whatsapp}
-                </span>
-                <br />
-                <span className="text-gray-900 fw-bold fs-6">CPF: </span>
-                <span className="text-gray-900 fs-6">{cpfformat}</span>
+                <span className="text-gray-900 fw-bold fs-6">Documento: </span>
+                <span className="text-gray-900 fs-6">{cart.user?.type} {cart.user?.cpf}</span>
                 <br />
                 <span className="text-gray-900 fw-bold fs-6">Endereço: </span>
                 <span className="text-gray-900 fs-6">
                   Endereço: {cart.user?.address}, {cart.user?.addressNumber},{" "}
-                  {cart.user?.addressDistrict} - {cart.user?.city?.name} /{" "}
+                  {cart.user?.addressDistrict} {cart.user?.addressComplement? ", " + cart.user?.addressComplement : ""} - {cart.user?.city?.name} /{" "}
                   {cart.user?.state?.name} - {cart.user?.postalCode}
                 </span>
                 <br />
-                {/* <span className="text-gray-900 fw-bold fs-6">
-                  Última renovação:{" "}
-                </span>
+                <span className="text-gray-900 fw-bold fs-6">Telefone: </span>
                 <span className="text-gray-900 fs-6">
-                  {MOMENT(user.createdAt).format("DD/MM/YYYY HH:mm")}
+                  {cart.user?.whatsapp}
                 </span>
-                <br /> */}
-                {/* <span className="text-gray-900 fw-bold fs-6">Turma: </span>
-                <span className="text-gray-900 fs-6">{user.numTurma}</span>
-                <br /> */}
-                {/* <div>
-                  {user.cart?.map((item: any) => (
-                    <div className="p-4">
-                      <span className="text-gray-900 fw-bold fs-6">Data: </span>
-                      <span className="text-gray-900 fs-6">
-                        {MOMENT(item.createdAt).format("DD/MM/YYYY HH:mm")}
-                      </span>
-                      <br />
-                      <span className="text-gray-900 fw-bold fs-6">
-                        Método:{" "}
-                      </span>
-                      <span className="text-gray-900 fs-6">
-                        {item.paymentmethod}
-                      </span>
-                      <br />
-                      <span className="text-gray-900 fw-bold fs-6">
-                        Parcelas:{" "}
-                      </span>
-                      <span className="text-gray-900 fs-6">
-                        {item.installments}
-                      </span>
-                      <br />
-                      <span className="text-gray-900 fw-bold fs-6">
-                        Preço base:{" "}
-                      </span>
-                      <span className="text-gray-900  fs-6">{item.price}</span>
-                      <br />
-                      <span className="text-gray-900 fw-bold fs-6">
-                        Mercado pago:{" "}
-                      </span>
-                      <span className="text-gray-900  fs-6">
-                        {item.idreference}
-                      </span>
-                      <br />
-                    </div>
-                  ))}
-                </div>
                 <br />
-                <br /> */}
+                <span className="text-gray-900 fw-bold fs-6">Produto: </span>
+                <span className="text-gray-900 fs-6">{cart.launch?.name}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Preço/base: </span>
+                <span className="text-gray-900 fs-6">{cart.price}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">N/Parcelas: </span>
+                <span className="text-gray-900 fs-6">{cart.installments}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Parcela: </span>
+                <span className="text-gray-900 fs-6">{cart.installment_amount}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Gateway: </span>
+                <span className="text-gray-900 fs-6">{cart.gateway}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Método: </span>
+                <span className="text-gray-900 fs-6">{cart.paymentmethod}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">REF: </span>
+                <span className="text-gray-900 fs-6">{cart.idreference}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Preço/pago: </span>
+                <span className="text-gray-900 fs-6">{cart.total_paid_amount}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Recebido: </span>
+                <span className="text-gray-900 fs-6">{cart.net_received_amount}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Taxa/Maquina: </span>
+                <span className="text-gray-900 fs-6">{cart.mercadopago_fee}</span>
+                <br />
+                <span className="text-gray-900 fw-bold fs-6">Taxa/Parcelamento: </span>
+                <span className="text-gray-900 fs-6">{cart.financing_fee}</span>
+                <br />
+
+                <br />
+
 
                 {/* Última renovação: {createdAt.format('DD/MM/YYYY HH:mm')} */}
               </div>
