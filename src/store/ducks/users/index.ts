@@ -114,6 +114,12 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action: any) => {
         selectedUsers: state.selectedUsers?.filter((item) => item.id !== action.payload.id),
       } 
 
+    case UsersTypes.SET_FILTER_START_DATE:
+      return {...state, filterStartDate: action.payload}
+
+    case UsersTypes.SET_FILTER_END_DATE:
+      return {...state, filterEndDate: action.payload}
+
     default:
       return state
   }

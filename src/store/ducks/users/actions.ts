@@ -43,3 +43,7 @@ export const selectUsersAddRequest = (data: User) => action(UsersTypes.SELECTED_
 export const selectUsersAddSuccess = (data: User) => action(UsersTypes.SELECTED_USER_ADD_SUCCESS, data)
 export const selectUsersRemoveRequest = (data: User) => action(UsersTypes.SELECTED_USER_REMOVE, data)
 export const selectUsersRemoveSuccess = (data: User) => action(UsersTypes.SELECTED_USER_REMOVE_SUCCESS, data)
+
+//Date
+export const setFilterStartDateRequest = (startDate: number) => action(UsersTypes.SET_FILTER_START_DATE, startDate)
+export const setFilterEndDateRequest = (endDate: number) => action(UsersTypes.SET_FILTER_END_DATE, endDate)

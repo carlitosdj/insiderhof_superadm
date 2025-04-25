@@ -15,6 +15,8 @@ import {
   selectUsersRemove,
   filterUser,
   loadUser,
+  // setUserStartDate,
+  // setUserEndDate,
 } from './users/sagas'
 
 import {MeTypes} from './me/types'
@@ -122,6 +124,8 @@ export default function* rootSaga() {
     takeLatest(UsersTypes.FILTER_USERS_REQUEST, filterUser),
     takeLatest(UsersTypes.SELECTED_USER_ADD, selectUsersAdd),
     takeLatest(UsersTypes.SELECTED_USER_REMOVE, selectUsersRemove),
+    // takeLatest(UsersTypes.SET_USER_START_DATE, setUserStartDate),
+    // takeLatest(UsersTypes.SET_USER_END_DATE, setUserEndDate),
 
 
     //Lead

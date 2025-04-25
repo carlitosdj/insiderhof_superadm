@@ -10,8 +10,12 @@ import { Button, Form } from "react-bootstrap";
 import { registerLocale, setDefaultLocale } from "react-datepicker";
 //import ptBR from 'date-fns/locale/pt-BR';
 import {
-  filterUserRequest,
+  // filterUserRequest,
   selectUsersRemoveRequest,
+  setFilterEndDateRequest,
+  setFilterStartDateRequest,
+  // setUserEndDateRequest,
+  // setUserStartDateRequest,
 } from "../../../../store/ducks/users/actions";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -64,6 +68,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
     users.data.map((child) => {
       dispatch(selectUsersRemoveRequest(child));
     });
+    
 
     //redireciona:
     navigate(`/sells/${startDateInt}/${endDateInt}/${lid}`);
@@ -86,6 +91,12 @@ const Filter = ({ handleClose }: handleCloseProps) => {
     const result = d1.getTime() / 1000;
     setStartDateInt(result);
     setStartDate(d1); // Aqui é melhor passar o objeto atualizado
+    //dispatch(setUserStartDateRequest(result))
+    console.log("RESULT", result)
+    console.log("D1", d1)
+    dispatch(setFilterStartDateRequest(result))
+    
+    //
   };
   const setEndDateFunc = (data: any) => {
     console.log("dataEnd", data);
@@ -105,6 +116,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
 
     setEndDateInt(result);
     setEndDate(d1); // usa o objeto Date com o horário ajustado
+    dispatch(setFilterEndDateRequest(result))
   };
 
   const me = useSelector((state: ApplicationState) => state.me);
@@ -117,11 +129,14 @@ const Filter = ({ handleClose }: handleCloseProps) => {
     dispatch(loadMyLaunchsRequest(me.me!.id!));
     //Se nao tiver dados da redux: seta ontem e 7 dias atras como data range:
     if (users.filterStartDate && users.filterEndDate) {
+      console.log("users.filterStartDate", users.filterStartDate);	
+      console.log("users.filterEndDate", users.filterEndDate);	
       setStartDate(new Date(users.filterStartDate * 1000));
       setStartDateInt(users.filterStartDate);
       setEndDate(new Date(users.filterEndDate * 1000));
       setEndDateInt(users.filterEndDate);
     } else {
+      console.log("NAO TEM")
       const d1 = new Date();
       var yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 7);
@@ -129,6 +144,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
       setStartDateInt(Math.floor(yesterday.getTime() / 1000));
       setEndDate(d1);
       setEndDateInt(Math.floor(d1.getTime() / 1000));
+      
     }
   }, []);
 
@@ -139,7 +155,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
           <div className="col-xxl-12">
             {/* <span className='text-dark fw-bolder fs-6'>Última renovação: {createdAt!.format('DD/MM/YYYY HH:mm')}</span>
           <br/> */}
-            Data início:
+            
             <DatePicker
               locale="ptBR"
               //showTimeSelect
@@ -152,7 +168,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
             {/* {startDateInt} {users.filterStartDate} */}
             <br />
             <br />
-            Data Fim:
+           
             <DatePicker
               locale="ptBR"
               //showTimeSelect

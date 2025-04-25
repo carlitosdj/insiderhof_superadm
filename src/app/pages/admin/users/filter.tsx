@@ -9,7 +9,7 @@ import {User} from '../../../../store/ducks/me/types'
 import { Button, Form } from 'react-bootstrap'
 import { registerLocale, setDefaultLocale } from  "react-datepicker";
 //import ptBR from 'date-fns/locale/pt-BR';
-import { filterUserRequest, selectUsersRemoveRequest } from '../../../../store/ducks/users/actions'
+import { filterUserRequest, selectUsersRemoveRequest, setFilterEndDateRequest, setFilterStartDateRequest } from '../../../../store/ducks/users/actions'
 import { useNavigate, useParams } from 'react-router-dom';
 
 // registerLocale('ptBR', ptBR)
@@ -72,6 +72,7 @@ const Filter = ({handleClose}: handleCloseProps) => {
     const result = d1.getTime()/1000;
     setStartDateInt(result)
     setStartDate(data)
+    dispatch(setFilterStartDateRequest(result))
   }
   const setEndDateFunc = (data:any) => {
     console.log("dataEnd",data)
@@ -83,13 +84,15 @@ const Filter = ({handleClose}: handleCloseProps) => {
     console.log("dataEnd",result)
     setEndDateInt(result)
     setEndDate(data)
+    dispatch(setFilterEndDateRequest(result))
   }
 
   useEffect(() => {
 
     //Se nao tiver dados da redux: seta ontem e 7 dias atras como data range:
     if(users.filterStartDate && users.filterEndDate) {
-
+      console.log("users.filterStartDate", users.filterStartDate);	
+      console.log("users.filterEndDate", users.filterEndDate);	
       setStartDate(new Date(users.filterStartDate * 1000))
       setStartDateInt(users.filterStartDate)
       setEndDate(new Date(users.filterEndDate * 1000))

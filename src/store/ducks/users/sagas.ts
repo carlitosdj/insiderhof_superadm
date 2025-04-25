@@ -38,6 +38,8 @@ import {
   filterUserRequest,
   filterUserSuccess,
   filterUserFailure,
+  // setUserEndDateRequest,
+  // setUserStartDateRequest,
 } from './actions'
 
 import {User} from '../me/types'
@@ -174,3 +176,23 @@ export function* selectUsersRemove(payload: ReturnType<typeof selectUsersRemoveR
     console.log('ERrro', error.response.data)
   }
 }
+
+
+//Date
+// export function* setUserStartDate(payload: ReturnType<typeof setUserStartDateRequest>) {
+//   try {
+//     yield put(setUserStartDateRequest(payload.payload))
+//   } catch (error: any) {
+//     //yield put(setUserStartDateRequest(payload.payload))
+//     console.log('ERRO', error.response.data)
+//   }
+// }
+
+// export function* setUserEndDate(payload: ReturnType<typeof setUserEndDateRequest>) {
+//   try {
+//     yield put(setUserEndDateRequest(payload.payload))
+//   } catch (error: any) {
+//     //yield put(setUserEndDateRequest(payload.payload))
+//     console.log('ERRO', error.response.data)
+//   }
+// }
