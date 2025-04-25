@@ -31,23 +31,22 @@ interface handleCloseProps {
 }
 
 type ParamTypes = {
-  take: string;
-  page: string;
-  hasCart: string;
+  startDate: string
+  endDate: string
+  launchId: string
 };
 const Filter = ({ handleClose }: handleCloseProps) => {
   // const {id} = useParams();
   const dispatch = useDispatch();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDateA, setStartDateA] = useState(new Date());
+  const [endDateA, setEndDateA] = useState(new Date());
   const [startDateInt, setStartDateInt] = useState(0);
   const [endDateInt, setEndDateInt] = useState(0);
   const [validated, setValidated] = useState(false);
 
   const [lid, setLid] = useState(0);
 
-  const params = useParams();
-  const { page, take, hasCart } = useParams<ParamTypes>();
+  const { startDate, endDate, launchId } = useParams<ParamTypes>();
 
   const navigate = useNavigate();
   console.log("startDateInt", startDateInt);
@@ -90,11 +89,11 @@ const Filter = ({ handleClose }: handleCloseProps) => {
     // Convertendo para timestamp em segundos
     const result = d1.getTime() / 1000;
     setStartDateInt(result);
-    setStartDate(d1); // Aqui é melhor passar o objeto atualizado
+    setStartDateA(d1); // Aqui é melhor passar o objeto atualizado
     //dispatch(setUserStartDateRequest(result))
     console.log("RESULT", result)
     console.log("D1", d1)
-    dispatch(setFilterStartDateRequest(result))
+    //dispatch(setFilterStartDateRequest(result))
     
     //
   };
@@ -115,34 +114,34 @@ const Filter = ({ handleClose }: handleCloseProps) => {
     console.log("dataEnd", result);
 
     setEndDateInt(result);
-    setEndDate(d1); // usa o objeto Date com o horário ajustado
-    dispatch(setFilterEndDateRequest(result))
+    setEndDateA(d1); // usa o objeto Date com o horário ajustado
+    //dispatch(setFilterEndDateRequest(result))
   };
 
   const me = useSelector((state: ApplicationState) => state.me);
   const users = useSelector((state: ApplicationState) => state.users);
   const launch = useSelector((state: ApplicationState) => state.launch);
-  console.log("user", users);
-  console.log("launch", launch);
+  // console.log("user", users);
+  // console.log("launch", launch);
 
   useEffect(() => {
     dispatch(loadMyLaunchsRequest(me.me!.id!));
     //Se nao tiver dados da redux: seta ontem e 7 dias atras como data range:
-    if (users.filterStartDate && users.filterEndDate) {
-      console.log("users.filterStartDate", users.filterStartDate);	
-      console.log("users.filterEndDate", users.filterEndDate);	
-      setStartDate(new Date(users.filterStartDate * 1000));
-      setStartDateInt(users.filterStartDate);
-      setEndDate(new Date(users.filterEndDate * 1000));
-      setEndDateInt(users.filterEndDate);
+    if (startDate && endDate) {
+      // console.log("users.filterStartDate", users.filterStartDate);	
+      // console.log("users.filterEndDate", users.filterEndDate);	
+      setStartDateA(new Date(Number(startDate) * 1000));
+      setStartDateInt(Number(startDate));
+      setEndDateA(new Date(Number(endDate) * 1000));
+      setEndDateInt(Number(endDate));
     } else {
-      console.log("NAO TEM")
+      //console.log("NAO TEM")
       const d1 = new Date();
       var yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 7);
-      setStartDate(yesterday);
+      setStartDateA(yesterday);
       setStartDateInt(Math.floor(yesterday.getTime() / 1000));
-      setEndDate(d1);
+      setEndDateA(d1);
       setEndDateInt(Math.floor(d1.getTime() / 1000));
       
     }
@@ -162,7 +161,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
               //dateFormat="Pp"
               dateFormat="dd/MM/yyyy"
               className="form-control"
-              selected={startDate}
+              selected={startDateA}
               onChange={(date: any) => setStartDateFunc(date)}
             />
             {/* {startDateInt} {users.filterStartDate} */}
@@ -175,7 +174,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
               //dateFormat="Pp"
               dateFormat="dd/MM/yyyy"
               className="form-control"
-              selected={endDate}
+              selected={endDateA}
               onChange={(date: any) => setEndDateFunc(date)}
             />
             {/* {endDateInt} {users.filterEndDate} */}
@@ -192,7 +191,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
               <option value={0}>Todos</option>
               {launch.myLaunchs.map((child) => {
                 return (  
-                  <option key={child.id} value={child.id}>
+                  <option key={child.id} value={child.id} selected={child.id === Number(launchId)}>
                     {child.name}
                   </option>
                 );

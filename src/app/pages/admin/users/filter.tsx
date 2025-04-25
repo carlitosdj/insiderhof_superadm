@@ -23,19 +23,20 @@ type ParamTypes = {
   take: string;
   page: string;
   hasCart: string;
+  startDate: string;
+  endDate: string;
 
 };
 const Filter = ({handleClose}: handleCloseProps) => {
   // const {id} = useParams();
   const dispatch = useDispatch()
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDateA, setStartDateA] = useState(new Date());
+  const [endDateA, setEndDateA] = useState(new Date());
   const [startDateInt, setStartDateInt] = useState(0);
   const [endDateInt, setEndDateInt] = useState(0);
   const [validated, setValidated] = useState(false)
 
-  const params = useParams()
-  const { page, take, hasCart} = useParams<ParamTypes>();
+  const { page, take, hasCart, startDate, endDate } = useParams<ParamTypes>();
 
   const navigate = useNavigate()
   console.log("startDateInt", startDateInt)
@@ -49,7 +50,7 @@ const Filter = ({handleClose}: handleCloseProps) => {
     setValidated(true)
     console.log('handleSubmit')
     console.log("Filters", { startDateInt, endDateInt})
-
+   
     //dispatch(filterUserRequest(startDateInt, endDateInt))
 
     //Assim que selecionar um filtro: remove os usuarios que estao marcados
@@ -71,8 +72,8 @@ const Filter = ({handleClose}: handleCloseProps) => {
     // converting to number
     const result = d1.getTime()/1000;
     setStartDateInt(result)
-    setStartDate(data)
-    dispatch(setFilterStartDateRequest(result))
+    setStartDateA(data)
+    //dispatch(setFilterStartDateRequest(result))
   }
   const setEndDateFunc = (data:any) => {
     console.log("dataEnd",data)
@@ -83,28 +84,26 @@ const Filter = ({handleClose}: handleCloseProps) => {
     const result = d1.getTime()/1000;
     console.log("dataEnd",result)
     setEndDateInt(result)
-    setEndDate(data)
-    dispatch(setFilterEndDateRequest(result))
+    setEndDateA(data)
+    //dispatch(setFilterEndDateRequest(result))
   }
 
   useEffect(() => {
 
     //Se nao tiver dados da redux: seta ontem e 7 dias atras como data range:
-    if(users.filterStartDate && users.filterEndDate) {
-      console.log("users.filterStartDate", users.filterStartDate);	
-      console.log("users.filterEndDate", users.filterEndDate);	
-      setStartDate(new Date(users.filterStartDate * 1000))
-      setStartDateInt(users.filterStartDate)
-      setEndDate(new Date(users.filterEndDate * 1000))
-      setEndDateInt(users.filterEndDate)
+    if(startDate && endDate){ 
+      setStartDateA(new Date(Number(startDate) * 1000));
+      setStartDateInt(Number(startDate));
+      setEndDateA(new Date(Number(endDate) * 1000));
+      setEndDateInt(Number(endDate));
 
     } else {
       const d1 = new Date();
       var yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 7);
-      setStartDate(yesterday)
+      setStartDateA(yesterday)
       setStartDateInt(Math.floor(yesterday.getTime()/1000))
-      setEndDate(d1)
+      setEndDateA(d1)
       setEndDateInt(Math.floor(d1.getTime()/1000))
     }
 
@@ -119,26 +118,26 @@ const Filter = ({handleClose}: handleCloseProps) => {
         <div className='col-xxl-12'>
           {/* <span className='text-dark fw-bolder fs-6'>Última renovação: {createdAt!.format('DD/MM/YYYY HH:mm')}</span>
           <br/> */}
-          Data início:
+         
           <DatePicker 
             locale="ptBR"
             //showTimeSelect
             //dateFormat="Pp" 
             dateFormat="dd/MM/yyyy"
             className='form-control' 
-            selected={startDate} 
+            selected={startDateA} 
             onChange={(date:any) => setStartDateFunc(date)} 
           />
           {/* {startDateInt} {users.filterStartDate} */}
           <br/><br/>
-          Data Fim:
+         
           <DatePicker 
             locale="ptBR"
             //showTimeSelect
             //dateFormat="Pp" 
             dateFormat="dd/MM/yyyy"
             className='form-control' 
-            selected={endDate} 
+            selected={endDateA} 
             onChange={(date:any) => setEndDateFunc(date)} 
           />
           {/* {endDateInt} {users.filterEndDate} */}

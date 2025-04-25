@@ -47,6 +47,8 @@ type Props = {
   hasCart?: string;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   currentPage: number;
+  startDate?: string;
+  endDate?: string;
 };
 
 const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
@@ -57,6 +59,8 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   hasCart,
   setCurrentPage,
   currentPage,
+  startDate,
+  endDate,
 }) => {
   const [search, setSearch] = useState("");
   const [show, setShow] = useState<boolean>(false);

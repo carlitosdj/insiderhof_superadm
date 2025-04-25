@@ -26,6 +26,8 @@ type Props = {
   hasCart?: string;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   currentPage: number;
+  startDate?: string;
+  endDate?: string;
 };
 
 const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
@@ -35,6 +37,8 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
   hasCart,
   setCurrentPage,
   currentPage,
+  startDate,
+  endDate,
 }) => (
   <>
     <ToolbarWrapper />
@@ -50,6 +54,8 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({
             hasCart={hasCart}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}
+            startDate={startDate}
+            endDate={endDate}
           />
         </div>
       </div>
@@ -82,7 +88,7 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
       console.log("Usuário voltou à página anterior");
       sessionStorage.removeItem("cameFromBack");
     } else {
-      dispatch(loadUsersRequest(+page!, +take!, hasCart!));
+      dispatch(loadUsersRequest(+page!, +take!, hasCart!, Number(startDate), Number(endDate)));
     }
 
     window.onpopstate = () => {
@@ -106,6 +112,8 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
         hasCart={hasCart}
         setCurrentPage={setCurrentPage}
         currentPage={currentPage}
+        startDate={startDate}
+        endDate={endDate}
       />
     </>
   );
