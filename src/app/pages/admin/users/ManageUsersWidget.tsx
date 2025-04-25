@@ -24,7 +24,7 @@ import Filter from "./filter";
 
 import Pagination from "../../../../customHooks/Pagination";
 
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import TimeAgo from "react-timeago";
 
 const portugueseStrings = require("react-timeago/lib/language-strings/pt-br");
@@ -72,10 +72,11 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   //console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
   //console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
 
+  //const { hasCart } = useParams();
+
   const handleClose = () => {
     setShow(false);
   };
-
 
   const createUser = () => {
     setAction("createUser");
@@ -102,7 +103,6 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(true);
     setChild(user);
   };
-  
 
   const deleteUser = (user: User) => {
     console.log("deletar", user.id);
@@ -311,7 +311,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-100px">REGISTRO</th>
 
                   {/* <th className='min-w-120px'>Última aula assistida</th> */}
-                  <th className="min-w-100px">TURMA</th>
+                  <th className="min-w-100px">{hasCart === "true" ? "TURMA" : "INTENÇÃO"}</th>
                   <th className="min-w-100px">AÇÕES</th>
                 </tr>
               </thead>
@@ -391,7 +391,10 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               />
                             </div>
                           </div>
-                          <Link to={"/info/" + child.id} onClick={() => handlePos()}>
+                          <Link
+                            to={"/info/" + child.id}
+                            onClick={() => handlePos()}
+                          >
                             <div className="d-flex flex-column">
                               <div
                                 //onClick={() => infoUser(child)}
@@ -493,13 +496,15 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           Intertico
                         </a> */}
                         <span className="text-muted fw-bold d-block fs-7">
-                          {child.cart.map((cart: Cart, index: number) => (
-                            <span key={index}>
-                              {index + 1}. {" " + cart.launch?.name}
-                              {/* {index < child.cart.length - 1 && ","} */}
-                              <br />
-                            </span>
-                          ))}
+                          {hasCart === "true" &&
+                            child.cart.map((cart: Cart, index: number) => (
+                              <span key={index}>
+                                {index + 1}. {" " + cart.launch?.name}
+                                {/* {index < child.cart.length - 1 && ","} */}
+                                <br />
+                              </span>
+                            ))}
+                          {hasCart === "false" && child.origin}
                         </span>
                       </td>
 
@@ -623,7 +628,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
       {currentPage!}
       {count}
       {take} */}
-      
+
       {users.showPagination ? (
         <Pagination
           className=""
