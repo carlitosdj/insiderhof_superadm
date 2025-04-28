@@ -57,6 +57,7 @@ export interface Product {
   ownerId?: number | undefined
   owner?: User | undefined
   availableProduct?: availableProduct[] | undefined
+  duration?: number | undefined
 }
 /**
  * State type

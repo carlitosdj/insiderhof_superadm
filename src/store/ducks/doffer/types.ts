@@ -45,6 +45,7 @@ export interface Offer {
   oldPrice?: number | undefined
   price?: number | undefined 
   image?: string | undefined
+  logoCertificate?: string | undefined
   type?: string | undefined
   order?: number | undefined	
   createdAt?: Date | undefined 

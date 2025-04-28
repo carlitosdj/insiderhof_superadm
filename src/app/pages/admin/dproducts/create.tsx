@@ -30,6 +30,8 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [type, setType] = useState("curso");
   const [oldPrice, setOldPrice] = useState("");
 
+  const [duration, setDuration] = useState(0);
+
   const [selectedFile, setSelectedFile] = useState<any>();
   const [croppedImage, setCroppedImage] = useState<any>("");
   const [image, setImage] = useState<any>("");
@@ -57,6 +59,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             price: Number(price),
             oldPrice: Number(oldPrice),
             type,
+            duration: Number(duration),
           };
           dispatch(createProductRequest(course));
         });
@@ -68,6 +71,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
           price: Number(price),
           oldPrice: Number(oldPrice),
           type,
+          duration: Number(duration),
         };
         dispatch(createProductRequest(course));
       }
@@ -235,6 +239,20 @@ const Create = ({ handleClose }: handleCloseProps) => {
                 placeholder=""
                 value={price}
                 onChange={(e: any) => setPrice(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a ordem
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="fromName">
+              <Form.Label className="fw-bold fs-6 mb-5">Duração</Form.Label>
+              <Form.Control
+                placeholder=""
+                value={duration}
+                onChange={(e: any) => setDuration(e.target.value)}
                 className="form-control form-control-lg form-control-solid"
               />
               <Form.Control.Feedback type="invalid">

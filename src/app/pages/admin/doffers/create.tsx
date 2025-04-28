@@ -30,34 +30,50 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [croppedImage, setCroppedImage] = useState<any>("");
   const [image, setImage] = useState<any>("");
 
+
+  const [selectedFileLogo, setSelectedFileLogo] = useState<any>();
+  //const [imageLogo, setImageLogo] = useState<any>("");
+  //console.log("selectedFileLogo", selectedFileLogo)
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {
       event.stopPropagation();
     }
     setValidated(true);
-
+  
     if (name) {
-      if (selectedFile) {
-        const formdata = new FormData();
-        formdata.append("file", croppedImage, "dfl.jpg"); //selectedFile.name
-        api.post("/upload", formdata, {}).then((res: any) => {
-          const offer: Offer = {
-            name,
-            description,
-            price: Number(price),
-            oldPrice: Number(oldPrice),
-            type,
-            image: res.data.filename,
-            ownerId: me.me.id,
-          };
-          dispatch(createOfferRequest(offer));
-        });
-      } else {
+      try {
+        let imageFilename = "";
+        let logoFilename = "";
+  
+        // Se houver imagem principal
+        if (selectedFile && croppedImage) {
+          const formdata = new FormData();
+          formdata.append("file", croppedImage, "dfl.jpg");
+          const res = await api.post("/upload", formdata, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          imageFilename = res.data.filename;
+        }
+  
+        // Se houver logo
+        if (selectedFileLogo) {
+          const formdataLogo = new FormData();
+          formdataLogo.append("file", selectedFileLogo);
+          const resLogo = await api.post("/upload", formdataLogo, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          logoFilename = resLogo.data.filename;
+        }
+  
         const offer: Offer = {
           name,
           description,
@@ -65,10 +81,15 @@ const Create = ({ handleClose }: handleCloseProps) => {
           oldPrice: Number(oldPrice),
           type,
           ownerId: me.me.id,
+          image: imageFilename,  // Principal
+          logoCertificate: logoFilename,    // Logo
         };
+  
         dispatch(createOfferRequest(offer));
+        handleClose();
+      } catch (error) {
+        console.error("Erro no envio:", error);
       }
-      handleClose();
     }
   };
 
@@ -154,7 +175,30 @@ const Create = ({ handleClose }: handleCloseProps) => {
               setImage={setImage}
             />
 
+
             <br />
+            Logo:
+            <Form.Group>
+              <Form.Label>Selecione um logo para o certificado</Form.Label>
+              <Form.Control
+                name="imageLogo"
+                id="imageLogo"
+                type="file"
+                accept="image/png"
+                onChange={(e: any) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setSelectedFileLogo(e.target.files[0]);
+                  }
+                }}
+                className="form-control form-control-lg form-control-solid mb-3 mb-lg-0"
+              />
+              <Form.Control.Feedback type="invalid">
+                Selecione um arquivo
+              </Form.Control.Feedback>
+            </Form.Group>
+            
+            <br/>
+
           </div>
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">

@@ -27,6 +27,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [description, setDescription] = useState<string | undefined>("");
   const [status, setStatus] = useState<string>("1");
 
+  const [duration, setDuration] = useState(0);
+
   const [price, setPrice] = useState("");
   const [oldPrice, setOldPrice] = useState("");
   const [type, setType] = useState("");
@@ -43,6 +45,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setPrice(child.price!.toString());
     setOldPrice(child.oldPrice!.toString());
     setType(child.type!);
+    setDuration(child.duration!)
   }, [child.name, child.description]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -67,6 +70,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             price: Number(price),
             oldPrice: Number(oldPrice),
             type,
+            duration: Number(duration)
           };
           dispatch(updateProductRequest(componentToUpdate));
         });
@@ -79,6 +83,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
           price: Number(price),
           oldPrice: Number(oldPrice),
           type,
+          duration: Number(duration)
         };
         dispatch(updateProductRequest(componentToUpdate));
       }
@@ -249,6 +254,23 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 placeholder=""
                 value={price.toString()}
                 onChange={(e: any) => setPrice(e.target.value)}
+                name="tags"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as tags
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Duração
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={duration.toString()}
+                onChange={(e: any) => setDuration(e.target.value)}
                 name="tags"
                 className="form-control form-control-lg form-control-solid"
               />

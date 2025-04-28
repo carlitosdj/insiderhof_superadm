@@ -34,6 +34,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [croppedImage, setCroppedImage] = useState<any>("");
   const [image, setImage] = useState("");
 
+  const [selectedFileLogo, setSelectedFileLogo] = useState<any>();
+  const [logoCertificate, setLogoCertificate] = useState<any>("");
   useEffect(() => {
     setName(child.name);
     setDescription(child.description);
@@ -42,48 +44,62 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setType(child.type!);
     setImage(child.image!);
     setStatus(child.status!);
+    setLogoCertificate(child.logoCertificate!);
   }, [child.name, child.description]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    //console.log("submit", component.data.id);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
     if (form.checkValidity() === false) {
       event.stopPropagation();
     }
     setValidated(true);
+
     if (name) {
-      //var data = new Date()
+      let imageFilename = child.image; // Se não trocar a imagem, mantém a atual
+      let logoFilename = child.logoCertificate; // <- ATENÇÃO: você precisa ter o campo "logo" no Offer
 
-      if (selectedFile) {
+      // Se selecionou nova imagem principal
+      if (selectedFile && croppedImage) {
+        console.log("Tem imagem!")
         const formdata = new FormData();
-        formdata.append("file", croppedImage, "dfl.jpg"); //selectedFile.name
+        formdata.append("file", croppedImage, "dfl.jpg");
 
-        api.post("/upload", formdata, {}).then((res: any) => {
-          const componentToUpdate: Offer = {
-            id: child.id,
-            name,
-            description,
-            price: Number(price),
-            oldPrice: Number(oldPrice),
-            type,
-            image: res.data.filename,
-            status: status!,
-          };
-          dispatch(updateOfferRequest(componentToUpdate));
+        const res = await api.post("/upload", formdata, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
-      } else {
-        const componentToUpdate: Offer = {
-          id: child.id,
-          name,
-          description,
-          price: Number(price),
-          oldPrice: Number(oldPrice),
-          type,
-          status: status!,
-        };
-        dispatch(updateOfferRequest(componentToUpdate));
+        imageFilename = res.data.filename;
       }
+
+      // Se selecionou novo logo
+      if (selectedFileLogo) {
+        console.log("Tem logo!")
+        const formdataLogo = new FormData();
+        formdataLogo.append("file", selectedFileLogo);
+
+        const resLogo = await api.post("/upload", formdataLogo, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        logoFilename = resLogo.data.filename;
+      }
+
+      const componentToUpdate: Offer = {
+        id: child.id,
+        name,
+        description,
+        price: Number(price),
+        oldPrice: Number(oldPrice),
+        type,
+        image: imageFilename, // novo ou atual
+        logoCertificate: logoFilename, // novo ou atual
+        status: status!,
+      };
+
+      dispatch(updateOfferRequest(componentToUpdate));
       handleClose();
     }
   };
@@ -130,7 +146,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
           </div>
           <div className="col-lg-6">
             <Form.Group controlId="fromName">
@@ -165,9 +180,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
-           
-
             {/* <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Image
@@ -191,6 +203,36 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               image={image}
               setImage={setImage}
             />
+            <br />
+            Logo:
+            {logoCertificate && (
+              <div style={{ marginBottom: "10px" }}>
+                <img
+                  src={`https://app.insiderhof.com.br/files/${logoCertificate}`}
+                  alt="Logo Atual"
+                  style={{ width: "150px", height: "auto" }}
+                />
+              </div>
+            )}
+            <Form.Group>
+              <Form.Label>Selecione um logo para o certificado</Form.Label>
+              <Form.Control
+                name="image"
+                id="image"
+                type="file"
+                accept="image/png"
+                onChange={(e: any) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setSelectedFileLogo(e.target.files[0]);
+                  }
+                }}
+                className="form-control form-control-lg form-control-solid mb-3 mb-lg-0"
+              />
+              <Form.Control.Feedback type="invalid">
+                Selecione um arquivo
+              </Form.Control.Feedback>
+            </Form.Group>
+            
             <br />
           </div>
         </div>
