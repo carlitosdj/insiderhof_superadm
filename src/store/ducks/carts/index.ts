@@ -43,10 +43,37 @@ const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
         ...state,
         loading: false,
         error: false,
-        data: action.payload.data,
+        data: [...state.data, action.payload.data],
       };
     case CartsTypes.CREATE_CART_FAILURE:
       return { ...state, loading: false, error: action.payload, data: [] };
+
+    //Update
+    case CartsTypes.UPDATE_CART_REQUEST:
+      return { ...state };
+    case CartsTypes.UPDATE_CART_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        data: action.payload.data,
+      };
+    case CartsTypes.UPDATE_CART_FAILURE:
+      return { ...state, loading: false, error: action.payload, data: [] };
+
+    //Delete
+    case CartsTypes.DELETE_CART_REQUEST:
+      return { ...state };
+    case CartsTypes.DELETE_CART_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        data: state.data?.filter((item) => item.id !== action.payload.data.id),
+      }
+    case CartsTypes.DELETE_CART_FAILURE:
+      return { ...state, loading: false, error: action.payload, data: [] };
+    
 
     case CartsTypes.SELECTED_CART_ADD:
       return { ...state };

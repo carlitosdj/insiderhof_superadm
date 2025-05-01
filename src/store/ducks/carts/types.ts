@@ -22,6 +22,16 @@ export enum CartsTypes {
   CREATE_CART_SUCCESS = '@cart/CREATE_CART_SUCCESS',
   CREATE_CART_FAILURE = '@cart/CREATE_CART_FAILURE',
 
+  //update
+  UPDATE_CART_REQUEST = '@cart/UPDATE_CART_REQUEST',
+  UPDATE_CART_SUCCESS = '@cart/UPDATE_CART_SUCCESS',
+  UPDATE_CART_FAILURE = '@cart/UPDATE_CART_FAILURE',
+
+  //delete
+  DELETE_CART_REQUEST = '@cart/DELETE_CART_REQUEST',
+  DELETE_CART_SUCCESS = '@cart/DELETE_CART_SUCCESS',
+  DELETE_CART_FAILURE = '@cart/DELETE_CART_FAILURE',
+
   //Selected users
   SELECTED_CART_ADD = '@cart/SELECTED_CART_ADD',
   SELECTED_CART_ADD_SUCCESS = '@cart/SELECTED_CART_ADD_SUCCESS',
@@ -54,10 +64,13 @@ export interface Cart {
   gateway?: string
   paymentmethod?: string
   installments?: number
-  price?: number
+  price?: string
   launch?: Launch
+  launchId?: number
   user?: User
+  userId?: number
   idreference?: string
+  notafiscal?: string
 
   total_paid_amount?: string ;
   net_received_amount?: string ;

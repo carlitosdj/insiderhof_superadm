@@ -163,7 +163,7 @@ const ManageWppCampWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         {/* <a href='#!' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
                         Intertico
                       </a> */}
-                        <span className="text-muted fw-bold text-muted d-block fs-7">
+                        <span className="fw-bold text-muted d-block fs-7">
                           {child.description}
                         </span>
                       </td>

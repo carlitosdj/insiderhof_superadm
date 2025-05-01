@@ -12,6 +12,12 @@ import {
   selectCartsAddSuccess,
   selectCartsRemoveRequest,
   selectCartsRemoveSuccess,
+  updateCartRequest,
+  updateCartSuccess,
+  updateCartFailure,
+  deleteCartRequest,
+  deleteCartSuccess,
+  deleteCartFailure,
 } from './actions'
 import {Cart} from './types'
 
@@ -47,6 +53,7 @@ export function* loadCart(payload: ReturnType<typeof createCartRequest>) {
 //Create
 export function* createCart(payload: ReturnType<typeof createCartRequest>) {
   try {
+    console.log("tentando criar cart", payload)
     put(createCartRequest(payload.payload))
     const response: Cart = yield call(api.post, 'cart', payload.payload)
     yield put(createCartSuccess(response))
@@ -55,6 +62,28 @@ export function* createCart(payload: ReturnType<typeof createCartRequest>) {
   }
 }
 
+
+//Update
+export function* updateCart(payload: ReturnType<typeof updateCartRequest>) {
+  try {
+    put(updateCartRequest(payload.payload))
+    const response: Cart = yield call(api.put, 'cart', payload.payload)
+    yield put(updateCartSuccess(response))
+  } catch (error: any) {
+    yield put(updateCartFailure(error.response.message))
+  }
+}
+
+//Delete
+export function* deleteCart(payload: ReturnType<typeof deleteCartRequest>) {
+  try {
+    put(deleteCartRequest(payload.payload))
+    const response: Cart = yield call(api.delete, 'cart/' + payload.payload)
+    yield put(deleteCartSuccess(response))
+  } catch (error: any) {
+    yield put(deleteCartFailure(error.response.message))
+  }
+}
 
 //SelectedUser
 export function* selectCartsAdd(payload: ReturnType<typeof selectCartsAddRequest>) {

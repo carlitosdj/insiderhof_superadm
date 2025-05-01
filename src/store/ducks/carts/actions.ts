@@ -17,7 +17,15 @@ export const createCartRequest = (newCart: Cart) => action(CartsTypes.CREATE_CAR
 export const createCartSuccess = (cart: Cart) => action(CartsTypes.CREATE_CART_SUCCESS, cart)
 export const createCartFailure = (err: any[]) => action(CartsTypes.CREATE_CART_SUCCESS, err)
 
+//Update
+export const updateCartRequest = (cart: Cart) => action(CartsTypes.UPDATE_CART_REQUEST, cart)
+export const updateCartSuccess = (cart: Cart) => action(CartsTypes.UPDATE_CART_SUCCESS, cart)
+export const updateCartFailure = (err: any[]) => action(CartsTypes.UPDATE_CART_FAILURE, err)
 
+//Delete
+export const deleteCartRequest = (id: number) => action(CartsTypes.DELETE_CART_REQUEST, id)
+export const deleteCartSuccess = (cart: Cart) => action(CartsTypes.DELETE_CART_SUCCESS, cart)
+export const deleteCartFailure = (err: any[]) => action(CartsTypes.DELETE_CART_FAILURE, err)
 
 //Selected carts
 export const selectCartsAddRequest = (data: Cart) => action(CartsTypes.SELECTED_CART_ADD, data)

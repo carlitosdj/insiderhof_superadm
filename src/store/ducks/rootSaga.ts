@@ -1,7 +1,7 @@
 import {all, takeLatest} from 'redux-saga/effects'
 
 import {CartsTypes} from './carts/types'
-import {loadCarts, createCart, loadCart, selectCartsAdd, selectCartsRemove} from './carts/sagas'
+import {loadCarts, createCart, loadCart, selectCartsAdd, selectCartsRemove, updateCart, deleteCart} from './carts/sagas'
 
 import {UsersTypes} from './users/types'
 import {
@@ -22,15 +22,11 @@ import {
 import {MeTypes} from './me/types'
 import {loginUser, createMe, updateMe, deleteMe, recoveryUser, loadMe} from './me/sagas'
 
-
-
-
 import {LeadTypes} from './lead/types'
 import {loadLead, createLead, confirmLead, notDisturbLead} from './lead/sagas'
 
 import {LeadsTypes} from './leads/types'
 import {loadLeads, searchLeads} from './leads/sagas'
-
 
 
 import {ListsTypes} from './lists/types'
@@ -102,6 +98,8 @@ export default function* rootSaga() {
     takeLatest(CartsTypes.LOAD_CARTS_REQUEST, loadCarts),
     takeLatest(CartsTypes.LOAD_CART_REQUEST, loadCart),
     takeLatest(CartsTypes.CREATE_CART_REQUEST, createCart),
+    takeLatest(CartsTypes.UPDATE_CART_REQUEST, updateCart),
+    takeLatest(CartsTypes.DELETE_CART_REQUEST, deleteCart),
     takeLatest(CartsTypes.SELECTED_CART_ADD, selectCartsAdd),
     takeLatest(CartsTypes.SELECTED_CART_REMOVE, selectCartsRemove),
     //takeLatest(UsersTypes.CREATE_USER_REQUEST, createUser),
