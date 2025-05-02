@@ -133,11 +133,23 @@ export function CartPage({ user }: paymentProps) {
                         <tr className="fw-bolder text-muted">
                           <th className="min-w-50px">LAUNCHID</th>
                           <th className="min-w-50px">REGISTRO</th>
+                          <th className="min-w-50px">UPDATE</th>
                           <th className="min-w-50px">STATUS</th>
                           <th className="min-w-140px">GATEWAY</th>
                           <th className="min-w-140px">MÉTODO</th>
                           <th className="min-w-140px">PARCELAS</th>
                           <th className="min-w-140px">PREÇO/BASE</th>
+                          <th className="min-w-140px">QUANTIDADE</th>
+                          <th className="min-w-140px">DESCRIÇÃO</th>
+                          <th className="min-w-140px">IDREF</th>
+                          <th className="min-w-140px">NOTAFISCAL</th>
+                         
+                          <th className="min-w-140px">TOTAL/PAGO</th>
+                          <th className="min-w-140px">RECEBIDO</th>
+                          <th className="min-w-140px">PARCELA</th>
+                          <th className="min-w-140px">TAXA/MAQUINA</th>
+                          <th className="min-w-140px">TAXA/FINANCIAMENTO</th>
+
                           <th className="min-w-140px">TURMA</th>
                           <th className="min-w-100px text-end">AÇÕES</th>
                         </tr>
@@ -173,6 +185,15 @@ export function CartPage({ user }: paymentProps) {
                               <td>
                                 <div className="d-flex align-items-center">
                                   <div className="d-flex justify-content-start flex-column">
+                                    {MOMENT(payment.updatedAt).format(
+                                      "DD/MM/YYYY"
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  <div className="d-flex justify-content-start flex-column">
                                     {payment.status}
                                   </div>
                                 </div>
@@ -181,6 +202,28 @@ export function CartPage({ user }: paymentProps) {
                               <td>{payment.paymentmethod}</td>
                               <td>{payment.installments}</td>
                               <td>{payment.price}</td>
+
+                              <td>{payment.quantity}</td>
+                              <td>{payment.description}</td>
+                              <td>{payment.idreference}</td>
+                              <td>{payment.notafiscal}</td>
+                              
+                              <td>{payment.total_paid_amount}</td>
+                              <td>{payment.net_received_amount}</td>
+                              <td>{payment.installment_amount}</td>
+                              <td>{payment.mercadopago_fee}</td>
+                              <td>{payment.financing_fee}</td>
+                        
+                              
+
+
+
+
+
+
+
+
+
                               <td>{payment.launch?.name}</td>
                               <td>
                                 <div className="d-flex justify-content-end flex-shrink-0">

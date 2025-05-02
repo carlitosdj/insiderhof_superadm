@@ -52,6 +52,7 @@ export interface Cart {
   total?: number
   tax?: number
   createdAt?: number
+  updatedAt?: number
   status?: string
   description?: string
   numcartao?: string

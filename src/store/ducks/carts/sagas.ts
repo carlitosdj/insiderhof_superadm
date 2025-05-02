@@ -67,7 +67,7 @@ export function* createCart(payload: ReturnType<typeof createCartRequest>) {
 export function* updateCart(payload: ReturnType<typeof updateCartRequest>) {
   try {
     put(updateCartRequest(payload.payload))
-    const response: Cart = yield call(api.put, 'cart', payload.payload)
+    const response: Cart = yield call(api.patch, 'cart/'+payload.payload.id, payload.payload)
     yield put(updateCartSuccess(response))
   } catch (error: any) {
     yield put(updateCartFailure(error.response.message))

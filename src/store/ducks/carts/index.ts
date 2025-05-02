@@ -56,7 +56,9 @@ const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
         ...state,
         loading: false,
         error: false,
-        data: action.payload.data,
+        data: state.data?.map((child) =>
+          child.id === action.payload.data.id ? action.payload.data : child
+        ),
       };
     case CartsTypes.UPDATE_CART_FAILURE:
       return { ...state, loading: false, error: action.payload, data: [] };
