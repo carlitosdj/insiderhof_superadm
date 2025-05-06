@@ -9,9 +9,9 @@ export function MenuInner() {
     <>
       <MenuItem title={intl.formatMessage({id: 'MENU.DASHBOARD'})} to='/dashboard' />
       {/* <MenuItem title='Layout Builder' to='/builder' /> */}
-      <MenuItem title={intl.formatMessage({id: 'MENU.COURSES'})} to='/manage/2' />
+      {/* <MenuItem title={intl.formatMessage({id: 'MENU.COURSES'})} to='/manage/2' />
       <MenuItem title={intl.formatMessage({id: 'MENU.MYLAUNCHES'})} to='/launch' />
-      <MenuItem title={intl.formatMessage({id: 'MENU.USERS'})} to='/users/1/100' />
+      <MenuItem title={intl.formatMessage({id: 'MENU.USERS'})} to='/users/1/100' /> */}
       {/* <MenuInnerWithSub
         title='Crafted'
         to='/crafted'
