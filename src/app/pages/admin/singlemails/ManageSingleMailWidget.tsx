@@ -2,22 +2,23 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { KTIcon, KTSVG } from "../../../../_metronic/helpers";
-import { EmailToListState } from "../../../../store/ducks/email/types";
+
 import CreateEmail from "./create";
 import DOMPurify from "dompurify";
+import { SingleMailState } from "../../../../store/ducks/singlemail/types";
 const MOMENT = require("moment");
 type Props = {
   className: string;
-  emailList: EmailToListState;
+  singlemail: SingleMailState;
 };
 
 const RawHtmlComponent = (html: any) => {
   return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
 };
 
-const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
+const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
-  emailList,
+  singlemail,
 }) => {
   const [show, setShow] = useState<boolean>(false);
 
@@ -100,16 +101,15 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-150px">EMAIL</th>
                   <th className="min-w-120px">MENSAGEM</th>
                   <th className="min-w-150px">DATA</th>
-                  <th className="min-w-120px">DISPAROS</th>
                   <th className="min-w-120px">ABERTOS</th>
-                  <th className="min-w-120px">TAXA</th>
+                  
                   {/* <th className='min-w-120px'>Aberto por</th> */}
                 </tr>
               </thead>
               {/* end::Table head */}
               {/* begin::Table body */}
               <tbody>
-                {emailList.data.map((child, index) => {
+                {singlemail.data.map((child, index) => {
                   return (
                     <tr key={index}>
                       {/* <td>
@@ -119,7 +119,7 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td> */}
                       <td>
                         <span className="text-gray-900 d-block fs-7">
-                          {child.list}
+                          {child.to}
                         </span>
                       </td>
                       <td>
@@ -141,26 +141,12 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           {MOMENT(child.createdAt).format("DD/MM/YY HH:mm")}
                         </span>
                       </td>
-
                       <td>
                         <span className="text-muted fw-bold d-block fs-7">
-                          {child.quantity}
+                          {child.openedSingleMail?.length}
                         </span>
                       </td>
-                      <td>
-                        <span className="text-muted fw-bold d-block fs-7">
-                          {child.openedMails.length}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="text-muted fw-bold d-block fs-7">
-                          {(
-                            (child.openedMails.length / child.quantity!) *
-                            100
-                          ).toFixed(2)}
-                          %
-                        </span>
-                      </td>
+                      
                       {/* <td>
                         <span className='text-muted fw-bold d-block fs-7'>
                           {child.openedMails.map((item: any) => {
@@ -187,4 +173,4 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   );
 };
 
-export { ManageSentEmailsWidget };
+export { ManageSingleMailWidget };

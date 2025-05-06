@@ -174,17 +174,25 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.WHATSAPPGROUPS" })}
       />
 
-      <SidebarMenuItem
+      {/* <SidebarMenuItem
         to="/manage/5"
         icon="sms"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.PREEMAILS" })}
-      />
+      /> */}
       <SidebarMenuItem
-        to="/emailsenviados"
+        to="/massmails"
         icon="notification-on"
         fontIcon="bi-app-indicator"
-        title={intl.formatMessage({ id: "MENU.EMAILS" })}
+        //title={intl.formatMessage({ id: "MENU.EMAILS" })}
+        title="Emails p/ lista"
+      />
+      <SidebarMenuItem
+        to="/singlemails"
+        icon="notification-on"
+        fontIcon="bi-app-indicator"
+        //title={intl.formatMessage({ id: "MENU.EMAILS" })}
+        title="Emails p/ alunos"
       />
 
       <div className="menu-item">

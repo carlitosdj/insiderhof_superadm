@@ -32,8 +32,8 @@ import {loadLeads, searchLeads} from './leads/sagas'
 import {ListsTypes} from './lists/types'
 import {loadLists} from './lists/sagas'
 
-import {EmailToListTypes} from './email/types'
-import {createEmailToList, loadEmailToList} from './email/sagas'
+import {EmailToListTypes} from './massmail/types'
+import {createEmailToList, loadEmailToList} from './massmail/sagas'
 
 import {AnnotationTypes} from './annotation/types'
 import {loadAnnotationsSingle, createAnnotation} from './annotation/sagas'
@@ -88,6 +88,8 @@ import { LaunchPhasesTypes } from './dlaunchphase/types'
 import { createLaunchPhase, deleteLaunchPhase, loadLaunchPhase, loadMyLaunchPhase, updateLaunchPhase } from './dlaunchphase/sagas'
 import { LaunchPhaseExtrasTypes } from './dlaunchphaseextras/types'
 import { createLaunchPhaseExtra, deleteLaunchPhaseExtra, loadLaunchPhaseExtra, loadMyLaunchPhaseExtra, updateLaunchPhaseExtra } from './dlaunchphaseextras/sagas'
+import { SingleMailTypes } from './singlemail/types'
+import { createSingleMail, loadSingleMail } from './singlemail/sagas'
 
 
 
@@ -125,7 +127,6 @@ export default function* rootSaga() {
     // takeLatest(UsersTypes.SET_USER_START_DATE, setUserStartDate),
     // takeLatest(UsersTypes.SET_USER_END_DATE, setUserEndDate),
 
-
     //Lead
     takeLatest(LeadTypes.LOAD_LEAD_REQUEST, loadLead),
     takeLatest(LeadTypes.CREATE_LEAD_REQUEST, createLead),
@@ -135,6 +136,10 @@ export default function* rootSaga() {
     //EmailToList
     takeLatest(EmailToListTypes.LOAD_EMAIL_TO_LIST_REQUEST, loadEmailToList),
     takeLatest(EmailToListTypes.CREATE_EMAIL_TO_LIST_REQUEST, createEmailToList),
+
+    //SingleMail
+    takeLatest(SingleMailTypes.LOAD_SINGLEMAIL_REQUEST, loadSingleMail),
+    takeLatest(SingleMailTypes.CREATE_SINGLEMAIL_REQUEST, createSingleMail),
 
     //All leads
     takeLatest(LeadsTypes.LOAD_LEAD_REQUEST, loadLeads),

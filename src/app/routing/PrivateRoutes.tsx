@@ -46,8 +46,12 @@ const PrivateRoutes = () => {
   const Leads = useMemo(() => lazy(() => import("../pages/admin/leads")), []);
   const Users = useMemo(() => lazy(() => import("../pages/admin/users")), []);
 
-  const EmailsEnviados = useMemo(
-    () => lazy(() => import("../pages/admin/emailsenviados")),
+  const MassMails = useMemo(
+    () => lazy(() => import("../pages/admin/massmails")),
+    []
+  );
+  const SingleMails = useMemo(
+    () => lazy(() => import("../pages/admin/singlemails")),
     []
   );
   const Support = useMemo(
@@ -243,13 +247,24 @@ const PrivateRoutes = () => {
         />
 
         <Route
-          path="emailsenviados"
+          path="massmails"
           element={
             <SuspensedView>
-              <EmailsEnviados />
+              <MassMails />
             </SuspensedView>
           }
         />
+
+        <Route
+          path="singlemails"
+          element={
+            <SuspensedView>
+              <SingleMails />
+            </SuspensedView>
+          }
+        />
+
+
         <Route
           path="support"
           element={

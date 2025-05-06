@@ -13,7 +13,7 @@ import {ExtrasState} from './ducks/extras/types'
 import {LeadState} from './ducks/lead/types'
 import {LeadsState} from './ducks/leads/types'
 import {ListsState} from './ducks/lists/types'
-import {EmailToListState} from './ducks/email/types'
+import {EmailToListState} from './ducks/massmail/types'
 import {AnnotationState} from './ducks/annotation/types'
 import {AnnotationsState} from './ducks/annotations/types'
 import {SupportState} from './ducks/support/types'
@@ -34,6 +34,7 @@ import { ProductState } from './ducks/dproduct/types'
 import { LaunchHasOffersState } from './ducks/dlaunchhasoffers/types'
 import { LaunchPhasesState } from './ducks/dlaunchphase/types'
 import { LaunchPhaseExtrasState } from './ducks/dlaunchphaseextras/types'
+import { SingleMailState } from './ducks/singlemail/types'
 
 
 export interface ApplicationState {
@@ -45,7 +46,10 @@ export interface ApplicationState {
   lead: LeadState
   leads: LeadsState
   lists: ListsState
+
   emailToList: EmailToListState
+  singlemail: SingleMailState
+
   annotation: AnnotationState
   annotations: AnnotationsState
   comments: CommentsState

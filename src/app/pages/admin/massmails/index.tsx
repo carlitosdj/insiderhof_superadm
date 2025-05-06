@@ -6,8 +6,8 @@ import {ApplicationState} from '../../../../store'
 import Loading from '../../../loading'
 
 import {ManageSentEmailsWidget} from './ManageSentEmailsWidget'
-import {loadEmailToListRequest} from '../../../../store/ducks/email/actions'
-import {EmailToListState} from '../../../../store/ducks/email/types'
+import {loadEmailToListRequest} from '../../../../store/ducks/massmail/actions'
+import {EmailToListState} from '../../../../store/ducks/massmail/types'
 import { Content } from '../../../../_metronic/layout/components/content'
 import { ToolbarWrapper } from '../../../../_metronic/layout/components/toolbar'
 

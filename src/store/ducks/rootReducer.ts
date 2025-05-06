@@ -10,7 +10,9 @@ import lead from './lead'
 import leads from './leads'
 
 import lists from './lists'
-import emailToList from './email'
+import emailToList from './massmail'
+
+import singlemail from './singlemail'
 import annotation from './annotation'
 import annotations from './annotations'
 import comments from './comments'
@@ -46,6 +48,8 @@ export default combineReducers({
   //course,
   lists,
   emailToList,
+  singlemail,
+  
   annotation,
   annotations,
   comments,
