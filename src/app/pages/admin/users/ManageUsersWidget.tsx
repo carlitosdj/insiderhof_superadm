@@ -37,6 +37,7 @@ import "moment-timezone";
 import { Overview } from "./profile/components/Overview";
 import { Cart } from "../../../../store/ducks/carts/types";
 import { useScrollRestoreAfterBack } from "../../../../customHooks/useScrollRestore";
+import CreateSingleMail from "../singlemails/create";
 //import { useScrollRestore } from "../../../../customHooks/useScrollRestore";
 
 type Props = {
@@ -108,6 +109,18 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setChild(user);
   };
 
+  const renovationMail = (user: User) => {
+    setAction("renovationMail");
+    setShow(true);
+    setChild(user);
+  };
+
+  const onboardingMail = (user: User) => {
+    setAction("onboardingMail");
+    setShow(true);
+    setChild(user);
+  };
+
   const deleteUser = (user: User) => {
     console.log("deletar", user.id);
     dispatch(deleteUserRequest(user.id!));
@@ -168,6 +181,8 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
             {action === "createUser" ? "Adicionar usuário" : ""}
             {action === "showExport" ? "Exportar" : ""}
             {action === "showFilter" ? "Filtro" : ""}
+            {action === "renovationMail" ? "renovationMail" : ""}
+            {action === "onboardingMail" ? "onboardingMail" : ""}
           </h2>
 
           {/* begin::Close */}
@@ -189,7 +204,10 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
           )}
           {action === "createUser" && <Create handleClose={handleClose} />}
           {action === "showExport" && <ExportUser handleClose={handleClose} />}
-          {action === "showFilter" ? <Filter handleClose={handleClose} /> : ""}
+          {action === "showFilter" && <Filter handleClose={handleClose} />}
+
+          {action === "renovationMail" &&  <CreateSingleMail handleClose={handleClose} child={child}/>}
+          {action === "onboardingMail" &&  <CreateSingleMail handleClose={handleClose} child={child} /> }
         </div>
       </Modal>
 
@@ -570,7 +588,35 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     Informações
                                   </a>
                                 </li>
-
+                                <li>
+                                  <hr className="dropdown-divider" />
+                                </li>
+                                <li>
+                                  <a
+                                    href="#!"
+                                    onClick={() => onboardingMail(child)}
+                                    className="dropdown-item"
+                                  >
+                                    <KTIcon
+                                      iconName="user"
+                                      iconType="outline"
+                                    />{" "}
+                                    Onboarding mail
+                                  </a>
+                                </li>
+                                <li>
+                                  <a
+                                    href="#!"
+                                    onClick={() => renovationMail(child)}
+                                    className="dropdown-item"
+                                  >
+                                    <KTIcon
+                                      iconName="user"
+                                      iconType="outline"
+                                    />{" "}
+                                    Renovation mail
+                                  </a>
+                                </li>
                                 <li>
                                   <hr className="dropdown-divider" />
                                 </li>

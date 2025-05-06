@@ -10,12 +10,14 @@ import { CKEditor } from "ckeditor4-react";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { SingleMail } from "../../../../store/ducks/singlemail/types";
 import { createSingleMailRequest } from "../../../../store/ducks/singlemail/actions";
+import { User } from "../../../../store/ducks/me/types";
 
 interface handleCloseProps {
   handleClose: () => void;
+  child?: User;
 }
 
-const Leads = ({ handleClose }: handleCloseProps) => {
+const CreateSingleMail = ({ handleClose, child }: handleCloseProps) => {
   const dispatch = useDispatch();
   const lists = useSelector((state: ApplicationState) => state.lists);
   const me = useSelector((state: ApplicationState) => state.me);
@@ -28,6 +30,11 @@ const Leads = ({ handleClose }: handleCloseProps) => {
 
   useEffect(() => {
     dispatch(loadListsRequest());
+    if (child?.id) {
+      //Para abrir direto da tela de usuários
+      setTo(child?.email!);
+      setUserId(child?.id!.toString());
+    }
   }, [dispatch]);
 
   // console.log('listsxxx', lists)
@@ -48,7 +55,7 @@ const Leads = ({ handleClose }: handleCloseProps) => {
     console.log("to", to);
     console.log("subject", subject);
     console.log("message", message);
-    
+
     const emailToListNew: SingleMail = {
       to,
       subject,
@@ -144,4 +151,4 @@ const Leads = ({ handleClose }: handleCloseProps) => {
   );
 };
 
-export default Leads;
+export default CreateSingleMail;
