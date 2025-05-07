@@ -101,7 +101,8 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-150px">EMAIL</th>
                   <th className="min-w-120px">MENSAGEM</th>
                   <th className="min-w-150px">DATA</th>
-                  <th className="min-w-120px">ABERTOS</th>
+                  <th className="min-w-120px">ABERTO</th>
+                  <th className="min-w-120px">DATA/ABERTURA</th>
                   
                   {/* <th className='min-w-120px'>Aberto por</th> */}
                 </tr>
@@ -134,6 +135,7 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               __html: DOMPurify.sanitize(child.message!),
                             }}
                           />
+                          
                         </span>
                       </td>
                       <td>
@@ -143,7 +145,16 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className="text-muted fw-bold d-block fs-7">
-                          {child.openedSingleMail?.length}
+                          {child.openedSingleMail?.length ? "Sim" : "Não"}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.openedSingleMail?.map((item: any) => {
+                            if (item) {
+                              return MOMENT(item.createdAt).format("DD/MM/YY HH:mm")
+                            }
+                          })}
                         </span>
                       </td>
                       

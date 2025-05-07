@@ -43,7 +43,7 @@ const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
         ...state,
         loading: false,
         error: false,
-        data: [...state.data, action.payload.data],
+        data: [action.payload.data, ...state.data],
       };
     case CartsTypes.CREATE_CART_FAILURE:
       return { ...state, loading: false, error: action.payload, data: [] };

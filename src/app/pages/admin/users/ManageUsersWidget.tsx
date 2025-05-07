@@ -132,6 +132,77 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     else dispatch(loadUsersRequest(+page!, +take!, hasCart!));
   };
 
+  const preMessageOnboarding = (user: User) => {
+    return `<p>Olá ${user.name?.split(" ")[0]}, tudo bem?</p>
+
+      <p>É com imensa alegria que estendemos as boas-vindas a você. Desejamos que este treinamento represente um marco significativo em sua jornada.</p>
+
+      <p>Ao longo desse período você terá acesso à nossa plataforma exclusiva e as datas de liberação dos conteúdos estarão visíveis na plataforma assim que você se conectar.</p>
+
+      <p><b>DADOS DE ACESSO:</b></p>
+
+      <p>Plataforma: <a href='https://app.insiderhof.com.br' target='_blank'><strong>https://app.insiderhof.com.br</strong></a></p>
+
+      <p>No campo e-mail, insira: ${user.email}</p>
+
+      <p>No campo senha, insira a senha criada no processo de inscrição.</p>
+
+      <p>Obs: Caso perca sua senha ou queria alterá-la, na página inicial da plataforma tem um botão escrito: "Esqueci minha senha". Basta clicá-lo e seguir as instruções para a alteração da sua senha.</p>
+
+      <br/>
+
+      <p> Agora, vamos seguir com as instruções iniciais:</p>
+
+      <p> 1. Lembre-se de que é possível alterar sua senha na página inicial, quando estiver conectado ou contatando o suporte.</p>
+
+      <p> 2. Por favor, zele pela confidencialidade de sua senha e evite compartilhá-la com terceiros, uma vez que logins simultâneos serão automaticamente bloqueados.</p>
+
+      <p> 3. Mantenha as discussões na comunidade estritamente relacionadas ao tema do treinamento. Qualquer post que fuja do assunto será sujeito a censura. Este é um espaço destinado à reflexão sobre o conteúdo do treinamento.</p>
+
+      <p> 4. Não promova a si mesmo ou seus interesses pessoais na comunidade, pois essas postagens também estarão sujeitas a censura.</p>
+
+      <p> 5. Encorajamos você a fazer perguntas sempre que necessário. Lembre-se de que não existem perguntas sem valor. O verdadeiro erro está em não questionar.</p>
+
+      <p> 6. Por fim, empenhe-se ao máximo durante o treinamento e tenha em mente que o sucesso depende igualmente de seu esforço e do auxílio do instrutor. Não existe uma fórmula mágica ou atalhos fáceis, mas é crucial contar com um time de apoio para seguir adiante.</p>
+
+      <p> Atenciosamente, Vanessa.</p>`;
+  };
+
+  const preMessageRenovation = (user: User) => {
+    return `<p>Olá ${user.name?.split(" ")[0]}, tudo bem?</p>
+  
+      <p>Gostaríamos de informar que seu acesso está prestes a expirar e você pode garantir a renovação antecipada com um desconto exclusivo de mais de <strong>70%</strong>.</p>
+  
+      <p>Essa é uma oportunidade especial para continuar sua jornada de aprendizado, sem interrupções, aproveitando um benefício que oferecemos apenas para nossos alunos mais comprometidos.</p>
+  
+      <p>Para aproveitar essa renovação com desconto, basta seguir as orientações enviadas e concluir o processo dentro do prazo estipulado.</p>
+
+      <br/>
+
+      <p><b>INSTRUÇÕES</b></p>
+
+      <p>1. Acesse a plataforma <a href='https://app.insiderhof.com.br' target='_blank'><strong>https://app.insiderhof.com.br</strong></a></p>
+
+      <p>2. Faça seu login.</p>
+
+      <p>3. Clique em "Seu acesso vai expirar, clique aqui.".</p>
+
+      <p>4. Selecione a forma de pagamento e realize sua renovação.</p>
+
+      <br/>
+  
+      <p>Em caso de dúvidas ou se precisar de qualquer auxílio, estamos à disposição. Você pode:</p>
+  
+      <p>Chamar um dos nossos atendentes no grupo da sua turma;</p>
+      <p>Ou simplesmente responder a este e-mail que entraremos em contato com você o mais breve possível.</p>
+  
+      <p>Não deixe essa oportunidade passar.</p>
+  
+      <br/>
+  
+      <p>Atenciosamente, Vanessa.</p>`;
+  };
+
   const selectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
       setIsAllChecked(true);
@@ -206,8 +277,22 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
           {action === "showExport" && <ExportUser handleClose={handleClose} />}
           {action === "showFilter" && <Filter handleClose={handleClose} />}
 
-          {action === "renovationMail" &&  <CreateSingleMail handleClose={handleClose} child={child}/>}
-          {action === "onboardingMail" &&  <CreateSingleMail handleClose={handleClose} child={child} /> }
+          {action === "renovationMail" && (
+            <CreateSingleMail
+              handleClose={handleClose}
+              child={child}
+              preMessage={preMessageRenovation(child)}
+              preSubject={"Renovação de acesso com vantagens | InsiderHOF"}
+            />
+          )}
+          {action === "onboardingMail" && (
+            <CreateSingleMail
+              handleClose={handleClose}
+              child={child}
+              preMessage={preMessageOnboarding(child)}
+              preSubject={"Dados de acesso | InsiderHOF"}
+            />
+          )}
         </div>
       </Modal>
 
@@ -333,7 +418,9 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-100px">REGISTRO</th>
 
                   {/* <th className='min-w-120px'>Última aula assistida</th> */}
-                  <th className="min-w-100px">{hasCart === "true" ? "TURMA" : "INTENÇÃO"}</th>
+                  <th className="min-w-100px">
+                    {hasCart === "true" ? "TURMA" : "INTENÇÃO"}
+                  </th>
                   <th className="min-w-100px">AÇÕES</th>
                 </tr>
               </thead>

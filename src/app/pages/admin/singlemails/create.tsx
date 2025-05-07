@@ -15,9 +15,11 @@ import { User } from "../../../../store/ducks/me/types";
 interface handleCloseProps {
   handleClose: () => void;
   child?: User;
+  preMessage?: string;
+  preSubject?: string;
 }
 
-const CreateSingleMail = ({ handleClose, child }: handleCloseProps) => {
+const CreateSingleMail = ({ handleClose, child, preMessage, preSubject }: handleCloseProps) => {
   const dispatch = useDispatch();
   const lists = useSelector((state: ApplicationState) => state.lists);
   const me = useSelector((state: ApplicationState) => state.me);
@@ -35,6 +37,13 @@ const CreateSingleMail = ({ handleClose, child }: handleCloseProps) => {
       setTo(child?.email!);
       setUserId(child?.id!.toString());
     }
+    if(preMessage){
+      setMessage(preMessage);
+    }
+    if(preSubject){
+      setSubject(preSubject);
+    }
+
   }, [dispatch]);
 
   // console.log('listsxxx', lists)

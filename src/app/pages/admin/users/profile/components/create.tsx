@@ -22,20 +22,20 @@ interface handleCloseProps {
 
 const Create = ({ handleClose, user }: handleCloseProps) => {
   const [status, setStatus] = useState<string>("1");
-  const [gateway, setGateway] = useState<string>("1");
-  const [paymentmethod, setPaymentmethod] = useState<string>("1");
-  const [installments, setInstallments] = useState<number>(1);
-  const [price, setPrice] = useState<string>("1");
+  const [gateway, setGateway] = useState<string>("equipe");
+  const [paymentmethod, setPaymentmethod] = useState<string>("visa");
+  const [installments, setInstallments] = useState<number>(10);
+  const [price, setPrice] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const [description, setDescription] = useState<string>("test");
-  const [idreference, setIdreference] = useState<string>("0");
-  const [notafiscal, setNotafiscal] = useState<string>("0");
-  const [launchId, setLaunchId] = useState<number>(2);
+  const [description, setDescription] = useState<string>("Escultura Labial");
+  const [idreference, setIdreference] = useState<string>("--");
+  const [notafiscal, setNotafiscal] = useState<string>("--");
+  const [launchId, setLaunchId] = useState<number>(46);
   const [total_paid_amount, setTotal_paid_amount] = useState<string>("1");
   const [net_received_amount, setNet_received_amount] = useState<string>("1");
   const [installment_amount, setInstallment_amount] = useState<string>("1");
-  const [mercadopago_fee, setMercadopago_fee] = useState<string>("1");
-  const [financing_fee, setFinancing_fee] = useState<string>("1");
+  const [mercadopago_fee, setMercadopago_fee] = useState<string>("");
+  const [financing_fee, setFinancing_fee] = useState<string>("");
 
   const [validated, setValidated] = useState(false);
   // const {id} = useParams<ParamTypes>();
@@ -58,13 +58,13 @@ const Create = ({ handleClose, user }: handleCloseProps) => {
         status,
         gateway,
         paymentmethod,
-        installments,
+        installments: Number(installments),
         price,
-        quantity,
+        quantity: Number(quantity),
         description,
         idreference,
         notafiscal,
-        launchId,
+        launchId: Number(launchId),
         total_paid_amount,
         net_received_amount,
         installment_amount,

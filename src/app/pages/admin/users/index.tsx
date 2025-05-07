@@ -85,7 +85,7 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
     const cameFromBack = sessionStorage.getItem("cameFromBack");
 
     if (cameFromBack) {
-      console.log("Usuário voltou à página anterior");
+      //console.log("Usuário voltou à página anterior");
       sessionStorage.removeItem("cameFromBack");
     } else {
       dispatch(loadUsersRequest(+page!, +take!, hasCart!, Number(startDate), Number(endDate)));
