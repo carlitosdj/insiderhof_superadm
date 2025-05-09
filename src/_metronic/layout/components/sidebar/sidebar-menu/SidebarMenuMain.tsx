@@ -214,12 +214,12 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.CONTACT" })}
       />
-      <SidebarMenuItem
+      {/* <SidebarMenuItem
         to="/manage/4"
         icon="notification-circle"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.BUGREPORTS" })}
-      />
+      /> */}
 
       {/* <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
