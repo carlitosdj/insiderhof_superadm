@@ -48,7 +48,7 @@ const Manage = ({ handleClose, child }: ManageProps) => {
 
   console.log("launchhasoffers", launchhasoffers);
 
-  if (launchhasoffers.loading) return <Loading />;
+  // if (launchhasoffers.loading) return <Loading />;
 
   return <ManagePage launchhasoffers={launchhasoffers} child={child} />;
 };

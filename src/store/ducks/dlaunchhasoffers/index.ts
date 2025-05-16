@@ -17,7 +17,7 @@ const reducer: Reducer<LaunchHasOffersState> = (state = INITIAL_STATE, action: a
 
     //Load
     case LaunchHasOfferTypes.LOAD_LAUNCHHASOFFERS_REQUEST:
-      return {...state, loading: true}
+      return {...state}
     case LaunchHasOfferTypes.LOAD_LAUNCHHASOFFERS_SUCCESS:
       return {...state, loading: false, error: false, data: action.payload.data} 
     case LaunchHasOfferTypes.LOAD_LAUNCHHASOFFERS_FAILURE:
@@ -26,7 +26,7 @@ const reducer: Reducer<LaunchHasOffersState> = (state = INITIAL_STATE, action: a
 
     //Create
     case LaunchHasOfferTypes.CREATE_LAUNCHHASOFFERS_REQUEST:
-      return {...state}
+      return {...state, loading: true}
     case LaunchHasOfferTypes.CREATE_LAUNCHHASOFFERS_SUCCESS:
       return {...state, loading: false, error: false, data: [...state.data, action.payload.data] }
     case LaunchHasOfferTypes.CREATE_LAUNCHHASOFFERS_FAILURE:
@@ -34,7 +34,7 @@ const reducer: Reducer<LaunchHasOffersState> = (state = INITIAL_STATE, action: a
 
     //Update
     case LaunchHasOfferTypes.UPDATE_LAUNCHHASOFFERS_REQUEST:
-      return {...state}
+      return {...state, loading: true}
     case LaunchHasOfferTypes.UPDATE_LAUNCHHASOFFERS_SUCCESS:
       return {...state, loading: false, error: false, data: state.data?.map((child) =>
         child.id === action.payload.data.id ? action.payload.data : child
@@ -44,7 +44,7 @@ const reducer: Reducer<LaunchHasOffersState> = (state = INITIAL_STATE, action: a
 
     //Delete
     case LaunchHasOfferTypes.DELETE_LAUNCHHASOFFERS_REQUEST:
-      return {...state}
+      return {...state, loading: true}
     case LaunchHasOfferTypes.DELETE_LAUNCHHASOFFERS_SUCCESS:
       return {...state, loading: false, error: false, data: state.data.filter((item) => item.id !== action.payload.data.id)}
     case LaunchHasOfferTypes.DELETE_LAUNCHHASOFFERS_FAILURE:

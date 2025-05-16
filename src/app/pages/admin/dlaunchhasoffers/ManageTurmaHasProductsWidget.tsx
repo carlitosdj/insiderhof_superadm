@@ -20,6 +20,7 @@ import { ApplicationState } from "../../../../store";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { Launch } from "../../../../store/ducks/dlaunch/types";
+import Loading from "../../../loading";
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
@@ -120,6 +121,9 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="col-md-6">
           <div className="table-responsive">
             <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+              {launchhasoffers.loading && (
+                    <Loading/>
+                  )}
               <Reorder.Group
                 as="tbody"
                 values={launchhasoffers.data}
@@ -129,11 +133,13 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 style={{ touchAction: "none" }}
               >
                 <AnimatePresence>
+
+                  
                   {launchhasoffers.data.length === 0 && (
                     <tr className="border-0">
                       <td colSpan={3} className="text-center pt-10 ">
-                        Nenhum produto encontrado aqui. Adicione um produto
-                        clicando em "Adicionar produto".
+                        Nenhuma oferta encontrado aqui. Adicione um produto
+                        selecionando-o ao lado.
                       </td>
                     </tr>
                   )}
