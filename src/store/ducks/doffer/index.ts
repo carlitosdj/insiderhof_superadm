@@ -78,7 +78,7 @@ const reducer: Reducer<OffersState> = (state = INITIAL_STATE, action: any) => {
     case OffersTypes.CREATE_OFFER_REQUEST:
       return {...state}
     case OffersTypes.CREATE_OFFER_SUCCESS:
-      return {...state, loading: false, error: false, myOffers: [...state.myOffers, action.payload.data] }
+      return {...state, loading: false, error: false, myOffers: [action.payload.data, ...state.myOffers] }
     case OffersTypes.CREATE_OFFER_FAILURE:
       return {...state, loading: false, error: action.payload, myOffers: [], offer: {}}
 
