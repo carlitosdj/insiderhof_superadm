@@ -35,12 +35,16 @@ import { LaunchHasOffersState } from './ducks/dlaunchhasoffers/types'
 import { LaunchPhasesState } from './ducks/dlaunchphase/types'
 import { LaunchPhaseExtrasState } from './ducks/dlaunchphaseextras/types'
 import { SingleMailState } from './ducks/singlemail/types'
+import { LPSessionState } from './ducks/dlpsessions/types'
+import { LPFeatureState } from './ducks/dlpfeatures/types'
+import { LPState } from './ducks/dlps/types'
 
 
 export interface ApplicationState {
   carts: CartsState
   users: UsersState
- 
+  
+
   me: MeState
   extras: ExtrasState
   lead: LeadState
@@ -63,7 +67,7 @@ export interface ApplicationState {
 
   offer: OffersState
   product: ProductState
-
+  
   offerhasproducts: OfferHasProductsState
   module: ModuleState
   dclass: ClassState
@@ -73,6 +77,10 @@ export interface ApplicationState {
   
   launchphase: LaunchPhasesState
   launchphaseextra: LaunchPhaseExtrasState
+
+  lps: LPState
+  lpsessions: LPSessionState
+  lpfeatures: LPFeatureState
 }
 
 const sagaMiddleware = createSagaMiddleware()

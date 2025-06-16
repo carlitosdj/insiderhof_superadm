@@ -11,6 +11,7 @@ type Props = {
   className: string;
   singlemail: SingleMailState;
 };
+import parse from 'html-react-parser';
 
 const RawHtmlComponent = (html: any) => {
   return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
@@ -130,11 +131,10 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className="text-gray-900 d-block fs-7">
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(child.message!),
-                            }}
-                          />
+                          
+                          
+                          {parse(DOMPurify.sanitize(child.message || ""))}
+                        
                           
                         </span>
                       </td>

@@ -5,6 +5,7 @@ import { KTIcon, KTSVG } from "../../../../_metronic/helpers";
 import { EmailToListState } from "../../../../store/ducks/massmail/types";
 import CreateEmail from "./create";
 import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 const MOMENT = require("moment");
 type Props = {
   className: string;
@@ -129,11 +130,7 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className="text-gray-900 d-block fs-7">
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: DOMPurify.sanitize(child.message!),
-                            }}
-                          />
+                          {parse(DOMPurify.sanitize(child.message || ""))}
                         </span>
                       </td>
                       <td>

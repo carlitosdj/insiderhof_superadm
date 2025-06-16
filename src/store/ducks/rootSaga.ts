@@ -90,10 +90,12 @@ import { LaunchPhaseExtrasTypes } from './dlaunchphaseextras/types'
 import { createLaunchPhaseExtra, deleteLaunchPhaseExtra, loadLaunchPhaseExtra, loadMyLaunchPhaseExtra, updateLaunchPhaseExtra } from './dlaunchphaseextras/sagas'
 import { SingleMailTypes } from './singlemail/types'
 import { createSingleMail, loadSingleMail } from './singlemail/sagas'
-
-
-
-
+import { LPSessionsTypes } from './dlpsessions/types'
+import { loadLPSession, createLPSession, updateLPSession, deleteLPSession, loadMyLPSessions } from './dlpsessions/sagas'
+import { LPFeaturesTypes } from './dlpfeatures/types'
+import { loadMyLPFeatures, loadLPFeature, createLPFeature, updateLPFeature, deleteLPFeature } from './dlpfeatures/sagas'
+import { LPSTypes } from './dlps/types'
+import { loadMyLPs, loadLP, createLP, updateLP, deleteLP } from './dlps/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -263,6 +265,28 @@ export default function* rootSaga() {
     takeLatest(LaunchPhaseExtrasTypes.UPDATE_LAUNCHPHASEEXTRA_REQUEST, updateLaunchPhaseExtra),
     takeLatest(LaunchPhaseExtrasTypes.DELETE_LAUNCHPHASEEXTRA_REQUEST, deleteLaunchPhaseExtra),
 
+    //LPs
+    takeLatest(LPSTypes.LOAD_MYLPS_REQUEST, loadMyLPs),
+    takeLatest(LPSTypes.LOAD_LP_REQUEST, loadLP),
+    takeLatest(LPSTypes.CREATE_LP_REQUEST, createLP),
+    takeLatest(LPSTypes.UPDATE_LP_REQUEST, updateLP),
+    takeLatest(LPSTypes.DELETE_LP_REQUEST, deleteLP),
+
+    //LPSession
+    takeLatest(LPSessionsTypes.LOAD_LPSESSION_REQUEST, loadLPSession),
+    takeLatest(LPSessionsTypes.CREATE_LPSESSION_REQUEST, createLPSession),
+    takeLatest(LPSessionsTypes.UPDATE_LPSESSION_REQUEST, updateLPSession),
+    takeLatest(LPSessionsTypes.DELETE_LPSESSION_REQUEST, deleteLPSession),
+    takeLatest(LPSessionsTypes.LOAD_MYLPSESSIONS_REQUEST, loadMyLPSessions),
+
+    //LPFeature
+    takeLatest(LPFeaturesTypes.LOAD_MYLPFEATURES_REQUEST, loadMyLPFeatures),
+    takeLatest(LPFeaturesTypes.LOAD_LPFEATURE_REQUEST, loadLPFeature),
+    takeLatest(LPFeaturesTypes.CREATE_LPFEATURE_REQUEST, createLPFeature),
+    takeLatest(LPFeaturesTypes.UPDATE_LPFEATURE_REQUEST, updateLPFeature),
+    takeLatest(LPFeaturesTypes.DELETE_LPFEATURE_REQUEST, deleteLPFeature),
+
+    
   ])
-  // console.log('mounting saga...')
+  // console.log('mounting saga...')  
 }

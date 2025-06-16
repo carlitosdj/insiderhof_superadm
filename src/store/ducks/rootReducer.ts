@@ -35,6 +35,10 @@ import launch from './dlaunch'
 import launchhasoffers from './dlaunchhasoffers'
 import launchphase from './dlaunchphase'
 import launchphaseextra from './dlaunchphaseextras'
+import lps from './dlps'
+import lpsessions from './dlpsessions'
+import lpfeatures from './dlpfeatures'
+
 
 export default combineReducers({
   carts,
@@ -75,4 +79,8 @@ export default combineReducers({
   launchphase,
   launchphaseextra,
 
+  lps,
+  lpsessions,
+  lpfeatures,
+  
 })

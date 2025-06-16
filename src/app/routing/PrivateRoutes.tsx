@@ -107,6 +107,23 @@ const PrivateRoutes = () => {
     []
   );
 
+  const LPs = useMemo(
+    () => lazy(() => import("../pages/admin/dlps/Manage")),
+    []
+  );
+
+  const LPSessions = useMemo(
+    () => lazy(() => import("../pages/admin/dlpsessions/Manage")),
+    []
+  );
+
+  const LPFeatures = useMemo(
+    () => lazy(() => import("../pages/admin/dlpfeatures/Manage")),
+    []
+  );
+
+  
+
   return (
     <Routes>
       <Route element={<MasterLayout />}>
@@ -159,6 +176,33 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <LaunchPhaseExtras />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="lps/:launchPhaseId"
+          element={
+            <SuspensedView>
+              <LPs />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="lpsessions/:launchPhaseId/:lpId"
+          element={
+            <SuspensedView>
+              <LPSessions />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="lpfeatures/:launchPhaseId/:lpId/:lpSessionId"
+          element={
+            <SuspensedView>
+              <LPFeatures />
             </SuspensedView>
           }
         ></Route>
