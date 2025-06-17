@@ -20,7 +20,16 @@ import {
 
   deleteLPRequest,
   deleteLPSuccess,
-  deleteLPFailure
+  deleteLPFailure,
+  exportLPFailure,
+  exportLPSuccess,
+  exportLPRequest,
+  importLPRequest,
+  importLPSuccess,
+  importLPFailure,
+  duplicateLPFailure,
+  duplicateLPSuccess,
+  duplicateLPRequest
 } from './actions'
 
 import {LP} from './types'
@@ -79,5 +88,42 @@ export function* deleteLP(payload: ReturnType<typeof deleteLPRequest>) {
     yield put(deleteLPSuccess(response))
   } catch (error: any) {
     yield put(deleteLPFailure(error.response.data))
+  }
+}
+
+//Export
+export function* exportLP(payload: ReturnType<typeof exportLPRequest>) {
+  try {
+    //console.log("🔄 exportLP saga started with payload:", payload);
+    put(exportLPRequest(payload.payload))
+    const response: LP = yield call(api.get, 'lp/export/' + payload.payload)
+    //console.log("📡 API response:", response);
+    yield put(exportLPSuccess(response))
+    //console.log("✅ exportLP saga completed successfully");
+  } catch (error: any) {
+    //console.error("❌ exportLP saga error:", error);
+    yield put(exportLPFailure(error.response.data))
+  }
+}
+
+//Import
+export function* importLP(payload: ReturnType<typeof importLPRequest>) {
+  try {
+    put(importLPRequest(payload.payload))
+    const response: LP = yield call(api.post, 'lp/import', payload.payload)
+    yield put(importLPSuccess(response))
+  } catch (error: any) {
+    yield put(importLPFailure(error.response.data))
+  }
+}
+
+//Duplicate
+export function* duplicateLP(payload: ReturnType<typeof duplicateLPRequest>) {
+  try {
+    put(duplicateLPRequest(payload.payload))
+    const response: LP = yield call(api.post, 'lp/duplicate/' + payload.payload)
+    yield put(duplicateLPSuccess(response))
+  } catch (error: any) {
+    yield put(duplicateLPFailure(error.response.data))
   }
 }

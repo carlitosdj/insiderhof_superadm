@@ -6,6 +6,11 @@ const INITIAL_STATE: LPState = {
   lp: {},
   error: false,
   loading: true,
+  loadingImport: false,
+  loadingDuplicate: false,
+  exportLP: null,
+  importLP: null,
+  duplicateLP: null,
 }
 
 const reducer: Reducer<LPState> = (state = INITIAL_STATE, action: any) => {
@@ -55,6 +60,31 @@ const reducer: Reducer<LPState> = (state = INITIAL_STATE, action: any) => {
       return {...state, loading: false, error: false, myLPs: state.myLPs.filter((item) => item.id !== action.payload.data.id)}
     case LPSTypes.DELETE_LP_FAILURE:
       return {...state, loading: false, error: action.payload, myLPs: []}
+
+    //Export
+    case LPSTypes.EXPORT_LP_REQUEST:
+      return {...state, exportLP: null}
+    case LPSTypes.EXPORT_LP_SUCCESS:
+      return {...state, loading: false, error: false, exportLP: action.payload.data}
+    case LPSTypes.EXPORT_LP_FAILURE:
+      return {...state, loading: false, error: action.payload, exportLP: null}
+
+    //Import
+    case LPSTypes.IMPORT_LP_REQUEST:
+      return {...state, importLP: null, loadingImport: true}
+    case LPSTypes.IMPORT_LP_SUCCESS:
+      return {...state, loadingImport: false, error: false, importLP: action.payload.data, myLPs: [action.payload.data, ...state.myLPs]}
+    case LPSTypes.IMPORT_LP_FAILURE:
+      return {...state, loadingImport: false, error: action.payload, importLP: null}
+
+    //Duplicate
+    case LPSTypes.DUPLICATE_LP_REQUEST:
+      return {...state, duplicateLP: null, loadingDuplicate: true}
+    case LPSTypes.DUPLICATE_LP_SUCCESS:
+      return {...state, loadingDuplicate: false, error: false, myLPs: [action.payload.data, ...state.myLPs]}
+    case LPSTypes.DUPLICATE_LP_FAILURE:
+      return {...state, loadingDuplicate: false, error: action.payload, duplicateLP: null}
+
     default:
       return state
   }

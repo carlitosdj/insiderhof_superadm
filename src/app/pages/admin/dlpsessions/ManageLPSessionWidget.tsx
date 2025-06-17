@@ -24,14 +24,77 @@ import {
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
+// Config Display Component
+const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
+  if (!config) {
+    return (
+      <span className="text-muted fw-bold fs-7">
+        Sem configuração
+      </span>
+    );
+  }
+
+  try {
+    const parsedConfig = typeof config === 'string' 
+      ? JSON.parse(config) 
+      : config;
+    
+    if (typeof parsedConfig === 'object' && parsedConfig !== null) {
+      const entries = Object.entries(parsedConfig);
+      
+      if (entries.length === 0) {
+        return (
+          <span className="text-muted fw-bold fs-7">
+            Sem configuração
+          </span>
+        );
+      }
+      
+      return (
+        <div className="d-flex flex-column gap-1">
+          {entries.slice(0, 2).map(([key, value], index) => (
+            <div key={index} className="d-flex align-items-center">
+              <span className="badge badge-light-primary fs-8 me-1">
+                {key}
+              </span>
+              <span className="text-gray-600 fs-7">
+                {String(value)}
+              </span>
+            </div>
+          ))}
+          {entries.length > 2 && (
+            <span className="text-muted fs-8">
+              +{entries.length - 2} mais...
+            </span>
+          )}
+        </div>
+      );
+    }
+  } catch (error) {
+    // If JSON parsing fails, show as string
+  }
+  
+  return (
+    <span className="text-muted fw-bold fs-7">
+      {typeof config === 'string' 
+        ? config.length > 50 
+          ? config.substring(0, 50) + '...'
+          : config
+        : 'Configuração inválida'
+      }
+    </span>
+  );
+};
+
 type Props = {
   className: string;
   lpsessions: LPSessionState;
 };
 
-const ManageLPSessionWidget: React.FC<
-  React.PropsWithChildren<Props>
-> = ({ className, lpsessions }) => {
+const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
+  className,
+  lpsessions,
+}) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LPSession>({});
@@ -52,9 +115,9 @@ const ManageLPSessionWidget: React.FC<
     setShow(true);
   };
 
-  const landingPage = () => {
-    navigate("/landingpage/" + lpId);
-  };
+  // const landingPage = () => {
+  //   navigate("/landingpage/" + lpId);
+  // };
 
   const updateComponent = (child: LPSession) => {
     setAction("updateComponent");
@@ -82,9 +145,7 @@ const ManageLPSessionWidget: React.FC<
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
       children.map((child) => {
-        dispatch(
-          updateLPSessionRequest({ id: child.id, order: child.order })
-        );
+        dispatch(updateLPSessionRequest({ id: child.id, order: child.order }));
       });
       //seta a lista de old para o novo:
       setOldChildren(children);
@@ -96,6 +157,7 @@ const ManageLPSessionWidget: React.FC<
     setShow(true);
     setChild(child);
   };
+
 
   return (
     <>
@@ -132,10 +194,7 @@ const ManageLPSessionWidget: React.FC<
             ""
           )}
           {action === "createComponent" ? (
-            <Create
-              handleClose={handleClose}
-              lpId={Number(lpId)}
-            />
+            <Create handleClose={handleClose} lpId={Number(lpId)} />
           ) : (
             ""
           )}
@@ -157,31 +216,40 @@ const ManageLPSessionWidget: React.FC<
               Sessões nessa fase
             </span>
           </h3>
-          <div
-            className="card-toolbar"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-trigger="hover"
-            title="Click to add a user"
-          >
-            <a
-              href="#!"
-              className="btn btn-primary"
-              onClick={() => createComponent()}
+          <div className="d-flex justify-content-end align-items-center gap-2">
+            <div
+              className="card-toolbar"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-trigger="hover"
+              title="Click to add a user"
             >
-              <KTIcon iconName="plus" className="fs-2" />
-              Nova sessão
-            </a>
-            
+              <a
+                href="#!"
+                className="btn btn-primary"
+                onClick={() => createComponent()}
+              >
+                <KTIcon iconName="plus" className="fs-2" />
+                Nova sessão
+              </a>
+            </div>
 
-            {/* <a
-              href="#!"
-              className="btn btn-primary"
-              onClick={() => landingPage()}
+            {/* <div
+              className="card-toolbar"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-trigger="hover"
+              title="Click to add a user"
             >
-              <KTIcon iconName="plus" className="fs-2" />
-              Landing Page
-            </a> */}
+              <a
+                href="#!"
+                className="btn btn-secondary"
+                onClick={() => exportLandingPage()}
+              >
+                <KTIcon iconName="file-down" className="fs-2" />
+                Exportar Landing page
+              </a>
+            </div> */}
           </div>
         </div>
 
@@ -194,6 +262,7 @@ const ManageLPSessionWidget: React.FC<
                   <th className="min-w-150px">TÍTULO</th>
                   <th className="min-w-150px">SUBTÍTULO</th>
                   <th className="min-w-100px">TIPO</th>
+                  <th className="min-w-100px">CONFIG</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -203,12 +272,8 @@ const ManageLPSessionWidget: React.FC<
                 //axis='y'
                 values={lpsessions.myLPSessions}
                 onReorder={reorder}
-                onTap={(e) =>
-                  reorderToSave(lpsessions.myLPSessions)
-                }
-                onMouseUp={(e) =>
-                  reorderToSave(lpsessions.myLPSessions)
-                }
+                onTap={(e) => reorderToSave(lpsessions.myLPSessions)}
+                onMouseUp={(e) => reorderToSave(lpsessions.myLPSessions)}
                 style={{ touchAction: "none" }}
               >
                 <AnimatePresence>
@@ -239,7 +304,14 @@ const ManageLPSessionWidget: React.FC<
                               <div className="d-flex align-items-center border-0">
                                 <div>
                                   <Link
-                                    to={"/lpfeatures/" + launchPhaseId + "/" + lpId + "/" + child.id}
+                                    to={
+                                      "/lpfeatures/" +
+                                      launchPhaseId +
+                                      "/" +
+                                      lpId +
+                                      "/" +
+                                      child.id
+                                    }
                                     style={{ display: "flex" }}
                                     className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
                                   >
@@ -254,7 +326,14 @@ const ManageLPSessionWidget: React.FC<
                               <div className="d-flex align-items-center border-0">
                                 <div>
                                   <Link
-                                    to={"/launchhasoffers/" + child.id}
+                                    to={
+                                      "/lpfeatures/" +
+                                      launchPhaseId +
+                                      "/" +
+                                      lpId +
+                                      "/" +
+                                      child.id
+                                    }
                                     style={{ display: "flex" }}
                                     className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
                                   >
@@ -275,6 +354,10 @@ const ManageLPSessionWidget: React.FC<
                             </td>
 
                             <td>
+                              <ConfigDisplay config={child.config} />
+                            </td>
+
+                            <td>
                               <div className="d-flex justify-content-end flex-shrink-0">
                                 {/* <a
                                   href="#!"
@@ -288,6 +371,7 @@ const ManageLPSessionWidget: React.FC<
                                     iconType="outline"
                                   />
                                 </a> */}
+                                
                                 <a
                                   href="#!"
                                   onClick={() => updateComponent(child)}

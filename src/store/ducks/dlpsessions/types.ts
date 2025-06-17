@@ -53,6 +53,7 @@ export interface LPSession {
   createdAt?: Date | undefined 
   updatedAt?: Date | undefined
   status?: string | undefined
+  config?: any | undefined
 }
 /**
  * State type

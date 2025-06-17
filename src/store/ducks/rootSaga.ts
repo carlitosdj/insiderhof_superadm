@@ -95,7 +95,8 @@ import { loadLPSession, createLPSession, updateLPSession, deleteLPSession, loadM
 import { LPFeaturesTypes } from './dlpfeatures/types'
 import { loadMyLPFeatures, loadLPFeature, createLPFeature, updateLPFeature, deleteLPFeature } from './dlpfeatures/sagas'
 import { LPSTypes } from './dlps/types'
-import { loadMyLPs, loadLP, createLP, updateLP, deleteLP } from './dlps/sagas'
+import { loadMyLPs, loadLP, createLP, updateLP, deleteLP, importLP, duplicateLP } from './dlps/sagas'
+import { exportLP } from './dlps/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -271,6 +272,9 @@ export default function* rootSaga() {
     takeLatest(LPSTypes.CREATE_LP_REQUEST, createLP),
     takeLatest(LPSTypes.UPDATE_LP_REQUEST, updateLP),
     takeLatest(LPSTypes.DELETE_LP_REQUEST, deleteLP),
+    takeLatest(LPSTypes.EXPORT_LP_REQUEST, exportLP),
+    takeLatest(LPSTypes.IMPORT_LP_REQUEST, importLP),
+    takeLatest(LPSTypes.DUPLICATE_LP_REQUEST, duplicateLP),
 
     //LPSession
     takeLatest(LPSessionsTypes.LOAD_LPSESSION_REQUEST, loadLPSession),
@@ -285,6 +289,9 @@ export default function* rootSaga() {
     takeLatest(LPFeaturesTypes.CREATE_LPFEATURE_REQUEST, createLPFeature),
     takeLatest(LPFeaturesTypes.UPDATE_LPFEATURE_REQUEST, updateLPFeature),
     takeLatest(LPFeaturesTypes.DELETE_LPFEATURE_REQUEST, deleteLPFeature),
+
+
+    
 
     
   ])

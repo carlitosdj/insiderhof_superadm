@@ -234,14 +234,8 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               onPointerDownCapture={(e) => e.stopPropagation()}
                             >
                               <div className="d-flex align-items-center border-0">
-                                <div>
-                                  <Link
-                                    to={"/launchhasoffers/" + child.id}
-                                    style={{ display: "flex" }}
-                                    className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
-                                  >
-                                    {child.number}
-                                  </Link>
+                                <div className="text-gray-900 fw-bold d-block fs-6">
+                                  {child.number}
                                 </div>
                               </div>
                             </td>
@@ -249,14 +243,8 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               onPointerDownCapture={(e) => e.stopPropagation()}
                             >
                               <div className="d-flex align-items-center border-0">
-                                <div>
-                                  <Link
-                                    to={"/launchhasoffers/" + child.id}
-                                    style={{ display: "flex" }}
-                                    className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
-                                  >
-                                    {child.title}
-                                  </Link>
+                                <div className="text-gray-900 fw-bold d-block fs-6">
+                                  {child.title}
                                 </div>
                               </div>
                             </td>

@@ -35,6 +35,21 @@ export enum LPSTypes {
   DELETE_LP_REQUEST = '@lps/DELETE_LP_REQUEST',
   DELETE_LP_SUCCESS = '@lps/DELETE_LP_SUCCESS',
   DELETE_LP_FAILURE = '@lps/DELETE_LP_FAILURE',
+
+  //Export
+  EXPORT_LP_REQUEST = '@lps/EXPORT_LP_REQUEST',
+  EXPORT_LP_SUCCESS = '@lps/EXPORT_LP_SUCCESS',
+  EXPORT_LP_FAILURE = '@lps/EXPORT_LP_FAILURE',
+
+  //Import
+  IMPORT_LP_REQUEST = '@lps/IMPORT_LP_REQUEST',
+  IMPORT_LP_SUCCESS = '@lps/IMPORT_LP_SUCCESS',
+  IMPORT_LP_FAILURE = '@lps/IMPORT_LP_FAILURE',
+
+  //Duplicate
+  DUPLICATE_LP_REQUEST = '@lps/DUPLICATE_LP_REQUEST',
+  DUPLICATE_LP_SUCCESS = '@lps/DUPLICATE_LP_SUCCESS',
+  DUPLICATE_LP_FAILURE = '@lps/DUPLICATE_LP_FAILURE',
 }
 
 /**
@@ -59,5 +74,10 @@ export interface LPState {
   readonly myLPs: LP[]
   readonly lp: LP
   readonly loading: boolean
+  readonly loadingImport: boolean
+  readonly loadingDuplicate: boolean
   readonly error: boolean
+  readonly exportLP: LP | null
+  readonly importLP: LP | null
+  readonly duplicateLP: LP | null
 }

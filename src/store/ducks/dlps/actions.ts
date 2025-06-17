@@ -28,3 +28,18 @@ export const updateLPFailure = (err: any[]) => action(LPSTypes.UPDATE_LP_FAILURE
 export const deleteLPRequest = (id: number) => action(LPSTypes.DELETE_LP_REQUEST, id)
 export const deleteLPSuccess = (data: LP) => action(LPSTypes.DELETE_LP_SUCCESS, data)
 export const deleteLPFailure = (err: any[]) => action(LPSTypes.DELETE_LP_FAILURE, err)
+
+//Export
+export const exportLPRequest = (lpId: number) => action(LPSTypes.EXPORT_LP_REQUEST, lpId)
+export const exportLPSuccess = (data: LP) => action(LPSTypes.EXPORT_LP_SUCCESS, data)
+export const exportLPFailure = (err: any[]) => action(LPSTypes.EXPORT_LP_FAILURE, err)
+
+//Import
+export const importLPRequest = (data: LP) => action(LPSTypes.IMPORT_LP_REQUEST, data)
+export const importLPSuccess = (data: LP) => action(LPSTypes.IMPORT_LP_SUCCESS, data)
+export const importLPFailure = (err: any[]) => action(LPSTypes.IMPORT_LP_FAILURE, err)
+
+//Duplicate
+export const duplicateLPRequest = (lpId: number) => action(LPSTypes.DUPLICATE_LP_REQUEST, lpId)
+export const duplicateLPSuccess = (data: LP) => action(LPSTypes.DUPLICATE_LP_SUCCESS, data)
+export const duplicateLPFailure = (err: any[]) => action(LPSTypes.DUPLICATE_LP_FAILURE, err)
