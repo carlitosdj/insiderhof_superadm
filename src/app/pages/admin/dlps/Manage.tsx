@@ -47,7 +47,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   useEffect(() => {
     console.log("launchPhaseId", launchPhaseId);
     dispatch(loadMyLPsRequest(Number(launchPhaseId))); //Puxa componentes com seus filhos primários
-  }, [dispatch]);
+  }, [dispatch, launchPhaseId,]);
 
   console.log("lps", lps);
   if (lps.loading) return <Loading />;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 import Create from "./create";
@@ -19,6 +19,7 @@ import {
   importLPRequest,
   reorderLPsRequest,
   updateLPRequest,
+  clearExportLP,
 } from "../../../../store/ducks/dlps/actions";
 
 const MOMENT = require("moment");
@@ -157,40 +158,21 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   // Watch for export data changes
   useEffect(() => {
-    //console.log("🔍 useEffect triggered - exportLP data:", lps.exportLP);
-
     if (lps.exportLP && lps.exportLP !== null) {
-      //console.log("✅ Export data received, processing...");
-
-      // Clean the export data
       const cleanedData = removeIdsAndTimestamps(lps.exportLP);
-      //console.log("🧹 Cleaned data:", cleanedData);
-
-      // Create export data structure
-      const exportData = {
-        landingPage: cleanedData,
-        //exportDate: new Date().toISOString(),
-        //totalSessions: cleanedData.sessions?.length || 0,
-        //totalFeatures: cleanedData.sessions?.reduce((acc: number, session: any) =>
-        //  acc + (session.features?.length || 0), 0) || 0
-      };
-
-      // Generate filename
-      const date = new Date().toISOString().split("T")[0];
-      const time = new Date().toTimeString().split(" ")[0].replace(/:/g, "-");
-      const filename = `landing-page-export-${date}-${time}.json`;
-
-      // Export to file
-      //console.log("📁 About to call exportToFile with filename:", filename);
+      const exportData = { landingPage: cleanedData };
+      // Get landing page name
+      const lpName = lps.exportLP.name ? lps.exportLP.name.replace(/[^a-zA-Z0-9-_]/g, "-") : 'LandingPage';
+      // Format date as dd-mm-yyyy
+      const now = new Date();
+      const dateStr = `${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth()+1).padStart(2, '0')}-${now.getFullYear()}`;
+      // Format time as HH-MM-SS
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
+      const filename = `InsiderHOF-${lpName}-${dateStr}-${timeStr}.json`;
       exportToFile(exportData, filename);
-
-      //console.log("✅ Landing page exported successfully", cleanedData);
-    } else if (lps.exportLP === null) {
-      //console.log("⚠️ Export data is null");
-    } else if (!lps.exportLP) {
-      //console.log("⚠️ Export data is undefined");
+      dispatch(clearExportLP());
     }
-  }, [lps.exportLP]);
+  }, [lps.exportLP, dispatch]);
 
   // Watch for import data changes
   // useEffect(() => {

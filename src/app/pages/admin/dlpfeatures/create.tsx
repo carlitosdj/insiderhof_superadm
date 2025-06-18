@@ -18,12 +18,14 @@ interface handleCloseProps {
 }
 
 const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
-  const [number, setNumber] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [delay, setDelay] = useState("");
-  const [image, setImage] = useState("");
-  const [video, setVideo] = useState("");
+  const [config, setConfig] = useState({
+    number: "",
+    title: "",
+    description: "",
+    delay: "",
+    image: "",
+    video: "",
+  });
   const [order, setOrder] = useState(0);
   const [status, setStatus] = useState("1");
   const [validated, setValidated] = useState(false);
@@ -31,6 +33,10 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
 
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
+
+  const handleConfigChange = (key: string, value: string) => {
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -40,22 +46,19 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
     }
     setValidated(true);
 
-    //if (title) {
+    // Remove keys with empty values from config
+    const filteredConfig = Object.fromEntries(
+      Object.entries(config).filter(([_, value]) => value && value !== "")
+    );
+
     const item: LPFeature = {
       lpSessionId,
-      number,
-      title,
-      description,
-      delay,
-      image,
-      video,
       order,
       status,
+      config: JSON.stringify(filteredConfig),
     };
-    console.log("item", item);
     dispatch(createLPFeatureRequest(item));
     handleClose();
-    //}
   };
 
   return (
@@ -68,8 +71,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Control
                 className="form-control form-control-lg form-control-solid"
                 placeholder="Digite o número da feature"
-                value={number}
-                onChange={(e: any) => setNumber(e.target.value)}
+                value={config.number}
+                onChange={(e) => handleConfigChange("number", e.target.value)}
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o número
@@ -82,9 +85,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Control
                 className="form-control form-control-lg form-control-solid"
                 placeholder="Digite o título da feature"
-                //required
-                value={title}
-                onChange={(e: any) => setTitle(e.target.value)}
+                value={config.title}
+                onChange={(e) => handleConfigChange("title", e.target.value)}
                 autoFocus
               />
               <Form.Control.Feedback type="invalid">
@@ -98,8 +100,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               {!ckEditor ? (
                 <Form.Control
                   placeholder="Digite a descrição da feature"
-                  value={description}
-                  onChange={(e: any) => setDescription(e.target.value)}
+                  value={config.description}
+                  onChange={(e) => handleConfigChange("description", e.target.value)}
                   className="form-control form-control-lg form-control-solid"
                   as="textarea"
                   rows={3}
@@ -107,11 +109,10 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               ) : (
                 <CKEditor
                   config={{ versionCheck: false }}
-                  initData={description}
-                  onChange={(e: any) => setDescription(e.editor.getData())}
+                  initData={config.description}
+                  onChange={(e: any) => handleConfigChange("description", e.editor.getData())}
                 />
               )}
-
               <Form.Control.Feedback type="invalid">
                 Por favor informe a descrição
               </Form.Control.Feedback>
@@ -122,8 +123,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Delay (ms)</Form.Label>
               <Form.Control
                 placeholder="Digite o delay em milissegundos"
-                value={delay}
-                onChange={(e: any) => setDelay(e.target.value)}
+                value={config.delay}
+                onChange={(e) => handleConfigChange("delay", e.target.value)}
                 className="form-control form-control-lg form-control-solid"
                 type="text"
               />
@@ -137,8 +138,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Imagem</Form.Label>
               <Form.Control
                 placeholder="Digite o caminho da imagem"
-                value={image}
-                onChange={(e: any) => setImage(e.target.value)}
+                value={config.image}
+                onChange={(e) => handleConfigChange("image", e.target.value)}
                 className="form-control form-control-lg form-control-solid"
               />
               <Form.Control.Feedback type="invalid">
@@ -151,8 +152,8 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Vídeo</Form.Label>
               <Form.Control
                 placeholder="Digite o caminho do vídeo"
-                value={video}
-                onChange={(e: any) => setVideo(e.target.value)}
+                value={config.video}
+                onChange={(e) => handleConfigChange("video", e.target.value)}
                 className="form-control form-control-lg form-control-solid"
               />
               <Form.Control.Feedback type="invalid">
@@ -166,7 +167,7 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
               <Form.Control
                 placeholder="Digite a ordem da feature"
                 value={order}
-                onChange={(e: any) => setOrder(Number(e.target.value))}
+                onChange={(e) => setOrder(Number(e.target.value))}
                 className="form-control form-control-lg form-control-solid"
                 type="number"
               />
@@ -188,7 +189,6 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
           </Button>
         </div>
       </Form>
-      {/* Deixar o button fora do form.. */}
     </>
   );
 };

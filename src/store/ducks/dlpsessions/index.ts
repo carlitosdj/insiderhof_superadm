@@ -34,7 +34,7 @@ const reducer: Reducer<LPSessionState> = (state = INITIAL_STATE, action: any) =>
     case LPSessionsTypes.CREATE_LPSESSION_REQUEST:
       return {...state}
     case LPSessionsTypes.CREATE_LPSESSION_SUCCESS:
-      return {...state, loading: false, error: false, myLPSessions: [...state.myLPSessions, action.payload.data]}
+      return {...state, loading: false, error: false, myLPSessions: [action.payload.data, ...state.myLPSessions]}
     case LPSessionsTypes.CREATE_LPSESSION_FAILURE:
       return {...state, loading: false, error: action.payload, myLPSessions: []}
 

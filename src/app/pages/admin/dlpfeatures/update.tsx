@@ -22,13 +22,14 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const dispatch = useDispatch();
 
   const [validated, setValidated] = useState(false);
-  // ✅ Removido undefined dos tipos - sempre strings/números
-  const [number, setNumber] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [delay, setDelay] = useState<string>("");
-  const [image, setImage] = useState<string>("");
-  const [video, setVideo] = useState<string>("");
+  const [config, setConfig] = useState({
+    number: "",
+    title: "",
+    description: "",
+    delay: "",
+    image: "",
+    video: "",
+  });
   const [order, setOrder] = useState<number>(0);
   const [status, setStatus] = useState<string>("1");
   const [ckEditor, setCkEditor] = useState(true);
@@ -39,26 +40,38 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
       const timer = setTimeout(() => {
         setShouldRenderEditor(true);
       }, 100);
-
       return () => clearTimeout(timer);
     } else {
       setShouldRenderEditor(false);
     }
   }, [ckEditor]);
 
-  // ✅ Garantindo que todos os valores sejam sempre definidos
   useEffect(() => {
     if (child) {
-      setNumber(child.number || "");
-      setTitle(child.title || "");
-      setDescription(child.description || "");
-      setDelay(child.delay || "");
-      setImage(child.image || "");
-      setVideo(child.video || "");
+      let configObj: any = {};
+      if (child.config) {
+        try {
+          configObj = typeof child.config === 'string' ? JSON.parse(child.config) : child.config;
+        } catch (e) {
+          configObj = {};
+        }
+      }
+      setConfig({
+        number: configObj.number ?? "",
+        title: configObj.title ?? "",
+        description: configObj.description ?? "",
+        delay: configObj.delay ?? "",
+        image: configObj.image ?? "",
+        video: configObj.video ?? "",
+      });
       setOrder(child.order || 0);
       setStatus(child.status || "1");
     }
   }, [child]);
+
+  const handleConfigChange = (key: string, value: string) => {
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -68,18 +81,17 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     }
     setValidated(true);
 
+    // Remove keys with empty values from config
+    const filteredConfig = Object.fromEntries(
+      Object.entries(config).filter(([_, value]) => value && value !== "")
+    );
+
     const componentToUpdate: LPFeature = {
       id: child.id,
-      number,
-      title,
-      description,
-      delay,
-      image,
-      video,
       order,
       status,
+      config: JSON.stringify(filteredConfig),
     };
-    console.log("ver", componentToUpdate);
     dispatch(updateLPFeatureRequest(componentToUpdate));
     handleClose();
   };
@@ -94,8 +106,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Control
                 className="form-control form-control-lg form-control-solid"
                 placeholder="Digite o número da feature"
-                value={number} // ✅ Sempre string
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNumber(e.target.value)}
+                value={config.number}
+                onChange={(e) => handleConfigChange("number", e.target.value)}
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o número da feature
@@ -107,8 +119,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Título</Form.Label>
               <Form.Control
                 placeholder="Digite o título da feature"
-                value={title} // ✅ Sempre string
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+                value={config.title}
+                onChange={(e) => handleConfigChange("title", e.target.value)}
                 name="title"
                 className="form-control form-control-lg form-control-solid"
               />
@@ -123,8 +135,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               {!ckEditor ? (
                 <Form.Control
                   placeholder="Digite a descrição da feature"
-                  value={description} // ✅ Sempre string
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+                  value={config.description}
+                  onChange={(e) => handleConfigChange("description", e.target.value)}
                   className="form-control form-control-lg form-control-solid"
                   as="textarea"
                   rows={3}
@@ -139,8 +151,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                       forcePasteAsPlainText: false,
                       removeDialogTabs: "link:advanced;link:target",
                     }}
-                    initData={description}
-                    onChange={(e: any) => setDescription(e.editor.getData())}
+                    initData={config.description}
+                    onChange={(e: any) => handleConfigChange("description", e.editor.getData())}
                   />
                 </div>
               ) : (
@@ -156,8 +168,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Delay (ms)</Form.Label>
               <Form.Control
                 placeholder="Digite o delay em milissegundos"
-                value={delay} // ✅ Sempre string
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDelay(e.target.value)}
+                value={config.delay}
+                onChange={(e) => handleConfigChange("delay", e.target.value)}
                 name="delay"
                 className="form-control form-control-lg form-control-solid"
                 type="text"
@@ -172,8 +184,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Imagem</Form.Label>
               <Form.Control
                 placeholder="Digite o caminho da imagem"
-                value={image} // ✅ Sempre string
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setImage(e.target.value)}
+                value={config.image}
+                onChange={(e) => handleConfigChange("image", e.target.value)}
                 name="image"
                 className="form-control form-control-lg form-control-solid"
               />
@@ -187,8 +199,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Vídeo</Form.Label>
               <Form.Control
                 placeholder="Digite o caminho do vídeo"
-                value={video} // ✅ Sempre string
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVideo(e.target.value)}
+                value={config.video}
+                onChange={(e) => handleConfigChange("video", e.target.value)}
                 name="video"
                 className="form-control form-control-lg form-control-solid"
               />
@@ -202,8 +214,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               <Form.Label className="fw-bold fs-6 mb-5">Ordem</Form.Label>
               <Form.Control
                 placeholder="Digite a ordem da feature"
-                value={order} // ✅ Sempre number
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrder(Number(e.target.value) || 0)}
+                value={order}
+                onChange={(e) => setOrder(Number(e.target.value) || 0)}
                 name="order"
                 className="form-control form-control-lg form-control-solid"
                 type="number"

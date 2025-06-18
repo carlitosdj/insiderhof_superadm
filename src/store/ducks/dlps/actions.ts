@@ -34,6 +34,9 @@ export const exportLPRequest = (lpId: number) => action(LPSTypes.EXPORT_LP_REQUE
 export const exportLPSuccess = (data: LP) => action(LPSTypes.EXPORT_LP_SUCCESS, data)
 export const exportLPFailure = (err: any[]) => action(LPSTypes.EXPORT_LP_FAILURE, err)
 
+// Add this action to clear exportLP after export
+export const clearExportLP = () => action('CLEAR_EXPORT_LP');
+
 //Import
 export const importLPRequest = (data: LP) => action(LPSTypes.IMPORT_LP_REQUEST, data)
 export const importLPSuccess = (data: LP) => action(LPSTypes.IMPORT_LP_SUCCESS, data)

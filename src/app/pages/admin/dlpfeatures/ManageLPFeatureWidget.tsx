@@ -31,6 +31,67 @@ type Props = {
   lpfeatures: LPFeatureState;
 };
 
+// Config Display Component
+const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
+  if (!config) {
+    return (
+      <span className="text-muted fw-bold fs-7">
+        Sem configuração
+      </span>
+    );
+  }
+
+  try {
+    const parsedConfig = typeof config === 'string' 
+      ? JSON.parse(config) 
+      : config;
+    
+    if (typeof parsedConfig === 'object' && parsedConfig !== null) {
+      const entries = Object.entries(parsedConfig);
+      
+      if (entries.length === 0) {
+        return (
+          <span className="text-muted fw-bold fs-7">
+            Sem configuração
+          </span>
+        );
+      }
+      return (
+        <div className="d-flex flex-column gap-1">
+          {entries.slice(0, 6).map(([key, value], index) => (
+            <div key={index} className="d-flex align-items-center">
+              <span className="badge badge-light-primary fs-8 me-1">
+                {key}
+              </span>
+              <span className="text-gray-600 fs-7">
+                {String(value)}
+              </span>
+            </div>
+          ))}
+          {entries.length > 6 && (
+            <span className="text-muted fs-8">
+              +{entries.length - 6} mais...
+            </span>
+          )}
+        </div>
+      );
+    }
+  } catch (error) {
+    // If JSON parsing fails, show as string
+  }
+  
+  return (
+    <span className="text-muted fw-bold fs-7">
+      {typeof config === 'string' 
+        ? config.length > 50 
+          ? config.substring(0, 50) + '...'
+          : config
+        : 'Configuração inválida'
+      }
+    </span>
+  );
+};
+
 const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   lpfeatures,
@@ -190,11 +251,8 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
             <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
               <thead>
                 <tr className="fw-bolder text-muted">
-                  <th className="min-w-100px">NÚMERO</th>
-                  <th className="min-w-150px">TÍTULO</th>
-                  <th className="min-w-200px">DESCRIÇÃO</th>
-                  <th className="min-w-100px">IMAGEM</th>
-                  <th className="min-w-100px">VÍDEO</th>
+                  <th className="min-w-100px">CONFIG</th>
+                  <th className="min-w-100px">ORDEM</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -235,35 +293,15 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             >
                               <div className="d-flex align-items-center border-0">
                                 <div className="text-gray-900 fw-bold d-block fs-6">
-                                  {child.number}
+                                  <ConfigDisplay config={child.config} />
                                 </div>
                               </div>
                             </td>
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              <div className="d-flex align-items-center border-0">
-                                <div className="text-gray-900 fw-bold d-block fs-6">
-                                  {child.title}
-                                </div>
+                            <td>
+                              <div className="d-flex justify-content-end flex-shrink-0">
+                                {child.order}
                               </div>
                             </td>
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              {/* {child.description} */}
-                              {parse(
-                                DOMPurify.sanitize(child.description || "")
-                              )}
-                            </td>
-
-                            {/* <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              {child.delay}
-                            </td> */}
-                            <td>{child.image}</td>
-                            <td>{child.video}</td>
                             <td>
                               <div className="d-flex justify-content-end flex-shrink-0">
                                 {/* <a
@@ -294,7 +332,7 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     if (
                                       window.confirm(
                                         "Deseja realmente excluir: " +
-                                          child.title +
+                                          child.config +
                                           "?"
                                       )
                                     )

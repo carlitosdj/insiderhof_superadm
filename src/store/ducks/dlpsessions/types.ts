@@ -43,13 +43,10 @@ export enum LPSessionsTypes {
 // User Imported from Me
 export interface LPSession {
   id?: number | undefined
-  name?: string | undefined
-  type?: string | undefined
   lpId?: number | undefined
-  title?: string | undefined
-  subtitle?: string | undefined
-  delay?: string | undefined
+  name?: string | undefined
   order?: number | undefined
+  type?: string | undefined
   createdAt?: Date | undefined 
   updatedAt?: Date | undefined
   status?: string | undefined

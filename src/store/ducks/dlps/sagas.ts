@@ -95,7 +95,6 @@ export function* deleteLP(payload: ReturnType<typeof deleteLPRequest>) {
 export function* exportLP(payload: ReturnType<typeof exportLPRequest>) {
   try {
     //console.log("🔄 exportLP saga started with payload:", payload);
-    put(exportLPRequest(payload.payload))
     const response: LP = yield call(api.get, 'lp/export/' + payload.payload)
     //console.log("📡 API response:", response);
     yield put(exportLPSuccess(response))

@@ -52,7 +52,7 @@ const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
       
       return (
         <div className="d-flex flex-column gap-1">
-          {entries.slice(0, 2).map(([key, value], index) => (
+          {entries.slice(0, 6).map(([key, value], index) => (
             <div key={index} className="d-flex align-items-center">
               <span className="badge badge-light-primary fs-8 me-1">
                 {key}
@@ -62,9 +62,9 @@ const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
               </span>
             </div>
           ))}
-          {entries.length > 2 && (
+          {entries.length > 6 && (
             <span className="text-muted fs-8">
-              +{entries.length - 2} mais...
+              +{entries.length - 6} mais...
             </span>
           )}
         </div>
@@ -259,10 +259,9 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
               <thead>
                 <tr className="fw-bolder text-muted">
                   <th className="min-w-150px">NOME</th>
-                  <th className="min-w-150px">TÍTULO</th>
-                  <th className="min-w-150px">SUBTÍTULO</th>
-                  <th className="min-w-100px">TIPO</th>
                   <th className="min-w-100px">CONFIG</th>
+                  <th className="min-w-100px">ORDEM</th>
+                  <th className="min-w-100px">TIPO</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -320,43 +319,15 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 </div>
                               </div>
                             </td>
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              <div className="d-flex align-items-center border-0">
-                                <div>
-                                  <Link
-                                    to={
-                                      "/lpfeatures/" +
-                                      launchPhaseId +
-                                      "/" +
-                                      lpId +
-                                      "/" +
-                                      child.id
-                                    }
-                                    style={{ display: "flex" }}
-                                    className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
-                                  >
-                                    {child.title}
-                                  </Link>
-                                </div>
-                              </div>
-                            </td>
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              {child.subtitle}
-                            </td>
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              {child.type}
-                            </td>
-
                             <td>
                               <ConfigDisplay config={child.config} />
                             </td>
-
+                            <td>
+                              {child.order}
+                            </td>
+                            <td>
+                              {child.type}
+                            </td>
                             <td>
                               <div className="d-flex justify-content-end flex-shrink-0">
                                 {/* <a
@@ -388,7 +359,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     if (
                                       window.confirm(
                                         "Deseja realmente excluir: " +
-                                          child.title +
+                                          child.name +
                                           "?"
                                       )
                                     )

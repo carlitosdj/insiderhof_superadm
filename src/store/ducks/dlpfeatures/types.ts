@@ -44,12 +44,7 @@ export enum LPFeaturesTypes {
 export interface LPFeature {
   id?: number | undefined
   lpSessionId?: number | undefined
-  number?: string | undefined
-  title?: string | undefined
-  description?: string | undefined
-  delay?: string | undefined
-  image?: string | undefined
-  video?: string | undefined
+  config?: string | undefined
   order?: number | undefined
   createdAt?: Date | undefined 
   updatedAt?: Date | undefined

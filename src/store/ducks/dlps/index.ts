@@ -39,7 +39,7 @@ const reducer: Reducer<LPState> = (state = INITIAL_STATE, action: any) => {
     case LPSTypes.CREATE_LP_REQUEST:
       return {...state}
     case LPSTypes.CREATE_LP_SUCCESS:
-      return {...state, loading: false, error: false, myLPs: [...state.myLPs, action.payload.data]}
+      return {...state, loading: false, error: false, myLPs: [action.payload.data, ...state.myLPs]}
     case LPSTypes.CREATE_LP_FAILURE:
       return {...state, loading: false, error: action.payload, myLPs: []}
 
@@ -68,6 +68,8 @@ const reducer: Reducer<LPState> = (state = INITIAL_STATE, action: any) => {
       return {...state, loading: false, error: false, exportLP: action.payload.data}
     case LPSTypes.EXPORT_LP_FAILURE:
       return {...state, loading: false, error: action.payload, exportLP: null}
+    case 'CLEAR_EXPORT_LP':
+      return { ...state, exportLP: null };
 
     //Import
     case LPSTypes.IMPORT_LP_REQUEST:
