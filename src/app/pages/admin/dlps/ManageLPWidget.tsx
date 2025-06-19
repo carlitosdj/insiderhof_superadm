@@ -385,6 +385,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-150px">SLUG</th>
                   <th className="min-w-200px">DESCRIÇÃO</th>
                   <th className="min-w-100px">ORDEM</th>
+                  <th className="min-w-100px">STATUS</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -410,6 +411,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                   {lps.myLPs.length !== 0 &&
                     lps.myLPs?.map((child: LP, index: number) => {
+                      const isInactive = child.status === "0";
                       return (
                         <Reorder.Item
                           key={child.id}
@@ -418,6 +420,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
+                          className={isInactive ? "opacity-50" : ""}
                         >
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
                             <div className="d-flex align-items-center border-0">
@@ -430,7 +433,9 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     child.id
                                   }
                                   style={{ display: "flex" }}
-                                  className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
+                                  className={`fw-bold text-hover-primary d-block fs-6 ${
+                                    isInactive ? "text-muted" : "text-gray-900"
+                                  }`}
                                 >
                                   {child.name}
                                 </Link>
@@ -448,7 +453,9 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     child.id
                                   }
                                   style={{ display: "flex" }}
-                                  className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
+                                  className={`fw-bold text-hover-primary d-block fs-6 ${
+                                    isInactive ? "text-muted" : "text-gray-900"
+                                  }`}
                                 >
                                   {child.slug}
                                 </Link>
@@ -456,12 +463,24 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             </div>
                           </td>
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            {child.description}
+                            <span className={isInactive ? "text-muted" : ""}>
+                              {child.description}
+                            </span>
                           </td>
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            {child.order}
+                            <span className={isInactive ? "text-muted" : ""}>
+                              {child.order}
+                            </span>
                           </td>
-
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            <span className={`badge ${
+                              child.status === "1" 
+                                ? "badge-light-success" 
+                                : "badge-light-warning"
+                            }`}>
+                              {child.status === "1" ? "Ativo" : "Inativo"}
+                            </span>
+                          </td>
                           <td>
                             <div className="d-flex justify-content-end flex-shrink-0">
                               {/* <a

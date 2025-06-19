@@ -58,16 +58,16 @@ const ALLOWED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
   [SessionType.INVESTMENT]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.FAQ]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.ABOUT]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
-  [SessionType.BUTTON]: [ConfigKey.BTN_TEXT, ConfigKey.BTNTALK_TEXT, ConfigKey.BTNTALK_URL],
+  [SessionType.BUTTON]: [
+    ConfigKey.BTN_TEXT,
+    ConfigKey.BTNTALK_TEXT,
+    ConfigKey.BTNTALK_URL,
+  ],
 };
 
 // Mapping of required fields per session type
 const REQUIRED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
-  [SessionType.HERO]: [
-    ConfigKey.TITLE,
-    ConfigKey.SUBTITLE,
-    ConfigKey.BTN_TEXT,
-  ],
+  [SessionType.HERO]: [ConfigKey.TITLE, ConfigKey.SUBTITLE, ConfigKey.BTN_TEXT],
   [SessionType.FEATURE]: [ConfigKey.TITLE],
   [SessionType.PRODUCTS]: [ConfigKey.TITLE],
   [SessionType.INVESTMENT]: [ConfigKey.TITLE],
@@ -247,7 +247,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     }
 
     // Verifica se tem nome
-    if (!name || name.trim() === '') {
+    if (!name || name.trim() === "") {
       console.log("Form validation failed - name is required");
       event.stopPropagation();
       return;
@@ -256,10 +256,10 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     // Verifica se todos os campos obrigatórios do tipo atual estão preenchidos
     const requiredKeys = REQUIRED_CONFIGS_PER_TYPE[type as SessionType];
     console.log("Required keys for type", type, ":", requiredKeys);
-    
-    const missingRequired = requiredKeys.filter(key => !configValues[key]);
+
+    const missingRequired = requiredKeys.filter((key) => !configValues[key]);
     console.log("Missing required fields:", missingRequired);
-    
+
     if (missingRequired.length > 0) {
       console.log("Form validation failed - missing required fields");
       event.stopPropagation();
@@ -269,10 +269,10 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     // Filtra apenas as configurações permitidas para o tipo selecionado
     const allowedKeys = ALLOWED_CONFIGS_PER_TYPE[type as SessionType];
     console.log("Allowed keys for type", type, ":", allowedKeys);
-    
+
     const filteredConfig = Object.entries(configValues)
       .filter(([key]) => allowedKeys.includes(key as ConfigKey))
-      .filter(([key, value]) => value && value.trim() !== '') // Remove campos vazios
+      .filter(([key, value]) => value && value.trim() !== "") // Remove campos vazios
       .reduce((acc, [key, value]) => {
         acc[key as ConfigKey] = value;
         return acc;
@@ -290,7 +290,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     };
 
     console.log("Dispatching item:", item);
-    
+
     try {
       dispatch(createLPSessionRequest(item));
       console.log("Dispatch completed");
@@ -311,7 +311,13 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
 
     return allowedKeys.map((key) => (
       <Form.Group key={key} className="mb-4">
-        <Form.Label className={requiredKeys.includes(key) ? "required fw-bold fs-6" : "fw-bold fs-6"}>
+        <Form.Label
+          className={
+            requiredKeys.includes(key)
+              ? "required fw-bold fs-6"
+              : "fw-bold fs-6"
+          }
+        >
           {CONFIG_KEY_LABELS[key]}
         </Form.Label>
         <Form.Control
@@ -333,6 +339,22 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-12 py-lg-2 px-lg-6">
+            <Form.Group controlId="formStatus">
+              <Form.Label className="fw-bold fs-6 mb-5">Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={status}
+                onChange={(e: any) => setStatus(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o status
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
             <Form.Group controlId="formName" className="mb-4">
               <Form.Label className="required fw-bold fs-6">Nome</Form.Label>
               <Form.Control
@@ -346,6 +368,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
                 Por favor informe o nome
               </Form.Control.Feedback>
             </Form.Group>
+            <br />
 
             <Form.Group controlId="formType" className="mb-4">
               <Form.Label className="required fw-bold fs-6">Tipo</Form.Label>

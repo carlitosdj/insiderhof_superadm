@@ -25,10 +25,10 @@ const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
 // Config Display Component
-const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
+const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config, isInactive = false }) => {
   if (!config) {
     return (
-      <span className="text-muted fw-bold fs-7">
+      <span className={`fw-bold fs-7 ${isInactive ? "text-muted" : "text-muted"}`}>
         Sem configuração
       </span>
     );
@@ -44,7 +44,7 @@ const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
       
       if (entries.length === 0) {
         return (
-          <span className="text-muted fw-bold fs-7">
+          <span className={`fw-bold fs-7 ${isInactive ? "text-muted" : "text-muted"}`}>
             Sem configuração
           </span>
         );
@@ -57,7 +57,7 @@ const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
               <span className="badge badge-light-primary fs-8 me-1">
                 {key}
               </span>
-              <span className="text-gray-600 fs-7">
+              <span className={`fs-7 ${isInactive ? "text-muted" : "text-gray-600"}`}>
                 {String(value)}
               </span>
             </div>
@@ -75,7 +75,7 @@ const ConfigDisplay: React.FC<{ config: any }> = ({ config }) => {
   }
   
   return (
-    <span className="text-muted fw-bold fs-7">
+    <span className={`fw-bold fs-7 ${isInactive ? "text-muted" : "text-muted"}`}>
       {typeof config === 'string' 
         ? config.length > 50 
           ? config.substring(0, 50) + '...'
@@ -210,10 +210,10 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
             <span className="card-label fw-bolder fs-3 mb-1">
-              Sessões do Lançamento
+              Seções da Landing Page
             </span>
             <span className="text-muted mt-1 fw-bold fs-7">
-              Sessões nessa fase
+              Seções nessa página
             </span>
           </h3>
           <div className="d-flex justify-content-end align-items-center gap-2">
@@ -230,7 +230,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 onClick={() => createComponent()}
               >
                 <KTIcon iconName="plus" className="fs-2" />
-                Nova sessão
+                Nova seção
               </a>
             </div>
 
@@ -262,6 +262,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-100px">CONFIG</th>
                   <th className="min-w-100px">ORDEM</th>
                   <th className="min-w-100px">TIPO</th>
+                  <th className="min-w-100px">STATUS</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -279,8 +280,8 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   {lpsessions.myLPSessions.length === 0 && (
                     <tr className="border-0">
                       <td colSpan={4} className="text-center pt-10 ">
-                        Nenhuma sessão encontrada aqui. Adicione uma sessão
-                        clicando em "Nova sessão".
+                        Nenhuma seção encontrada aqui. Adicione uma seção
+                        clicando em "Nova seção".
                       </td>
                     </tr>
                   )}
@@ -288,6 +289,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   {lpsessions.myLPSessions.length !== 0 &&
                     lpsessions.myLPSessions?.map(
                       (child: LPSession, index: number) => {
+                        const isInactive = child.status === "0";
                         return (
                           <Reorder.Item
                             key={child.id}
@@ -296,6 +298,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
+                            className={isInactive ? "opacity-50" : ""}
                           >
                             <td
                               onPointerDownCapture={(e) => e.stopPropagation()}
@@ -312,7 +315,9 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                       child.id
                                     }
                                     style={{ display: "flex" }}
-                                    className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
+                                    className={`fw-bold text-hover-primary d-block fs-6 ${
+                                      isInactive ? "text-muted" : "text-gray-900"
+                                    }`}
                                   >
                                     {child.name}
                                   </Link>
@@ -320,13 +325,26 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               </div>
                             </td>
                             <td>
-                              <ConfigDisplay config={child.config} />
+                              <ConfigDisplay config={child.config} isInactive={isInactive} />
                             </td>
                             <td>
-                              {child.order}
+                              <span className={isInactive ? "text-muted" : ""}>
+                                {child.order}
+                              </span>
                             </td>
                             <td>
-                              {child.type}
+                              <span className={isInactive ? "text-muted" : ""}>
+                                {child.type}
+                              </span>
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <span className={`badge ${
+                                child.status === "1" 
+                                  ? "badge-light-success" 
+                                  : "badge-light-warning"
+                              }`}>
+                                {child.status === "1" ? "Ativo" : "Inativo"}
+                              </span>
                             </td>
                             <td>
                               <div className="d-flex justify-content-end flex-shrink-0">

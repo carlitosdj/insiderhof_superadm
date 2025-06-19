@@ -23,7 +23,7 @@ export const DefaultConfig: ILayout = {
       componentName: 'header',
       display: true,
       default: {
-        container: 'fluid',
+        container: 'fixed', //fluid
         containerClass: 'd-flex align-items-stretch justify-content-between',
         fixed: {
           desktop: true,
@@ -100,7 +100,7 @@ export const DefaultConfig: ILayout = {
     },
     content: {
       componentName: 'content',
-      container: 'fixed',
+      container: 'fluid', //fixed
     },
     footer: {
       componentName: 'footer',

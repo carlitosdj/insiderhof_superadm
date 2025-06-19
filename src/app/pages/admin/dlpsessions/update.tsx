@@ -57,16 +57,16 @@ const ALLOWED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
   [SessionType.INVESTMENT]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.FAQ]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.ABOUT]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
-  [SessionType.BUTTON]: [ConfigKey.BTN_TEXT, ConfigKey.BTNTALK_TEXT, ConfigKey.BTNTALK_URL],
+  [SessionType.BUTTON]: [
+    ConfigKey.BTN_TEXT,
+    ConfigKey.BTNTALK_TEXT,
+    ConfigKey.BTNTALK_URL,
+  ],
 };
 
 // Mapping of required fields per session type
 const REQUIRED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
-  [SessionType.HERO]: [
-    ConfigKey.TITLE,
-    ConfigKey.SUBTITLE,
-    ConfigKey.BTN_TEXT,
-  ],
+  [SessionType.HERO]: [ConfigKey.TITLE, ConfigKey.SUBTITLE, ConfigKey.BTN_TEXT],
   [SessionType.FEATURE]: [ConfigKey.TITLE],
   [SessionType.PRODUCTS]: [ConfigKey.TITLE],
   [SessionType.INVESTMENT]: [ConfigKey.TITLE],
@@ -273,7 +273,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     const allowedKeys = ALLOWED_CONFIGS_PER_TYPE[type as SessionType];
     const filteredConfig = Object.entries(configValues)
       .filter(([key]) => allowedKeys.includes(key as ConfigKey))
-      .filter(([key, value]) => value && value.trim() !== '') // Remove campos vazios
+      .filter(([key, value]) => value && value.trim() !== "") // Remove campos vazios
       .reduce((acc, [key, value]) => {
         acc[key as ConfigKey] = value;
         return acc;
@@ -303,7 +303,13 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
 
     return allowedKeys.map((key) => (
       <Form.Group key={key} className="mb-4">
-        <Form.Label className={requiredKeys.includes(key) ? "required fw-bold fs-6" : "fw-bold fs-6"}>
+        <Form.Label
+          className={
+            requiredKeys.includes(key)
+              ? "required fw-bold fs-6"
+              : "fw-bold fs-6"
+          }
+        >
           {CONFIG_KEY_LABELS[key]}
         </Form.Label>
         <Form.Control
@@ -325,6 +331,22 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-12 py-lg-2 px-lg-6">
+            <Form.Group controlId="formStatus">
+              <Form.Label className="fw-bold fs-6 mb-5">Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={status}
+                onChange={(e: any) => setStatus(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o status
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
             <Form.Group controlId="formName" className="mb-4">
               <Form.Label className="required fw-bold fs-6">Nome</Form.Label>
               <Form.Control
@@ -338,6 +360,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 Por favor informe o nome da sessão
               </Form.Control.Feedback>
             </Form.Group>
+            <br />
 
             <Form.Group controlId="formType" className="mb-4">
               <Form.Label className="required fw-bold fs-6">Tipo</Form.Label>

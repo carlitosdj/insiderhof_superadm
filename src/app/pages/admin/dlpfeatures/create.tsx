@@ -66,6 +66,22 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-12 py-lg-2 px-lg-6">
+            <Form.Group controlId="formStatus">
+              <Form.Label className="fw-bold fs-6 mb-5">Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={status}
+                onChange={(e: any) => setStatus(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o status
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
             <Form.Group controlId="formNumber">
               <Form.Label className="fw-bold fs-6 mb-5">Número</Form.Label>
               <Form.Control
@@ -101,7 +117,9 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
                 <Form.Control
                   placeholder="Digite a descrição da feature"
                   value={config.description}
-                  onChange={(e) => handleConfigChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleConfigChange("description", e.target.value)
+                  }
                   className="form-control form-control-lg form-control-solid"
                   as="textarea"
                   rows={3}
@@ -110,7 +128,9 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
                 <CKEditor
                   config={{ versionCheck: false }}
                   initData={config.description}
-                  onChange={(e: any) => handleConfigChange("description", e.editor.getData())}
+                  onChange={(e: any) =>
+                    handleConfigChange("description", e.editor.getData())
+                  }
                 />
               )}
               <Form.Control.Feedback type="invalid">
@@ -175,6 +195,7 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
                 Por favor informe a ordem
               </Form.Control.Feedback>
             </Form.Group>
+            <br />
           </div>
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">

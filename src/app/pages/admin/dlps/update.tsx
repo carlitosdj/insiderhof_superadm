@@ -62,7 +62,22 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-12 py-lg-2 px-lg-6">
-            
+            <Form.Group controlId="formStatus">
+              <Form.Label className="fw-bold fs-6 mb-5">Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={status}
+                onChange={(e: any) => setStatus(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o status
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
             <Form.Group controlId="formName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Nome
@@ -81,9 +96,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             <br />
 
             <Form.Group controlId="formSlug">
-              <Form.Label className="fw-bold fs-6 mb-5">
-                Slug
-              </Form.Label>
+              <Form.Label className="fw-bold fs-6 mb-5">Slug</Form.Label>
               <Form.Control
                 placeholder="Digite o slug da landing page"
                 value={slug}
@@ -98,9 +111,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             <br />
 
             <Form.Group controlId="formDescription">
-              <Form.Label className="fw-bold fs-6 mb-5">
-                Descrição
-              </Form.Label>
+              <Form.Label className="fw-bold fs-6 mb-5">Descrição</Form.Label>
               <Form.Control
                 placeholder="Digite a descrição da landing page"
                 value={description}
@@ -117,9 +128,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             <br />
 
             <Form.Group controlId="formOrder">
-              <Form.Label className="fw-bold fs-6 mb-5">
-                Ordem
-              </Form.Label>
+              <Form.Label className="fw-bold fs-6 mb-5">Ordem</Form.Label>
               <Form.Control
                 placeholder="Digite a ordem da landing page"
                 value={order}
@@ -132,7 +141,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 Por favor informe a ordem da landing page
               </Form.Control.Feedback>
             </Form.Group>
-            <br />
           </div>
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">

@@ -62,6 +62,8 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
             isSeparator: false,
             isActive: false,
           },
+          { title: "separador", path: "", isSeparator: true, isActive: false },
+          { title: "LANDING PAGES", path: "/lps/" + launchPhaseId, isSeparator: false, isActive: false },
         ]}
       />
       <ManagePage lpsessions={lpsessions} />

@@ -4,11 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { KTIcon } from "../../../../_metronic/helpers";
 
-
 import momentDurationFormatSetup from "moment-duration-format";
 import { LP } from "../../../../store/ducks/dlps/types";
 import { createLPRequest } from "../../../../store/ducks/dlps/actions";
-
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -44,7 +42,7 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
         slug,
         description,
         order,
-        status
+        status,
       };
       console.log("item", item);
       dispatch(createLPRequest(item));
@@ -57,7 +55,22 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-12 py-lg-2 px-lg-6">
-            
+            <Form.Group controlId="formStatus">
+              <Form.Label className="fw-bold fs-6 mb-5">Status</Form.Label>
+              <Form.Control
+                as="select"
+                value={status}
+                onChange={(e: any) => setStatus(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="1">Ativo</option>
+                <option value="0">Inativo</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o status
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
             <Form.Group controlId="formName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Nome
@@ -76,9 +89,7 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
             <br />
 
             <Form.Group controlId="formSlug">
-              <Form.Label className="fw-bold fs-6 mb-5">
-                Slug
-              </Form.Label>
+              <Form.Label className="fw-bold fs-6 mb-5">Slug</Form.Label>
               <Form.Control
                 className="form-control form-control-lg form-control-solid"
                 placeholder="Digite o slug da landing page"
@@ -122,7 +133,6 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
           </div>
-          
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">
           <Button
