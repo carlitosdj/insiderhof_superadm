@@ -386,6 +386,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-200px">DESCRIÇÃO</th>
                   <th className="min-w-100px">ORDEM</th>
                   <th className="min-w-100px">STATUS</th>
+                  <th className="min-w-100px">LAYOUT</th>
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -479,6 +480,11 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 : "badge-light-warning"
                             }`}>
                               {child.status === "1" ? "Ativo" : "Inativo"}
+                            </span>
+                          </td>
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            <span className={isInactive ? "text-muted" : ""}>
+                              {child.layout}
                             </span>
                           </td>
                           <td>

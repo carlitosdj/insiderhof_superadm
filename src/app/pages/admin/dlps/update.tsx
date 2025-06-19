@@ -25,6 +25,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [description, setDescription] = useState<string | undefined>("");
   const [order, setOrder] = useState<number | undefined>(0);
   const [status, setStatus] = useState<string>("1");
+  const [layout, setLayout] = useState<string | undefined>("");
 
   useEffect(() => {
     setName(child.name);
@@ -32,7 +33,8 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setDescription(child.description);
     setOrder(child.order);
     setStatus(child.status!);
-  }, [child.name, child.slug, child.description, child.order, child.status]);
+    setLayout(child.layout);
+  }, [child.name, child.slug, child.description, child.order, child.status, child.layout]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //console.log("submit", component.data.id);
@@ -48,6 +50,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         name,
         slug,
         description,
+        layout,
         order,
         status: status!,
       };
@@ -141,6 +144,19 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 Por favor informe a ordem da landing page
               </Form.Control.Feedback>
             </Form.Group>
+            <br />
+
+            <Form.Group controlId="formLayout">
+              <Form.Label className="fw-bold fs-6 mb-5">Layout</Form.Label>
+              <Form.Control
+                className="form-control form-control-lg form-control-solid"
+                placeholder="Digite o slug da landing page"
+                value={layout}
+                onChange={(e: any) => setLayout(e.target.value)}
+                
+              />
+            </Form.Group>
+            <br />
           </div>
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">

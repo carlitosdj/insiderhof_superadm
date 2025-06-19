@@ -62,6 +62,7 @@ export interface LP {
   name?: string | undefined
   slug?: string | undefined
   description?: string | undefined
+  layout?: string | undefined
   order?: number | undefined
   createdAt?: Date | undefined 
   updatedAt?: Date | undefined

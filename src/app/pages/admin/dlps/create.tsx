@@ -20,6 +20,7 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
+  const [layout, setLayout] = useState("");
   const [order, setOrder] = useState(0);
   const [status, setStatus] = useState("1");
   const [validated, setValidated] = useState(false);
@@ -41,6 +42,7 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
         name,
         slug,
         description,
+        layout,
         order,
         status,
       };
@@ -131,6 +133,18 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
               <Form.Control.Feedback type="invalid">
                 Por favor informe a ordem
               </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+
+            <Form.Group controlId="formLayout">
+              <Form.Label className="fw-bold fs-6 mb-5">Layout</Form.Label>
+              <Form.Control
+                className="form-control form-control-lg form-control-solid"
+                placeholder="Digite o slug da landing page"
+                value={layout}
+                onChange={(e: any) => setLayout(e.target.value)}
+                
+              />
             </Form.Group>
           </div>
         </div>
