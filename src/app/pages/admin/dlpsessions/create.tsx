@@ -29,7 +29,7 @@ enum ConfigKey {
   BTN_TEXT = "btnText",
   BTNTALK_TEXT = "btntalkText",
   BTNTALK_URL = "btntalkUrl",
-  VIDEO_URL = "videoUrl",
+  MEDIA_URL = "mediaUrl",
 }
 
 // Session type options for select
@@ -51,7 +51,7 @@ const ALLOWED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
     ConfigKey.BTN_TEXT,
     ConfigKey.BTNTALK_TEXT,
     ConfigKey.BTNTALK_URL,
-    ConfigKey.VIDEO_URL,
+    ConfigKey.MEDIA_URL,
   ],
   [SessionType.FEATURE]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.PRODUCTS]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
@@ -83,7 +83,7 @@ const CONFIG_KEY_LABELS: Record<ConfigKey, string> = {
   [ConfigKey.BTN_TEXT]: "Texto do Botão CTA",
   [ConfigKey.BTNTALK_TEXT]: "Texto do Botão Falar Conosco",
   [ConfigKey.BTNTALK_URL]: "URL do Botão Falar Conosco",
-  [ConfigKey.VIDEO_URL]: "URL do Vídeo",
+  [ConfigKey.MEDIA_URL]: "URL do Vídeo ou Imagem (opcional)",
 };
 
 interface handleCloseProps {
@@ -113,7 +113,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     [ConfigKey.BTN_TEXT]: "",
     [ConfigKey.BTNTALK_TEXT]: "",
     [ConfigKey.BTNTALK_URL]: "",
-    [ConfigKey.VIDEO_URL]: "",
+    [ConfigKey.MEDIA_URL]: "",
   });
 
   // Cache para armazenar as configurações de cada tipo
@@ -144,7 +144,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
         [ConfigKey.BTN_TEXT]: "",
         [ConfigKey.BTNTALK_TEXT]: "",
         [ConfigKey.BTNTALK_URL]: "",
-        [ConfigKey.VIDEO_URL]: "",
+        [ConfigKey.MEDIA_URL]: "",
       };
 
       setConfigValues(emptyValues);
@@ -177,7 +177,7 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
       [ConfigKey.BTN_TEXT]: "",
       [ConfigKey.BTNTALK_TEXT]: "",
       [ConfigKey.BTNTALK_URL]: "",
-      [ConfigKey.VIDEO_URL]: "",
+      [ConfigKey.MEDIA_URL]: "",
     };
 
     // Para cada campo permitido no novo tipo
