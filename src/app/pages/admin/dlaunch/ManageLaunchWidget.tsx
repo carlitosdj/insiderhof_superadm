@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Modal, Badge, Card, Row, Col } from "react-bootstrap";
+import { Button, Modal, Badge, Card, Row, Col, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
@@ -140,7 +140,11 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
   };
 
   const deleteComponent = (child: Launch) => {
-    dispatch(deleteLaunchRequest(child.id!));
+    const confirmMessage = `Deseja realmente excluir o lançamento "${child.name}"?\n\nEsta ação é irreversível e todos os dados relacionados serão perdidos permanentemente.`;
+    
+    if (window.confirm(confirmMessage)) {
+      dispatch(deleteLaunchRequest(child.id!));
+    }
   };
 
   const reorder = (children: Launch[]) => {
@@ -437,7 +441,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           </div> */}
 
                           {/* Preview das Ofertas */}
-                          {child.launchhasoffers && child.launchhasoffers.length > 0 && (
+                          {child.launchhasoffers && child.launchhasoffers.length > 0 ? (
                             <div className="mb-4">
                               <div className="d-flex align-items-center gap-2 mb-2">
                                 {child.launchhasoffers.slice(0, 2).map((hasoffer) => (
@@ -473,6 +477,13 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 </p>
                               )}
                             </div>
+                          ) : (
+                            <div className="mb-4">
+                              <Alert variant="danger" className="mb-0 text-center py-3">
+                                <KTIcon iconName="gift" className="fs-4 me-2" />
+                                Nenhuma oferta aqui. Adicione uma oferta.
+                              </Alert>
+                            </div>
                           )}
 
                           {/* Ações */}
@@ -486,7 +497,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 title="Gerenciar Fases"
                               >
                                 <KTIcon iconName="switch" className="fs-6 me-1" />
-                                Fases & Landing pages
+                                Fases
                               </Button>
                               
                               <Button
@@ -497,7 +508,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 title="Gerenciar Ofertas"
                               >
                                 <KTIcon iconName="gift" className="fs-6 me-1" />
-                                Ofertas
+                                Oferta
                               </Button>
                             </div>
                             
