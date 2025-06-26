@@ -11,19 +11,6 @@ import BuilderPageWrapper from "../pages/layout-builder/BuilderPageWrapper";
 import Modules from "../pages/admin/dmodules/Manage";
 import Classes from "../pages/admin/dclass/Manage";
 import ClassExtras from "../pages/admin/dclassextra/Manage";
-//import Manage from "../pages/admin/component/Manage";
-// import Wppcamp from "../pages/admin/wppcamp";
-// import Wppgroup from "../pages/admin/wppgroup";
-// import Leads from "../pages/admin/leads";
-// import Users from "../pages/admin/users";
-// import EmailsEnviados from "../pages/admin/emailsenviados";
-// import Support from "../pages/admin/supports";
-// import Annotations from "../pages/admin/annotations";
-// import Launch from "../pages/admin/launch/Launch";
-// import Fases from "../pages/admin/launch/fases/Fases";
-// import LaunchExtra from "../pages/admin/launch/launchextra/LaunchExtra";
-// import Contact from "../pages/admin/contact";
-// import Comments from "../pages/admin/comments";
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import("../modules/profile/ProfilePage"));
@@ -77,7 +64,7 @@ const PrivateRoutes = () => {
     []
   );
 
-  const Launchs = useMemo(
+  const Launches = useMemo(
     () => lazy(() => import("../pages/admin/dlaunch/Manage")),
     []
   );
@@ -122,7 +109,10 @@ const PrivateRoutes = () => {
     []
   );
 
-  
+  const CreateLaunch = useMemo(
+    () => lazy(() => import("../pages/admin/dlaunch/CreateLaunch")),
+    []
+  );
 
   return (
     <Routes>
@@ -148,7 +138,47 @@ const PrivateRoutes = () => {
           path="launches"
           element={
             <SuspensedView>
-              <Launchs />
+              <Launches />
+            </SuspensedView>
+          }
+        ></Route>
+
+        {/* Create Launch: step1 */}
+        <Route
+          path="createlaunch"
+          element={
+            <SuspensedView>
+              <CreateLaunch />
+            </SuspensedView>
+          }
+        ></Route>
+
+        {/* Create Launch: step2 */}
+        <Route
+          path="createlaunch/step2"
+          element={
+            <SuspensedView>
+              <CreateLaunch />
+            </SuspensedView>
+          }
+        ></Route>
+
+        {/* Create Launch: step3 */}
+        <Route
+          path="createlaunch/step3"
+          element={
+            <SuspensedView>
+              <CreateLaunch />
+            </SuspensedView>
+          }
+        ></Route>
+
+        {/* Create Launch: step4 */}
+        <Route
+          path="createlaunch/step4"
+          element={
+            <SuspensedView>
+              <CreateLaunch />
             </SuspensedView>
           }
         ></Route>
@@ -404,7 +434,7 @@ const SuspensedView: FC<WithChildren> = ({ children }) => {
     barColors: {
       "0": baseColor,
     },
-    barThickness: 1,
+    barThickness: 3,
     shadowBlur: 5,
   });
   return <Suspense fallback={<TopBarProgress />}>{children}</Suspense>;

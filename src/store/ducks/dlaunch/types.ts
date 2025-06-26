@@ -103,6 +103,7 @@ export interface Launch {
   paidGroup?: string
   onboardingVideo?: string
   checkoutPage?: string
+  aviso?: string
 }
 /**
  * State type

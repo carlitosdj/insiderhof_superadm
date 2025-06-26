@@ -243,17 +243,15 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                   target={"_blank"}
                                   href={
                                     child.name == "Captação"
-                                      ? "https://insiderhof.com.br/lead/subscribe/" +
-                                        child.slug +
-                                        "/site"
+                                      ? "https://insiderhof.com.br/subscribe/" +
+                                        child.slug
                                       : ""
                                   }
                                 >
                                   {" "}
                                   {child.name == "Captação"
-                                    ? "https://insiderhof.com.br/lead/subscribe/" +
-                                      child.slug +
-                                      "/site"
+                                    ? "https://insiderhof.com.br/subscribe/" +
+                                      child.slug
                                     : ""}{" "}
                                 </a>
                                 <a
@@ -277,14 +275,14 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                   target={"_blank"}
                                   href={
                                     child.name == "Vendas"
-                                      ? "https://insiderhof.com.br/sale/subscribe/" +
+                                      ? "https://insiderhof.com.br/join/" +
                                         child.slug +
                                         ""
                                       : ""
                                   }
                                 >
                                   {child.name == "Vendas"
-                                    ? "https://insiderhof.com.br/sale/subscribe/" +
+                                    ? "https://insiderhof.com.br/join/" +
                                       child.slug +
                                       ""
                                     : ""}

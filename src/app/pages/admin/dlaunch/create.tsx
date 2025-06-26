@@ -31,17 +31,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [slug, setSlug] = useState("jan25");
 
   const [eventName, setEventName] = useState("Semana InsiderHOF 2025");
-  const [eventHeadline, setEventHeadline] = useState(
-    "COMO PREENCHER E INTERVIR EM TODOS OS TIPOS DE LÁBIOS, DESDE OS MAIS SIMPLES AOS MAIS COMPLEXOS"
-  );
-  const [eventDescription, setEventDescription] = useState(
-    "Os primeiros passos para você entender o momento certo de preencher, as diversas formas de tratamento, os desafios para intervir em todos os tipos de lábios. Leve sua carreira para o próximo nível."
-  );
-
-  const [eventImg, setEventImg] = useState("1686071778354-Logo-preconexao.png");
-  const [eventBtn, setEventBtn] = useState(
-    "Quero participar da Semana InsiderHOF"
-  );
   const [eventGroupLink, setEventGroupLink] = useState(
     "https://insiderhof.com.br/viawhats/insiderhof"
   );
@@ -70,25 +59,9 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [productName, setProductName] = useState(
     "Treinamento InsiderHOF Online 2025"
   );
-  const [productHeadline, setProductHeadline] = useState(
-    "COMO PREENCHER E INTERVIR EM TODOS OS TIPOS DE LÁBIOS, DESDE OS MAIS SIMPLES AOS MAIS COMPLEXOS"
-  );
-  const [productDescription, setProductDescription] = useState(
-    "Do básico ao avançado. O passo a passo para entender o momento certo de preencher, as diversas formas de tratamento, os desafios e como faturar 4x mais na sua clínica. Eleve o nível da sua carreira!"
-  );
-
-  const [productVideo, setProductVideo] = useState("");
 
   const [productWaitLink, setProductWaitLink] = useState(
     "https://insiderhof.com.br/viawhats/espera"
-  );
-
-  const [productBtn, setProductBtn] = useState(
-    "QUERO MATRICULAR NO INSIDERHOF"
-  );
-
-  const [talktousLink, setTalktousLink] = useState(
-    "https://wa.me/5534996325424?text=Ol%C3%A1%2C+tudo+bem%3F+Tenho+d%C3%BAvidas+sobre+o+treinamento+InsiderHOF.+Pode+me+ajudar%3F"
   );
 
   const [paidGroup, setPaidGroup] = useState(
@@ -170,16 +143,9 @@ const Create = ({ handleClose }: handleCloseProps) => {
         price: Number(price),
         oldPrice: Number(oldPrice),
         type,
-
         slug,
         eventName,
-        eventHeadline,
-        eventDescription,
-
-        eventImg,
-        eventBtn,
         eventGroupLink,
-
         expertName,
         cartOpenDate: MOMENT(cartOpenDate.toString()).format(
           "DD/MM/YYYY HH:mm"
@@ -197,16 +163,13 @@ const Create = ({ handleClose }: handleCloseProps) => {
         cpl2,
         cpl3,
         productName,
-        productHeadline,
-        productDescription,
         //productPrice,
         //productInstallments,
-        productVideo,
         //productDiscount,
         //productDiscountText,
         productWaitLink,
-        productBtn,
-        talktousLink,
+        // productBtn,
+        // talktousLink,
 
         paidGroup,
         onboardingVideo,
@@ -221,7 +184,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
         antecipateRenovationPrice,
         renovationDescription,
         renovationInstallments,
-      
       };
 
       dispatch(createLaunchRequest(product));
@@ -287,6 +249,80 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
+                Data de abertura do carrinho
+              </Form.Label>
+              <DatePicker
+                locale="ptBR"
+                showTimeSelect
+                dateFormat="dd/MM/yyyy HH:mm"
+                //dateFormat="dd/MM/yyyy hh:mm"
+                selected={cartOpenDate}
+                onChange={(date: any) => setDates(date)}
+                className="form-control form-control-lg form-control-solid"
+                wrapperClassName="w-100"
+                minDate={new Date()}
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a data de abertura do carrinho
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Data de fechamento do carrinho
+              </Form.Label>
+              <DatePicker
+                locale="ptBR"
+                showTimeSelect
+                //dateFormat="Pp"
+                dateFormat="dd/MM/yyyy HH:mm"
+                selected={cartCloseDate}
+                onChange={(date: any) => setCartCloseDate(date)}
+                className="form-control form-control-lg form-control-solid"
+                wrapperClassName="w-100"
+                minDate={new Date()}
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe a data de encerramento do carrinho
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Nome do Expert
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                required
+                value={expertName}
+                onChange={(e: any) => setExpertName(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o nome do expert
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Domínio
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                required
+                value={domain}
+                onChange={(e: any) => setDomain(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o domínio
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+          </div>
+          <div className="flex-row py-lg-2 px-lg-6" style={{ flex: 1 }}>
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
                 Nome do evento
               </Form.Label>
               <Form.Control
@@ -298,70 +334,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o nome do evento
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Headline do evento
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={eventHeadline}
-                onChange={(e: any) => setEventHeadline(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o nome do evento
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Descrição do evento
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={eventDescription}
-                onChange={(e: any) => setEventDescription(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o nome do evento
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Imagem
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={eventImg}
-                onChange={(e: any) => setEventImg(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o eventImg
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Botão de cadastro
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={eventBtn}
-                onChange={(e: any) => setEventBtn(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o eventBtn
               </Form.Control.Feedback>
             </Form.Group>
             <br />
@@ -383,23 +355,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                Nome do Expert
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={expertName}
-                onChange={(e: any) => setExpertName(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o nome do expert
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
                 CPL1
               </Form.Label>
               <Form.Control
@@ -414,7 +369,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 CPL2
@@ -431,7 +385,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 CPL3
@@ -448,49 +401,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Data de abertura do carrinho
-              </Form.Label>
-              <DatePicker
-                locale="ptBR"
-                showTimeSelect
-                dateFormat="dd/MM/yyyy HH:mm"
-                //dateFormat="dd/MM/yyyy hh:mm"
-                selected={cartOpenDate}
-                onChange={(date: any) => setDates(date)}
-                className="form-control form-control-lg form-control-solid"
-                wrapperClassName="w-100"
-                minDate={new Date()}
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe a data de abertura do carrinho
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Data de fechamento do carrinho
-              </Form.Label>
-              <DatePicker
-                locale="ptBR"
-                showTimeSelect
-                //dateFormat="Pp"
-                dateFormat="dd/MM/yyyy HH:mm"
-                selected={cartCloseDate}
-                onChange={(date: any) => setCartCloseDate(date)}
-                className="form-control form-control-lg form-control-solid"
-                wrapperClassName="w-100"
-                minDate={new Date()}
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe a data de encerramento do carrinho
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Formulário do lead
@@ -504,23 +414,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o formulário
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Domínio
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={domain}
-                onChange={(e: any) => setDomain(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o domínio
               </Form.Control.Feedback>
             </Form.Group>
             <br />
@@ -544,157 +437,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                Headline do produto
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productHeadline}
-                onChange={(e: any) => setProductHeadline(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productHeadline
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Descrição do produto
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productDescription}
-                onChange={(e: any) => setProductDescription(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productDescription
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            {/* <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">Preço base</Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productPrice}
-                onChange={(e: any) => setProductPrice(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productPrice
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br /> */}
-            {/* <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">Parcelas</Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productInstallments}
-                onChange={(e: any) => setProductInstallments(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productInstallments
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br /> */}
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Video de vendas (opcional)
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={productVideo}
-                onChange={(e: any) => setProductVideo(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productVideo
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            {/* <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">Desconto</Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productDiscount}
-                onChange={(e: any) => setProductDiscount(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productDiscount
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br /> */}
-            {/* <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">Texto do desconto</Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productDiscountText}
-                onChange={(e: any) => setProductDiscountText(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productDiscountText
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br /> */}
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Grupo de espera
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productWaitLink}
-                onChange={(e: any) => setProductWaitLink(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productWaitLink
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Botão de compra
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={productBtn}
-                onChange={(e: any) => setProductBtn(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o productBtn
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Fale conosco
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                required
-                value={talktousLink}
-                onChange={(e: any) => setTalktousLink(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o talktousLink
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
                 Grupo da turma
               </Form.Label>
               <Form.Control
@@ -706,36 +448,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o paidGroup
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Vídeo onboarding (opcional)
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={onboardingVideo}
-                onChange={(e: any) => setOnboardingVideo(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o onboardingVideo
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Página de checkout externa (opcional)
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={checkoutPage}
-                onChange={(e: any) => setCheckoutPage(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o checkoutPage
               </Form.Control.Feedback>
             </Form.Group>
             <br />
@@ -754,6 +466,40 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Aviso: Ex: REFERENTE À ENTRADA PARA MATRÍCULA, O RESTANTE NO DIA
+                DO CURSO.
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={aviso}
+                onChange={(e: any) => setAviso(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o aviso
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Grupo de espera
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                required
+                value={productWaitLink}
+                onChange={(e: any) => setProductWaitLink(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o productWaitLink
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+          </div>
+          <div className="flex-row py-lg-2 px-lg-6" style={{ flex: 1 }}>
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 renovationTime
@@ -786,12 +532,14 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-              antecipateRenovationPrice
+                antecipateRenovationPrice
               </Form.Label>
               <Form.Control
                 placeholder=""
                 value={antecipateRenovationPrice}
-                onChange={(e: any) => setAntecipateRenovationPrice(e.target.value)}
+                onChange={(e: any) =>
+                  setAntecipateRenovationPrice(e.target.value)
+                }
                 className="form-control form-control-lg form-control-solid"
               />
               <Form.Control.Feedback type="invalid">
@@ -801,7 +549,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationDescriptionxxx
+                renovationDescription
               </Form.Label>
               <Form.Control
                 placeholder=""
@@ -816,7 +564,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationInstallmentsyyy
+                renovationInstallments
               </Form.Label>
               <Form.Control
                 placeholder=""
@@ -829,44 +577,30 @@ const Create = ({ handleClose }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Aviso: Ex: REFERENTE À ENTRADA PARA MATRÍCULA, O RESTANTE NO DIA
-                DO CURSO.
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={aviso}
-                onChange={(e: any) => setAviso(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe o aviso
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            Início Inscrição Lead:{" "}
-            {MOMENT(leadSignUpStartDate).format("DD/MM/YYYY")}
-            <br />
-            Fechamento Inscrição Lead:{" "}
-            {MOMENT(leadSignUpEndDate).format("DD/MM/YYYY")}
-            <br />
-            <br />
-            CPL1: {MOMENT(dateCpl1).format("DD/MM/YYYY")}
-            <br />
-            CPL2: {MOMENT(dateCpl2).format("DD/MM/YYYY")}
-            <br />
-            CPL3: {MOMENT(dateCpl3).format("DD/MM/YYYY")}
-            <br />
-            <br />
-            Abertura Carrinho: {MOMENT(cartOpenDate).format(
-              "DD/MM/YYYY HH:mm"
-            )}{" "}
-            <br />
-            Fechamento Carrinho:{" "}
-            {MOMENT(cartCloseDate).format("DD/MM/YYYY HH:mm")}
-            <br />
           </div>
+        </div>
+        <div className="d-flex flex-column flex-xl-row flex-row-fluid">
+          Início Inscrição Lead:{" "}
+          {MOMENT(leadSignUpStartDate).format("DD/MM/YYYY")}
+          <br />
+          Fechamento Inscrição Lead:{" "}
+          {MOMENT(leadSignUpEndDate).format("DD/MM/YYYY")}
+          <br />
+          <br />
+          CPL1: {MOMENT(dateCpl1).format("DD/MM/YYYY")}
+          <br />
+          CPL2: {MOMENT(dateCpl2).format("DD/MM/YYYY")}
+          <br />
+          CPL3: {MOMENT(dateCpl3).format("DD/MM/YYYY")}
+          <br />
+          <br />
+          Abertura Carrinho: {MOMENT(cartOpenDate).format(
+            "DD/MM/YYYY HH:mm"
+          )}{" "}
+          <br />
+          Fechamento Carrinho:{" "}
+          {MOMENT(cartCloseDate).format("DD/MM/YYYY HH:mm")}
+          <br />
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">
           <Button
