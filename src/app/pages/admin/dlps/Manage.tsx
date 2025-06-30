@@ -58,7 +58,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
         breadcrumbs={[
           {
             title: "MEUS LANÇAMENTOS",
-            path: "/launches",
+            path: "/launch",
             isSeparator: false,
             isActive: false,
           },

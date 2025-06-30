@@ -85,7 +85,7 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.OFFERS" })}
       />
       <SidebarMenuItem
-        to="/launches"
+        to="/launch"
         icon="rocket"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.LAUNCHES" })}

@@ -11,36 +11,37 @@ import Update from "./update";
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
 
+import Manage from "../dlaunchhasoffers/Manage";
 import {
-  LaunchPhaseExtras,
-  LaunchPhaseExtrasState,
-} from "../../../../store/ducks/dlaunchphaseextras/types";
+  LaunchPhases,
+  LaunchPhasesState,
+} from "../../../../store/ducks/dlaunchphase/types";
 import {
-  deleteLaunchPhaseExtrasRequest,
-  reorderLaunchPhaseExtrasRequest,
-  updateLaunchPhaseExtrasRequest,
-} from "../../../../store/ducks/dlaunchphaseextras/actions";
+  deleteLaunchPhasesRequest,
+  reorderLaunchPhasesRequest,
+  updateLaunchPhasesRequest,
+} from "../../../../store/ducks/dlaunchphase/actions";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
 type Props = {
   className: string;
-  launchphaseextras: LaunchPhaseExtrasState;
-  launchPhaseId: number;
+  launchphases: LaunchPhasesState;
 };
 
-const ManageLaunchPhaseExtraWidget: React.FC<
-  React.PropsWithChildren<Props>
-> = ({ className, launchphaseextras, launchPhaseId }) => {
+const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
+  className,
+  launchphases,
+}) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
-  const [child, setChild] = useState<LaunchPhaseExtras>({});
-  const [oldChildren, setOldChildren] = useState<LaunchPhaseExtras[]>(
-    launchphaseextras.myLaunchPhaseExtras
+  const [child, setChild] = useState<LaunchPhases>({});
+  const [oldChildren, setOldChildren] = useState<LaunchPhases[]>(
+    launchphases.myLaunchPhases
   );
 
-  //const { launchPhaseId } = useParams();
+  const { launchId } = useParams();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,22 +54,18 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     setShow(true);
   };
 
-  const lpsessions = () => {
-    navigate("/lps/" + launchPhaseId);
-  };
-
-  const updateComponent = (child: LaunchPhaseExtras) => {
+  const updateComponent = (child: LaunchPhases) => {
     setAction("updateComponent");
     setShow(true);
     setChild(child);
   };
 
   // Deleta componente: CHILD
-  const deleteComponent = (child: LaunchPhaseExtras) => {
-    dispatch(deleteLaunchPhaseExtrasRequest(child.id!));
+  const deleteComponent = (child: LaunchPhases) => {
+    dispatch(deleteLaunchPhasesRequest(child.id!));
   };
 
-  const reorder = (children: LaunchPhaseExtras[]) => {
+  const reorder = (children: LaunchPhases[]) => {
     // console.log("children", children);
     children.map((child) => {
       let index = children.findIndex((item): any => item.id === child.id);
@@ -76,15 +73,15 @@ const ManageLaunchPhaseExtraWidget: React.FC<
         children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
       }
     });
-    dispatch(reorderLaunchPhaseExtrasRequest(children));
+    dispatch(reorderLaunchPhasesRequest(children));
   };
 
-  const reorderToSave = (children: LaunchPhaseExtras[]) => {
+  const reorderToSave = (children: LaunchPhases[]) => {
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
       children.map((child) => {
         dispatch(
-          updateLaunchPhaseExtrasRequest({ id: child.id, order: child.order })
+          updateLaunchPhasesRequest({ id: child.id, order: child.order })
         );
       });
       //seta a lista de old para o novo:
@@ -92,7 +89,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     }
   };
 
-  const openHasLaunchs = (child: LaunchPhaseExtras) => {
+  const openHasLaunchs = (child: LaunchPhases) => {
     setAction("manageLaunchs");
     setShow(true);
     setChild(child);
@@ -109,7 +106,6 @@ const ManageLaunchPhaseExtraWidget: React.FC<
         onHide={handleClose}
         backdrop={true}
       >
-        
         <div className="modal-header">
           <h2>
             {action === "updateComponent" ? "Editar launch" : ""}
@@ -134,10 +130,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
             ""
           )}
           {action === "createComponent" ? (
-            <Create
-              handleClose={handleClose}
-              launchPhaseId={Number(launchPhaseId)}
-            />
+            <Create handleClose={handleClose} launchId={Number(launchId)} />
           ) : (
             ""
           )}
@@ -153,45 +146,27 @@ const ManageLaunchPhaseExtraWidget: React.FC<
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
             <span className="card-label fw-bolder fs-3 mb-1">
-              Fase do lançamento launchPhaseId: {launchPhaseId}
+              Fases do lançamento
             </span>
             <span className="text-muted mt-1 fw-bold fs-7">
-              Itens nessa fase
+              Gerencie as fases do lançamento
             </span>
           </h3>
-          <div className="d-flex justify-content-end align-items-center gap-2">
-            <div
-              className="card-toolbar"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              data-bs-trigger="hover"
-              title="Click to add a item"
+          <div
+            className="card-toolbar"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-trigger="hover"
+            title="Click to add a user"
+          >
+            <a
+              href="#!"
+              className="btn btn-primary"
+              onClick={() => createComponent()}
             >
-              <a
-                //href="#!"
-                className="btn btn-primary"
-                onClick={() => createComponent()}
-              >
-                <KTIcon iconName="plus" className="fs-2" />
-                Novo item
-              </a>
-            </div>
-            <div
-              className="card-toolbar"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              data-bs-trigger="hover"
-              title="Manage landing pages"
-            >
-              <a
-                //href="#!"
-                className="btn btn-secondary"
-                onClick={() => lpsessions()}
-              >
-                <KTIcon iconName="plus" className="fs-2" />
-                Landing Pages
-              </a>
-            </div>
+              <KTIcon iconName="plus" className="fs-2" />
+              Nova fase
+            </a>
           </div>
         </div>
 
@@ -200,8 +175,9 @@ const ManageLaunchPhaseExtraWidget: React.FC<
             <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
               <thead>
                 <tr className="fw-bolder text-muted">
-                  <th className="min-w-150px">ITEM</th>
-                  <th className="min-w-150px">VALUE</th>
+                  <th className="min-w-50px">FASE</th>
+                  <th className="min-w-50px">ACESSO</th>
+
                   <th className="min-w-50px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -209,18 +185,14 @@ const ManageLaunchPhaseExtraWidget: React.FC<
               <Reorder.Group
                 as="tbody"
                 //axis='y'
-                values={launchphaseextras.myLaunchPhaseExtras}
+                values={launchphases.myLaunchPhases}
                 onReorder={reorder}
-                onTap={(e) =>
-                  reorderToSave(launchphaseextras.myLaunchPhaseExtras)
-                }
-                onMouseUp={(e) =>
-                  reorderToSave(launchphaseextras.myLaunchPhaseExtras)
-                }
+                onTap={(e) => reorderToSave(launchphases.myLaunchPhases)}
+                onMouseUp={(e) => reorderToSave(launchphases.myLaunchPhases)}
                 style={{ touchAction: "none" }}
               >
                 <AnimatePresence>
-                  {launchphaseextras.myLaunchPhaseExtras.length === 0 && (
+                  {launchphases.myLaunchPhases.length === 0 && (
                     <tr className="border-0">
                       <td colSpan={3} className="text-center pt-10 ">
                         Nenhuma launch encontrada aqui. Adicione uma launch
@@ -229,9 +201,9 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                     </tr>
                   )}
 
-                  {launchphaseextras.myLaunchPhaseExtras.length !== 0 &&
-                    launchphaseextras.myLaunchPhaseExtras?.map(
-                      (child: LaunchPhaseExtras, index: number) => {
+                  {launchphases.myLaunchPhases.length !== 0 &&
+                    launchphases.myLaunchPhases?.map(
+                      (child: LaunchPhases, index: number) => {
                         return (
                           <Reorder.Item
                             key={child.id}
@@ -247,24 +219,80 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                               <div className="d-flex align-items-center border-0">
                                 <div>
                                   <Link
-                                    to={"/launchhasoffers/" + child.id}
+                                    to={"/launchphaseextra/" + child.id}
                                     style={{ display: "flex" }}
                                     className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
                                   >
-                                    {child.key}
+                                    {child.name}
                                   </Link>
+
+                                  <span className="text-muted fw-semibold text-muted d-block fs-7">
+                                    {child.description?.length! > 50
+                                      ? child.description?.substring(0, 50) +
+                                        "..."
+                                      : child.description}
+                                  </span>
                                 </div>
                               </div>
                             </td>
                             <td
                               onPointerDownCapture={(e) => e.stopPropagation()}
                             >
-                              {child.value}
+                              <span className="text-muted fw-semibold text-muted d-block fs-7">
+                                <a
+                                  target={"_blank"}
+                                  href={
+                                    child.name == "Captação"
+                                      ? "https://insiderhof.com.br/subscribe/" +
+                                        child.slug
+                                      : ""
+                                  }
+                                >
+                                  {" "}
+                                  {child.name == "Captação"
+                                    ? "https://insiderhof.com.br/subscribe/" +
+                                      child.slug
+                                    : ""}{" "}
+                                </a>
+                                <a
+                                  target={"_blank"}
+                                  href={
+                                    child.name == "Evento"
+                                      ? "https://insiderhof.com.br/class/" +
+                                        child.slug +
+                                        "/aula01"
+                                      : ""
+                                  }
+                                >
+                                  {" "}
+                                  {child.name == "Evento"
+                                    ? "https://insiderhof.com.br/class/" +
+                                      child.slug +
+                                      "/aula01"
+                                    : ""}{" "}
+                                </a>
+                                <a
+                                  target={"_blank"}
+                                  href={
+                                    child.name == "Vendas"
+                                      ? "https://insiderhof.com.br/join/" +
+                                        child.slug +
+                                        ""
+                                      : ""
+                                  }
+                                >
+                                  {child.name == "Vendas"
+                                    ? "https://insiderhof.com.br/join/" +
+                                      child.slug +
+                                      ""
+                                    : ""}
+                                </a>
+                              </span>
                             </td>
 
                             <td>
                               <div className="d-flex justify-content-end flex-shrink-0">
-                                {/* <a
+                                <a
                                   href="#!"
                                   onClick={() =>
                                     navigate("/launchhasoffers/" + child.id)
@@ -275,7 +303,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                                     iconName="switch"
                                     iconType="outline"
                                   />
-                                </a> */}
+                                </a>
                                 <a
                                   href="#!"
                                   onClick={() => updateComponent(child)}
@@ -292,7 +320,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                                     if (
                                       window.confirm(
                                         "Deseja realmente excluir: " +
-                                          child.key +
+                                          child.name +
                                           "?"
                                       )
                                     )
@@ -326,4 +354,4 @@ const ManageLaunchPhaseExtraWidget: React.FC<
   );
 };
 
-export { ManageLaunchPhaseExtraWidget };
+export { ManageLaunchPhaseWidget };

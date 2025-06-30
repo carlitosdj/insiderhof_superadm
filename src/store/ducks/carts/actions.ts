@@ -32,3 +32,4 @@ export const selectCartsAddRequest = (data: Cart) => action(CartsTypes.SELECTED_
 export const selectCartsAddSuccess = (data: Cart) => action(CartsTypes.SELECTED_CART_ADD_SUCCESS, data)
 export const selectCartsRemoveRequest = (data: Cart) => action(CartsTypes.SELECTED_CART_REMOVE, data)
 export const selectCartsRemoveSuccess = (data: Cart) => action(CartsTypes.SELECTED_CART_REMOVE_SUCCESS, data)
+

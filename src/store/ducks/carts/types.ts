@@ -37,6 +37,8 @@ export enum CartsTypes {
   SELECTED_CART_ADD_SUCCESS = '@cart/SELECTED_CART_ADD_SUCCESS',
   SELECTED_CART_REMOVE = '@cart/SELECTED_CART_REMOVE',
   SELECTED_CART_REMOVE_SUCCESS = '@cart/SELECTED_CART_REMOVE_SUCCESS',
+
+  
 }
 
 /**
@@ -88,4 +90,5 @@ export interface CartsState {
   readonly loading: boolean
   readonly error: boolean
   selectedCarts: Cart[]
+  
 }

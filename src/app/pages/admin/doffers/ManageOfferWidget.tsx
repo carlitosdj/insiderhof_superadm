@@ -97,7 +97,7 @@ const ManageOfferWidget: React.FC<React.PropsWithChildren<Props>> = ({
         show={show}
         onHide={handleClose}
         backdrop={true}
-        size="lg"
+        size="xl"
         //fullscreen={"xxl-down"}
       >
         <div className="modal-header">

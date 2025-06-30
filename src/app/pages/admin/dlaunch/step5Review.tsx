@@ -85,7 +85,7 @@ const Step5Review: React.FC<Step5ReviewProps> = ({ onPrevious, currentStep }) =>
     // Limpar cache e navegar para a lista de lançamentos
     setTimeout(() => {
       clearAllData();
-      navigate('/launches');
+      navigate('/launch');
     }, 1000);
   };
 

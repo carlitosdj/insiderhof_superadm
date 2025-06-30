@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
 
-
 import Update from "./update";
 
 import momentDurationFormatSetup from "moment-duration-format";
@@ -35,7 +34,6 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<Launch>({});
   const [oldChildren, setOldChildren] = useState<Launch[]>(launch.myLaunchs);
-
 
   const [openProduct, setOpenProduct] = useState<boolean>(false);
   const [openedId, setOpenedId] = useState<number>(0);
@@ -180,9 +178,12 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 <tr className="fw-bolder text-muted">
                   <th className="min-w-120px">LANÇAMENTO</th>
                   <th className="min-w-100px">OFERTA</th>
-                  <th className="min-w-100px">FASES</th>
+                  {/* <th className="min-w-100px">FASES</th> */}
                   <th className="min-w-20px">PREÇO</th>
                   <th className="min-w-20px">TIPO</th>
+                  <th className="min-w-20px">LEADS</th>
+                  <th className="min-w-20px">VENDAS</th>
+                  <th className="min-w-20px">TAXA</th>
                   <th className="min-w-20px text-end">AÇÕES</th>
                   <th className="w-15px"></th>
                 </tr>
@@ -221,7 +222,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             <div className="d-flex align-items-center border-0">
                               <div>
                                 <Link
-                                  to={"/launchphase/" + child.id}
+                                  to={"/launch/" + child.id}
                                   style={{ display: "flex" }}
                                   className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
                                 >
@@ -284,62 +285,82 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                         </div>
                                       )}
                                       {hasoffer.offer?.name} {"->"} R${" "}
-                                      {hasoffer.offer?.price?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-
+                                      {hasoffer.offer?.price?.toLocaleString(
+                                        "pt-BR",
+                                        { style: "currency", currency: "BRL" }
+                                      )}
                                       <button
                                         className="btn btn-sm"
-                                        onClick={() => open(!openProduct, child.id!)}
+                                        onClick={() =>
+                                          open(!openProduct, child.id!)
+                                        }
                                       >
-                                        {openProduct && openedId === child.id ? (
-                                          <KTIcon iconName="up" iconType="solid" />
+                                        {openProduct &&
+                                        openedId === child.id ? (
+                                          <KTIcon
+                                            iconName="up"
+                                            iconType="solid"
+                                          />
                                         ) : (
-                                          <KTIcon iconName="down" iconType="solid" />
+                                          <KTIcon
+                                            iconName="down"
+                                            iconType="solid"
+                                          />
                                         )}
                                       </button>
                                     </div>
 
-                                    { openProduct && openedId === child.id && (
+                                    {openProduct && openedId === child.id && (
                                       <div>
-                                       
-                                          {hasoffer.offer?.dOfferHasProducts?.map(
-                                            (product: any) => {
-                                              return (
-                                                <div className="d-flex flex-row align-items-center">
-                                                  {product.product?.image && (
-                                                    <div className="me-1 mx-2 my-1">
-                                                      <img
-                                                        className="embed-responsive-item rounded-1"
-                                                        height={22}
-                                                        src={
-                                                          product.product?.image.includes(
-                                                            "https://"
-                                                          )
-                                                            ? product.product?.image
-                                                            : "https://app.insiderhof.com.br/files/" +
-                                                            product.product?.image
-                                                        }
-                                                        // style={{ width: "100%" }}
-                                                        onError={({ currentTarget }) => {
-                                                          currentTarget.onerror = null; // prevents looping
-                                                          currentTarget.src =
-                                                            "https://app.insiderhof.com.br/files/notfound.jpg";
-                                                        }}
-                                                      />
-                                                    </div>
-                                                  )}
+                                        {hasoffer.offer?.dOfferHasProducts?.map(
+                                          (product: any) => {
+                                            return (
+                                              <div className="d-flex flex-row align-items-center">
+                                                {product.product?.image && (
+                                                  <div className="me-1 mx-2 my-1">
+                                                    <img
+                                                      className="embed-responsive-item rounded-1"
+                                                      height={22}
+                                                      src={
+                                                        product.product?.image.includes(
+                                                          "https://"
+                                                        )
+                                                          ? product.product
+                                                              ?.image
+                                                          : "https://app.insiderhof.com.br/files/" +
+                                                            product.product
+                                                              ?.image
+                                                      }
+                                                      // style={{ width: "100%" }}
+                                                      onError={({
+                                                        currentTarget,
+                                                      }) => {
+                                                        currentTarget.onerror =
+                                                          null; // prevents looping
+                                                        currentTarget.src =
+                                                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                                                      }}
+                                                    />
+                                                  </div>
+                                                )}
 
-                                                  <span
-                                                    key={product.id}
-                                                    className="text-muted fw-semibold text-muted d-block fs-7"
-                                                  >
-                                                    {product.product?.name}: 
-                                                    {product.product?.price?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                                  </span>
-                                                </div>
-                                              );
-                                            }
-                                          )}
-                                       
+                                                <span
+                                                  key={product.id}
+                                                  className="text-muted fw-semibold text-muted d-block fs-7"
+                                                >
+                                                  {product.product?.name}:
+                                                  {product.product?.price?.toLocaleString(
+                                                    "pt-BR",
+                                                    {
+                                                      style: "currency",
+                                                      currency: "BRL",
+                                                    }
+                                                  )}
+                                                </span>
+                                              </div>
+                                            );
+                                          }
+                                        )}
                                       </div>
                                     )}
                                   </div>
@@ -348,38 +369,30 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                             })}
                           </td>
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            {child.phases?.map((phase) => {
-                              return (
-                                <Link
-                                  to={"/launchphaseextra/" + phase.id}
-                                  key={phase.id}
-                                  className="text-gray-900 fw-bold text-hover-primary text-muted d-block fs-7"
-                                >
-                                  {phase.name} 
-                                  {/* {" -> "}
-                                  {phase.slug} */}
-                                </Link>
-                              );
+                            {child.price?.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
                             })}
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            {child.price?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                           </td>
                           <td onPointerDownCapture={(e) => e.stopPropagation()}>
                             {child.type}
                           </td>
-
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            {child.leadsCount}
+                          </td>
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            {child.cartCount}
+                          </td>
+                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            {child.leadsCount && child.cartCount
+                              ? (
+                                  (child.cartCount / child.leadsCount) *
+                                  100
+                                ).toFixed(1) + "%"
+                              : "0%"}
+                          </td>
                           <td>
                             <div className="d-flex justify-content-end flex-shrink-0">
-                              <a
-                                href="#!"
-                                onClick={() =>
-                                  navigate("/launchphase/" + child.id)
-                                }
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="switch" iconType="outline" />
-                              </a>
                               <a
                                 href="#!"
                                 onClick={() => updateComponent(child)}

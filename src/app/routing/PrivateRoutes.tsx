@@ -74,7 +74,7 @@ const PrivateRoutes = () => {
     []
   );
 
-  const LaunchPhases = useMemo(
+  const Launch = useMemo(
     () => lazy(() => import("../pages/admin/dlaunchphase/Manage")),
     []
   );
@@ -135,10 +135,28 @@ const PrivateRoutes = () => {
         <Route path="menu-test" element={<MenuTestPage />} />
 
         <Route
-          path="launches"
+          path="launch"
           element={
             <SuspensedView>
               <Launches />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="launch/:launchId"
+          element={
+            <SuspensedView>
+              <Launch />
+            </SuspensedView>
+          }
+        ></Route>
+
+        <Route
+          path="launch/:launchId/:launchPhaseId"
+          element={
+            <SuspensedView>
+              <Launch />
             </SuspensedView>
           }
         ></Route>
@@ -179,15 +197,6 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <CreateLaunch />
-            </SuspensedView>
-          }
-        ></Route>
-
-        <Route
-          path="launchphase/:launchId"
-          element={
-            <SuspensedView>
-              <LaunchPhases />
             </SuspensedView>
           }
         ></Route>
@@ -337,7 +346,6 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-
 
         <Route
           path="support"

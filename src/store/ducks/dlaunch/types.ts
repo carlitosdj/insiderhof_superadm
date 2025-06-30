@@ -58,7 +58,8 @@ export interface Launch {
 
   launchhasoffers?: LaunchHasOffers[] | undefined;
   phases? : LaunchPhases[] | undefined;
-
+  cartCount?: number | undefined;
+  leadsCount?: number | undefined;
 
   slug?: string
   eventName?: string

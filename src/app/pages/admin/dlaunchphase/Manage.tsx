@@ -7,7 +7,7 @@ import { Content } from "../../../../_metronic/layout/components/content";
 import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar";
 
 import { LaunchsState } from "../../../../store/ducks/dlaunch/types";
-import { loadMyLaunchsRequest } from "../../../../store/ducks/dlaunch/actions";
+import { loadLaunchRequest, loadMyLaunchsRequest } from "../../../../store/ducks/dlaunch/actions";
 import Loading from "../../../loading";
 import { ManageLaunchPhaseWidget } from "./ManageLaunchPhaseWidget";
 import { loadMyLaunchPhasesRequest } from "../../../../store/ducks/dlaunchphase/actions";
@@ -28,7 +28,7 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ launchphases }) 
       <div className="row g-5 gx-xxl-12">
         <div className="col-xxl-12">
           <ManageLaunchPhaseWidget
-            launchphases={launchphases}
+           
             className="card-xxl-stretch mb-5 mb-xxl-8"
           />
         </div>
@@ -41,17 +41,20 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
   const launch = useSelector((state: ApplicationState) => state.launch);
-
   const launchphases = useSelector((state: ApplicationState) => state.launchphase);
 
   const {launchId} = useParams()
 
   useEffect(() => {
     dispatch(loadMyLaunchPhasesRequest(Number(launchId))); //Puxa componentes com seus filhos primários
+    if (!launch.launch.id) {
+      dispatch(loadMyLaunchsRequest(me.me.id!))
+    }
   }, [dispatch]);
 
-  console.log("launchphases", launchphases);
-  if (launchphases.loading) return <Loading />;
+  console.log("########launchphases", launchphases);
+  console.log("########launch", launch);
+  if (launchphases.loading || launch.loading) return <Loading />;
 
   return (
     <div className="">
@@ -59,7 +62,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
         breadcrumbs={[
           {
             title: "MEUS LANÇAMENTOS",
-            path: "/launches",
+            path: "/launch",
             isSeparator: false,
             isActive: false,
           },

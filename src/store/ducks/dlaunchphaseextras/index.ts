@@ -77,7 +77,7 @@ const reducer: Reducer<LaunchPhaseExtrasState> = (state = INITIAL_STATE, action:
     case LaunchPhaseExtrasTypes.CREATE_LAUNCHPHASEEXTRA_REQUEST:
       return {...state}
     case LaunchPhaseExtrasTypes.CREATE_LAUNCHPHASEEXTRA_SUCCESS:
-      return {...state, loading: false, error: false, myLaunchPhaseExtras: [...state.myLaunchPhaseExtras, action.payload.data] }
+      return {...state, loading: false, error: false, myLaunchPhaseExtras: [action.payload.data, ...state.myLaunchPhaseExtras] }
     case LaunchPhaseExtrasTypes.CREATE_LAUNCHPHASEEXTRA_FAILURE:
       return {...state, loading: false, error: action.payload, myLaunchPhaseExtras: [], launch: {}}
 

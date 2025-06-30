@@ -14,9 +14,10 @@ import { LaunchPhaseExtrasState } from "../../../../store/ducks/dlaunchphaseextr
 
 type Props = {
   launchphaseextras: LaunchPhaseExtrasState;
+  launchPhaseId: number;
 };
 
-const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ launchphaseextras }) => (
+const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ launchphaseextras, launchPhaseId }) => (
   <div className="">
     <ToolbarWrapper />
     <Content>
@@ -27,6 +28,7 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ launchphaseextra
         <div className="col-xxl-12">
           <ManageLaunchPhaseExtraWidget
             launchphaseextras={launchphaseextras}
+            launchPhaseId={launchPhaseId}
             className="card-xxl-stretch mb-5 mb-xxl-8"
           />
         </div>
@@ -57,13 +59,13 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
         breadcrumbs={[
           {
             title: "MEUS LANÇAMENTOS",
-            path: "/launches",
+            path: "/launch",
             isSeparator: false,
             isActive: false,
           },
         ]}
       />
-      <ManagePage launchphaseextras={launchphaseextras} />
+      <ManagePage launchphaseextras={launchphaseextras} launchPhaseId={Number(launchPhaseId)} />
     </div>
   );
 };

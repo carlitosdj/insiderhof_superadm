@@ -151,7 +151,7 @@ const Step4CreateProduct: React.FC<Step4CreateProductProps> = ({ onPrevious, ste
     
     // Navegar para a lista de lançamentos após a criação
     setTimeout(() => {
-      navigate('/launches');
+      navigate('/launch');
     }, 1000);
   };
 

@@ -4,7 +4,8 @@ const INITIAL_STATE: CartsState = {
   data: [],
   error: false,
   loading: false,
-  selectedCarts: []
+  selectedCarts: [],
+  
 };
 
 const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
@@ -75,7 +76,8 @@ const reducer: Reducer<CartsState> = (state = INITIAL_STATE, action: any) => {
       }
     case CartsTypes.DELETE_CART_FAILURE:
       return { ...state, loading: false, error: action.payload, data: [] };
-    
+
+
 
     case CartsTypes.SELECTED_CART_ADD:
       return { ...state };

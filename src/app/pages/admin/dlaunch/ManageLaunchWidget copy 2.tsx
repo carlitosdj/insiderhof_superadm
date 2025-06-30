@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useRef, useEffect } from "react";
-import { Button, Modal, Badge, Card, Row, Col } from "react-bootstrap";
+import React, { useState, useRef } from "react";
+import { Button, Modal, Card, Badge, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
@@ -8,7 +8,6 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import Update from "./update";
 
 import momentDurationFormatSetup from "moment-duration-format";
-import { AnimatePresence, motion } from "framer-motion";
 import { Launch, LaunchsState } from "../../../../store/ducks/dlaunch/types";
 import {
   deleteLaunchRequest,
@@ -20,59 +19,6 @@ import Create from "./create";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
-
-// Estilos CSS customizados para o grid responsivo
-const gridStyles = `
-  .launch-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    position: relative;
-  }
-  
-  .launch-grid > div {
-    width: calc(33.333% - 0.67rem);
-    min-width: 300px;
-    transition: transform 0.2s ease;
-  }
-  
-  .launch-grid > div.dragging {
-    z-index: 1000;
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  }
-  
-  .launch-grid > div.drag-over {
-    transform: scale(0.95);
-    opacity: 0.7;
-    border: 2px dashed #007bff;
-  }
-  
-  .launch-grid > div.drag-over::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    border: 2px dashed #007bff;
-    border-radius: 8px;
-    pointer-events: none;
-    z-index: 999;
-  }
-  
-  @media (max-width: 1200px) {
-    .launch-grid > div {
-      width: calc(50% - 0.5rem);
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .launch-grid > div {
-      width: 100%;
-    }
-  }
-`;
 
 type Props = {
   className: string;
@@ -87,22 +33,150 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<Launch>({});
   const [oldChildren, setOldChildren] = useState<Launch[]>(launch.myLaunchs);
+  const [draggedItem, setDraggedItem] = useState<Launch | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const [openProduct, setOpenProduct] = useState<boolean>(false);
   const [openedId, setOpenedId] = useState<number>(0);
-  
-  // Estados para drag and drop customizado
-  const [draggedItem, setDraggedItem] = useState<Launch | null>(null);
-  const [draggedIndex, setDraggedIndex] = useState<number>(-1);
-  const [dragOverIndex, setDragOverIndex] = useState<number>(-1);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  
-  const gridRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<HTMLDivElement>(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Custom styles for enhanced UI
+  const customStyles = `
+    .hover-shadow-lg {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-shadow-lg:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+    
+    .transition-all {
+      transition: all 0.3s ease;
+    }
+    
+    .hover-primary:hover {
+      color: var(--kt-primary) !important;
+    }
+    
+    .cursor-grab {
+      cursor: grab;
+    }
+    
+    .cursor-grab:active {
+      cursor: grabbing;
+    }
+    
+    /* Reorder styles */
+    .reorder-item {
+      user-select: none;
+      touch-action: none;
+    }
+    
+    .reorder-item:active {
+      cursor: grabbing;
+    }
+    
+    .reorder-group {
+      position: relative;
+    }
+    
+    /* Prevent text selection during drag */
+    .reorder-item * {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    
+    /* Allow text selection in buttons and inputs */
+    .reorder-item button,
+    .reorder-item input,
+    .reorder-item textarea {
+      user-select: text;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+    }
+    
+    .symbol-50px {
+      width: 50px;
+      height: 50px;
+    }
+    
+    .symbol-40px {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .symbol-100px {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .bg-light-primary {
+      background-color: rgba(var(--kt-primary-rgb), 0.1);
+    }
+    
+    .bg-light-success {
+      background-color: rgba(var(--kt-success-rgb), 0.1);
+    }
+    
+    .bg-light-warning {
+      background-color: rgba(var(--kt-warning-rgb), 0.1);
+    }
+    
+    .bg-light-info {
+      background-color: rgba(var(--kt-info-rgb), 0.1);
+    }
+    
+    .bg-light-dark {
+      background-color: rgba(var(--kt-dark-rgb), 0.05);
+    }
+    
+    .fs-8 {
+      font-size: 0.75rem !important;
+    }
+    
+    .p-6 {
+      padding: 1.5rem !important;
+    }
+    
+    .py-12 {
+      padding-top: 3rem !important;
+      padding-bottom: 3rem !important;
+    }
+    
+    .mb-8 {
+      margin-bottom: 2rem !important;
+    }
+    
+    /* Force 3 columns on large screens */
+    @media (min-width: 992px) {
+      .reorder-item {
+        flex: 0 0 33.333333% !important;
+        max-width: 33.333333% !important;
+      }
+    }
+    
+    /* 2 columns on medium screens */
+    @media (min-width: 768px) and (max-width: 991px) {
+      .reorder-item {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+      }
+    }
+    
+    /* 1 column on small screens */
+    @media (max-width: 767px) {
+      .reorder-item {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  `;
   
   const handleClose = () => {
     setShow(false);
@@ -122,29 +196,65 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
     dispatch(deleteLaunchRequest(child.id!));
   };
 
-  const reorder = (children: Launch[]) => {
-    // Atualiza a ordem baseada na nova posição no array
-    // O Framer Motion automaticamente reorganiza os itens no grid
-    children.forEach((child, index) => {
-      children[index] = { ...children[index], order: index + 1 };
-    });
-    dispatch(reorderLaunchsRequest(children));
-  };
-
   const reorderToSave = (children: Launch[]) => {
-    // Verifica se houve mudança na ordem antes de salvar
-    // Compara cada item com sua posição anterior
-    const hasChanged = children.some((child, index) => {
-      const oldChild = oldChildren[index];
-      return !oldChild || oldChild.id !== child.id || oldChild.order !== child.order;
-    });
-
-    if (hasChanged) {
-      children.forEach((child) => {
+    //Verifica se o old é igual ao children para atualizar no backend:
+    if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
+      children.map((child) => {
         dispatch(updateLaunchRequest({ id: child.id, order: child.order }));
       });
-      setOldChildren([...children]);
+      //seta a lista de old para o novo:
+      setOldChildren(children);
     }
+  };
+
+  // Custom drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, item: Launch) => {
+    setDraggedItem(item);
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', item.id?.toString() || '');
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    e.currentTarget.classList.remove('dragging');
+    setDraggedItem(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    
+    if (!draggedItem) return;
+    
+    const draggedIndex = launch.myLaunchs.findIndex(item => item.id === draggedItem.id);
+    if (draggedIndex === -1 || draggedIndex === dropIndex) return;
+    
+    const newItems = [...launch.myLaunchs];
+    const [removed] = newItems.splice(draggedIndex, 1);
+    newItems.splice(dropIndex, 0, removed);
+    
+    // Update order property
+    newItems.forEach((item, index) => {
+      item.order = index + 1;
+    });
+    
+    dispatch(reorderLaunchsRequest(newItems));
+    
+    // Save the new order to backend using reorderToSave
+    reorderToSave(newItems);
+    
+    setDragOverIndex(null);
   };
 
   const openHasLaunchs = (child: Launch) => {
@@ -161,108 +271,9 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
     }
   };
 
-  // Funções para drag and drop customizado
-  const handleDragStart = (e: React.MouseEvent, item: Launch, index: number) => {
-    e.preventDefault();
-    setDraggedItem(item);
-    setDraggedIndex(index);
-    setIsDragging(true);
-    setMousePosition({ x: e.clientX, y: e.clientY });
-    
-    // Adiciona classe de dragging
-    if (dragRef.current) {
-      dragRef.current.classList.add('dragging');
-    }
-  };
-
-  const handleDragOver = (e: React.MouseEvent, index: number) => {
-    e.preventDefault();
-    if (isDragging && draggedIndex !== index) {
-      setDragOverIndex(index);
-    }
-  };
-
-  const handleDragEnd = () => {
-    if (isDragging && draggedItem && draggedIndex !== dragOverIndex && dragOverIndex !== -1) {
-      // Reordena os itens
-      const newItems = [...launch.myLaunchs];
-      const [removed] = newItems.splice(draggedIndex, 1);
-      newItems.splice(dragOverIndex, 0, removed);
-      
-      // Atualiza a ordem
-      newItems.forEach((item, index) => {
-        newItems[index] = { ...item, order: index + 1 };
-      });
-      
-      // Salva no Redux
-      dispatch(reorderLaunchsRequest(newItems));
-      
-      // Salva no backend
-      newItems.forEach((item) => {
-        dispatch(updateLaunchRequest({ id: item.id, order: item.order }));
-      });
-      
-      setOldChildren([...newItems]);
-    }
-    
-    // Limpa os estados
-    setDraggedItem(null);
-    setDraggedIndex(-1);
-    setDragOverIndex(-1);
-    setIsDragging(false);
-    
-    // Remove classe de dragging
-    if (dragRef.current) {
-      dragRef.current.classList.remove('dragging');
-    }
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging && gridRef.current) {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      // Encontra o elemento sob o mouse
-      const elements = gridRef.current.children;
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i] as HTMLElement;
-        const rect = element.getBoundingClientRect();
-        
-        if (e.clientX >= rect.left && e.clientX <= rect.right &&
-            e.clientY >= rect.top && e.clientY <= rect.bottom) {
-          if (dragOverIndex !== i) {
-            setDragOverIndex(i);
-          }
-          break;
-        }
-      }
-    }
-  };
-
-  // Event listeners para mouse move
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleDragEnd);
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleDragEnd);
-      };
-    }
-  }, [isDragging, draggedItem, draggedIndex, dragOverIndex]);
-
-  const getStatusBadge = (launch: Launch) => {
-    const hasOffers = launch.launchhasoffers && launch.launchhasoffers.length > 0;
-    const hasPhases = launch.phases && launch.phases.length > 0;
-    const hasPrice = launch.price && launch.price > 0;
-    
-    if (hasOffers && hasPhases && hasPrice) {
-      return <Badge bg="success" className="fs-8 px-2 py-1">Completo</Badge>;
-    } else if (hasOffers || hasPhases || hasPrice) {
-      return <Badge bg="warning" className="fs-8 px-2 py-1">Parcial</Badge>;
-    } else {
-      return <Badge bg="secondary" className="fs-8 px-2 py-1">Pendente</Badge>;
-    }
+  const handleButtonClick = (e: React.MouseEvent, callback: () => void) => {
+    e.stopPropagation();
+    callback();
   };
 
   const formatCurrency = (value: number) => {
@@ -272,9 +283,37 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
     }).format(value);
   };
 
+  const formatNumber = (value: number) => {
+    return new Intl.NumberFormat('pt-BR').format(value);
+  };
+
+  const getStatusColor = (launch: Launch) => {
+    if (launch.status === '1') return 'success';
+    if (launch.status === '0') return 'danger';
+    return 'secondary';
+  };
+
+  const getStatusText = (launch: Launch) => {
+    if (launch.status === '1') return 'Ativo';
+    if (launch.status === '0') return 'Inativo';
+    return 'Pendente';
+  };
+
+  const getConversionRate = (launch: Launch) => {
+    if (launch.leadsCount && launch.cartCount) {
+      return ((launch.cartCount / launch.leadsCount) * 100).toFixed(1);
+    }
+    return '0';
+  };
+
+  const getRevenue = (launch: Launch) => {
+    return (launch.cartCount || 0) * (launch.price || 0);
+  };
+
   return (
     <>
-      <style>{gridStyles}</style>
+      <style>{customStyles}</style>
+      
       <Modal
         id="kt_modal_create_app"
         tabIndex={-1}
@@ -291,7 +330,6 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
             {action === "createComponent" ? "Adicionar lançamento" : ""}
             {action === "manageLaunchs" ? "Gerenciar ofertas" : ""}
           </h2>
-
           <div
             className="btn btn-sm btn-icon btn-active-color-primary"
             onClick={handleClose}
@@ -303,15 +341,9 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="modal-body py-lg-10 px-lg-10">
           {action === "updateComponent" ? (
             <Update handleClose={handleClose} child={child} />
-          ) : (
-            ""
-          )}
-          {action === "createComponent" ? (
+          ) : action === "createComponent" ? (
             <Create handleClose={handleClose} />
-          ) : (
-            ""
-          )}
-          {action === "manageLaunchs" ? (
+          ) : action === "manageLaunchs" ? (
             <Manage handleClose={handleClose} child={child} />
           ) : (
             ""
@@ -319,238 +351,337 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
-      <div className={`card ${className}`}>
-        <div className="card-header border-0 pt-5">
-          <h3 className="card-title align-items-start flex-column">
-            <span className="card-label fw-bolder fs-3 mb-1">
-              <KTIcon iconName="rocket" className="fs-2 text-primary me-2" />
-              Lançamentos
-            </span>
-            <span className="text-muted mt-1 fw-bold fs-7">
-              Gerenciador de lançamentos e campanhas
-            </span>
-          </h3>
-          <div className="card-toolbar">
-            <Button
-              className="btn btn-primary btn-lg px-6"
-              onClick={() => createComponent()}
-            >
-              <KTIcon iconName="plus" className="fs-2 me-2" />
-              Novo Lançamento
-            </Button>
+      <div className={`${className}`}>
+        {/* Header Section */}
+        <div className="d-flex justify-content-between align-items-center mb-8">
+          <div>
+            <h1 className="text-dark fw-bold fs-2 mb-2">Lançamentos</h1>
+            <p className="text-muted fs-6 mb-0">
+              Gerencie seus lançamentos e acompanhe o desempenho
+            </p>
           </div>
+          <Button
+            variant="primary"
+            size="lg"
+            className="btn-primary d-flex align-items-center gap-2"
+            onClick={createComponent}
+          >
+            <KTIcon iconName="plus" className="fs-2" />
+            Novo Lançamento
+          </Button>
         </div>
 
-        <div className="card-body py-3">
-          {launch.myLaunchs.length === 0 ? (
-            <div className="text-center py-10">
-              <KTIcon iconName="rocket" className="fs-4x text-muted mb-4" />
-              <h4 className="text-muted mb-2">Nenhum lançamento encontrado</h4>
-              <p className="text-muted mb-4">
-                Comece criando seu primeiro lançamento para gerenciar campanhas e ofertas.
-              </p>
-              <Button
-                className="btn btn-primary"
-                onClick={() => createComponent()}
-              >
-                <KTIcon iconName="plus" className="fs-2 me-2" />
-                Criar Primeiro Lançamento
-              </Button>
-            </div>
-          ) : (
-            <div className="launch-grid" ref={gridRef}>
-              <AnimatePresence>
-                {launch.myLaunchs?.map((child: Launch, index: number) => {
-                  return (
-                    <motion.div
-                      key={child.id}
-                      ref={draggedItem === child ? dragRef : null}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      whileDrag={{ 
-                        scale: 1.05, 
-                        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-                        zIndex: 1000
-                      }}
-                      className={`${draggedItem === child ? 'dragging' : ''} ${dragOverIndex === index ? 'drag-over' : ''}`}
-                      style={{ 
-                        touchAction: "none",
-                        cursor: "grab"
-                      }}
-                      onMouseDown={(e) => handleDragStart(e, child, index)}
-                      onMouseEnter={(e) => handleDragOver(e, index)}
-                    >
-                      <Card className="h-100 shadow-sm border-0">
-                        <Card.Header className="bg-transparent border-0 pt-4 pb-2">
-                          <div className="d-flex align-items-center justify-content-between mb-2">
-                            <div className="d-flex align-items-center">
-                              <KTIcon iconName="rocket" className="fs-3 text-primary me-2" />
-                              <h6 className="fw-bold text-gray-700 mb-0">
-                                {child.name}
-                              </h6>
-                            </div>
-                            {getStatusBadge(child)}
-                          </div>
-                          <p className="text-muted fs-7 mb-0">
-                            {child.description?.length! > 80
-                              ? child.description?.substring(0, 80) + "..."
-                              : child.description}
-                          </p>
-                        </Card.Header>
+        {/* Statistics Overview */}
+        <Row className="mb-8">
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="p-6">
+                <div className="d-flex align-items-center">
+                  <div className="flex-shrink-0">
+                    <div className="symbol symbol-50px me-3">
+                      <div className="symbol-label bg-light-primary">
+                        <KTIcon iconName="chart-line" className="fs-2x text-primary" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <div className="text-muted fw-semibold fs-7">Total de Lançamentos</div>
+                    <div className="fs-3 fw-bold text-dark">{launch.myLaunchs.length}</div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="p-6">
+                <div className="d-flex align-items-center">
+                  <div className="flex-shrink-0">
+                    <div className="symbol symbol-50px me-3">
+                      <div className="symbol-label bg-light-success">
+                        <KTIcon iconName="user" className="fs-2x text-success" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <div className="text-muted fw-semibold fs-7">Total de Leads</div>
+                    <div className="fs-3 fw-bold text-dark">
+                      {formatNumber(launch.myLaunchs.reduce((sum, l) => sum + (l.leadsCount || 0), 0))}
+                    </div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="p-6">
+                <div className="d-flex align-items-center">
+                  <div className="flex-shrink-0">
+                    <div className="symbol symbol-50px me-3">
+                      <div className="symbol-label bg-light-warning">
+                        <KTIcon iconName="basket" className="fs-2x text-warning" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <div className="text-muted fw-semibold fs-7">Total de Vendas</div>
+                    <div className="fs-3 fw-bold text-dark">
+                      {formatNumber(launch.myLaunchs.reduce((sum, l) => sum + (l.cartCount || 0), 0))}
+                    </div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+          
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="p-6">
+                <div className="d-flex align-items-center">
+                  <div className="flex-shrink-0">
+                    <div className="symbol symbol-50px me-3">
+                      <div className="symbol-label bg-light-info">
+                        <KTIcon iconName="dollar" className="fs-2x text-info" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <div className="text-muted fw-semibold fs-7">Receita Total</div>
+                    <div className="fs-3 fw-bold text-dark">
+                      {formatCurrency(launch.myLaunchs.reduce((sum, l) => sum + getRevenue(l), 0))}
+                    </div>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-                        <Card.Body className="p-4">
-                          <div className="row g-3 mb-4">
-                            <div className="col-6">
-                              <div className="d-flex flex-column">
-                                <span className="fw-bold fs-7 text-gray-600 mb-1">Tipo</span>
-                                <Badge bg="info" className="fs-8 px-2 py-1 w-fit-content">
-                                  {child.type || 'Não definido'}
-                                </Badge>
-                              </div>
-                            </div>
-                            <div className="col-6">
-                              <div className="d-flex flex-column">
-                                <span className="fw-bold fs-7 text-gray-600 mb-1">Preço</span>
-                                <p className="text-success fw-bold fs-6 mb-0">
-                                  {child.price ? formatCurrency(child.price) : 'Não definido'}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Ofertas */}
-                          <div className="mb-3">
-                            <div className="d-flex align-items-center justify-content-between mb-2">
-                              <span className="fw-bold fs-7 text-gray-600">
-                                <KTIcon iconName="gift" className="fs-5 text-warning me-1" />
-                                Ofertas ({child.launchhasoffers?.length || 0})
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline-primary"
-                                onClick={() => openHasLaunchs(child)}
-                                className="btn-sm"
-                              >
-                                <KTIcon iconName="settings" className="fs-6 me-1" />
-                                Gerenciar
-                              </Button>
-                            </div>
-                            
-                            {child.launchhasoffers && child.launchhasoffers.length > 0 && (
-                              <div className="d-flex flex-column gap-2">
-                                {child.launchhasoffers.slice(0, 2).map((hasoffer) => (
-                                  <div key={hasoffer.id} className="d-flex align-items-center bg-light rounded p-2">
-                                    {hasoffer.offer?.image && (
-                                      <img
-                                        className="rounded me-2"
-                                        height={30}
-                                        width={30}
-                                        src={
-                                          hasoffer.offer?.image.includes("https://")
-                                            ? hasoffer.offer?.image
-                                            : "https://app.insiderhof.com.br/files/" + hasoffer.offer?.image
-                                        }
-                                        onError={({ currentTarget }) => {
-                                          currentTarget.onerror = null;
-                                          currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
-                                        }}
-                                      />
-                                    )}
-                                    <div className="flex-grow-1">
-                                      <p className="fw-bold fs-7 mb-0">{hasoffer.offer?.name}</p>
-                                      <p className="text-success fs-8 mb-0">
-                                        {formatCurrency(hasoffer.offer?.price || 0)}
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))}
-                                {child.launchhasoffers.length > 2 && (
-                                  <p className="text-muted fs-8 mb-0 text-center">
-                                    +{child.launchhasoffers.length - 2} mais ofertas
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Fases */}
-                          <div className="mb-3">
-                            <span className="fw-bold fs-7 text-gray-600">
-                              <KTIcon iconName="calendar" className="fs-5 text-info me-1" />
-                              Fases ({child.phases?.length || 0})
-                            </span>
-                            {child.phases && child.phases.length > 0 && (
-                              <div className="d-flex flex-wrap gap-1 mt-2">
-                                {child.phases.slice(0, 3).map((phase) => (
-                                  <Badge key={phase.id} bg="light" text="dark" className="fs-8">
-                                    {phase.name}
-                                  </Badge>
-                                ))}
-                                {child.phases.length > 3 && (
-                                  <Badge bg="light" text="dark" className="fs-8">
-                                    +{child.phases.length - 3}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </Card.Body>
-
-                        <Card.Footer className="bg-transparent border-0 pt-0">
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div className="d-flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline-primary"
-                                onClick={() => navigate("/launchphase/" + child.id)}
-                                className="btn-sm"
-                              >
-                                <KTIcon iconName="switch" className="fs-6 me-1" />
-                                Fases
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline-warning"
-                                onClick={() => updateComponent(child)}
-                                className="btn-sm"
-                              >
-                                <KTIcon iconName="pencil" className="fs-6 me-1" />
-                                Editar
-                              </Button>
-                            </div>
-                            
-                            <div className="d-flex align-items-center gap-2">
-                              <div 
-                                style={{ cursor: "grab" }} 
-                                className="text-muted p-1 rounded hover-bg-light"
-                                title="Arrastar para reordenar"
-                              >
-                                <KTIcon iconName="arrow-up-down" className="fs-5" />
-                              </div>
-                              <Button
-                                size="sm"
-                                variant="outline-danger"
-                                onClick={() => {
-                                  if (window.confirm("Deseja realmente excluir: " + child.name + "?")) {
-                                    deleteComponent(child);
-                                  }
-                                }}
-                                className="btn-sm"
-                              >
-                                <KTIcon iconName="trash" className="fs-6" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card.Footer>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
+        {/* Launches Grid */}
+        <div className="row reorder-group" style={{ touchAction: "none" }}>
+          {launch.myLaunchs.length === 0 && (
+            <Col xs={12}>
+              <Card className="border-0 shadow-sm">
+                <Card.Body className="text-center py-12">
+                  <div className="symbol symbol-100px mb-6">
+                    <div className="symbol-label bg-light-primary">
+                      <KTIcon iconName="rocket" className="fs-2x text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-dark fw-bold mb-2">Nenhum lançamento encontrado</h3>
+                  <p className="text-muted fs-6 mb-6">
+                    Comece criando seu primeiro lançamento para gerenciar suas campanhas
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={createComponent}
+                    className="btn-primary"
+                  >
+                    <KTIcon iconName="plus" className="fs-2 me-2" />
+                    Criar Primeiro Lançamento
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
           )}
+
+          {launch.myLaunchs.map((launchItem: Launch, index: number) => (
+            <Col 
+              key={launchItem.id} 
+              className={`col-lg-4 col-md-6 col-12 mb-4 reorder-item ${dragOverIndex === index ? 'drag-over' : ''}`}
+              draggable
+              onDragStart={(e) => handleDragStart(e, launchItem)}
+              onDragEnd={handleDragEnd}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
+            >
+              <Card className="h-100 border-0 shadow-sm hover-shadow-lg transition-all">
+                <Card.Body className="p-6">
+                  {/* Header */}
+                  <div className="d-flex justify-content-between align-items-start mb-4">
+                    <div className="flex-grow-1">
+                      <Link
+                        to={"/launch/" + launchItem.id}
+                        className="text-decoration-none"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <h4 className="text-dark fw-bold fs-5 mb-1 hover-primary">
+                          {launchItem.name}
+                        </h4>
+                      </Link>
+                      <p className="text-muted fs-7 mb-2">
+                        {launchItem.description?.length! > 80
+                          ? launchItem.description?.substring(0, 80) + "..."
+                          : launchItem.description || "Sem descrição"}
+                      </p>
+                      {/* <div className="d-flex align-items-center gap-2">
+                        <Badge bg={getStatusColor(launchItem)} className="fs-8">
+                          {getStatusText(launchItem)}
+                        </Badge>
+                        <span className="text-muted fs-8">•</span>
+                        <span className="text-muted fs-8">{launchItem.type}</span>
+                      </div> */}
+                    </div>
+                    <div className="flex-shrink-0">
+                      <div className="symbol symbol-40px">
+                        <div className="symbol-label bg-light-primary">
+                          <KTIcon iconName="rocket" className="fs-2 text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Metrics */}
+                  <div className="row g-3 mb-4">
+                    <Col xs={3}>
+                      <div className="bg-light-primary rounded p-3 text-center">
+                        <div className="fs-6 fw-bold text-primary mb-1">
+                          {formatNumber(launchItem.leadsCount || 0)}
+                        </div>
+                        <div className="fs-8 text-muted">Leads</div>
+                      </div>
+                    </Col>
+                    <Col xs={3}>
+                      <div className="bg-light-primary rounded p-3 text-center">
+                        <div className="fs-6 fw-bold text-primary mb-1">
+                          {formatNumber(launchItem.cartCount || 0)}
+                        </div>
+                        <div className="fs-8 text-muted">Vendas</div>
+                      </div>
+                    </Col>
+                    <Col xs={3}>
+                      <div className="bg-light-success rounded p-3 text-center">
+                        <div className="fs-6 fw-bold text-success mb-1">
+                          {getConversionRate(launchItem)}%
+                        </div>
+                        <div className="fs-8 text-muted">Conversão</div>
+                      </div>
+                    </Col>
+                    <Col xs={3}>
+                      <div className="bg-light-success rounded p-3 text-center">
+                        <div className="fs-6 fw-bold text-success mb-1">
+                          {formatCurrency(launchItem.price || 0)}
+                        </div>
+                        <div className="fs-8 text-muted">Ticket</div>
+                      </div>
+                    </Col>
+                  </div>
+
+                  {/* Revenue */}
+                  <div className="bg-light-dark rounded p-3 mb-4">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <span className="fs-7 text-muted">Receita Total</span>
+                      <span className="fs-5 fw-bold text-dark">
+                        {formatCurrency(getRevenue(launchItem))}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Offers */}
+                  {/* {launchItem.launchhasoffers && launchItem.launchhasoffers.length > 0 && (
+                    <div className="mb-4">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <span className="fs-7 fw-semibold text-dark">Ofertas ({launchItem.launchhasoffers.length})</span>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={(e) => handleButtonClick(e, () => openHasLaunchs(launchItem))}
+                          className="btn-sm"
+                        >
+                          <KTIcon iconName="gear" className="fs-6 me-1" />
+                          Gerenciar
+                        </Button>
+                      </div>
+                      <div className="d-flex flex-wrap gap-2">
+                        {launchItem.launchhasoffers.slice(0, 3).map((hasoffer, idx) => (
+                          <div key={hasoffer.id} className="d-flex align-items-center bg-light rounded p-2">
+                            {hasoffer.offer?.image && (
+                              <img
+                                className="rounded me-2"
+                                width={24}
+                                height={24}
+                                src={
+                                  hasoffer.offer?.image.includes("https://")
+                                    ? hasoffer.offer?.image
+                                    : "https://app.insiderhof.com.br/files/" + hasoffer.offer?.image
+                                }
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null;
+                                  currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                                }}
+                                alt={hasoffer.offer?.name}
+                              />
+                            )}
+                            <span className="fs-8 text-dark fw-semibold">
+                              {hasoffer.offer?.name}
+                            </span>
+                          </div>
+                        ))}
+                        {launchItem.launchhasoffers.length > 3 && (
+                          <div className="bg-light rounded p-2">
+                            <span className="fs-8 text-muted">
+                              +{launchItem.launchhasoffers.length - 3} mais
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )} */}
+
+                  {/* Actions */}
+                  <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <div className="d-flex gap-2">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={(e) => handleButtonClick(e, () => updateComponent(launchItem))}
+                        className="btn-sm"
+                      >
+                        <KTIcon iconName="pencil" className="fs-6 me-1" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={(e) => handleButtonClick(e, () => {
+                          if (window.confirm("Deseja realmente excluir: " + launchItem.name + "?")) {
+                            deleteComponent(launchItem);
+                          }
+                        })}
+                        className="btn-sm"
+                      >
+                        <KTIcon iconName="trash" className="fs-6 me-1" />
+                        Excluir
+                      </Button>
+                    </div>
+                    <div 
+                      className="drag-handle d-flex align-items-center justify-content-center"
+                      style={{ 
+                        width: '32px', 
+                        height: '32px',
+                        borderRadius: '6px',
+                        backgroundColor: 'rgba(0,0,0,0.05)',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)';
+                      }}
+                    >
+                      <KTIcon iconName="arrow-up-down" className="fs-5 text-muted" />
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </div>
       </div>
     </>
