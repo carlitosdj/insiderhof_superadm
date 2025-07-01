@@ -256,7 +256,7 @@ const Resume = () => {
   };
 
   // Extract price values for comparison
-  const oldPrice = launch?.oldPrice || 0;
+  // const oldPrice = launch?.oldPrice || 0;
   const price = launch?.price || 0;
 
   if (!launch) {
@@ -360,7 +360,7 @@ const Resume = () => {
                   </div>
                   <div className="info-item">
                     <span className="info-label">Preço Original</span>
-                    <span className="info-value text-primary">{formatCurrency(launch.oldPrice || 0)}</span>
+                    {/* <span className="info-value text-primary">{formatCurrency(launch.oldPrice || 0)}</span> */}
                   </div>
                   <div className="info-item">
                     <span className="info-label">Leads Capturados</span>
@@ -399,7 +399,7 @@ const Resume = () => {
               
               <div className="financial-item">
                 <div className="financial-label">Preço Original</div>
-                <div className="financial-value">{formatCurrency(launch.oldPrice || 0)}</div>
+                {/* <div className="financial-value">{formatCurrency(launch.oldPrice || 0)}</div> */}
               </div>
               
               <div className="financial-item">
@@ -407,7 +407,7 @@ const Resume = () => {
                 <div className="financial-value">{formatCurrency(launch.price || 0)}</div>
               </div>
               
-              {oldPrice > 0 && price > 0 && (
+              {/* {oldPrice > 0 && price > 0 && (
                 <div className="financial-item">
                   <div className="financial-label">
                     {oldPrice > price ? 'Desconto Aplicado' : 'Acréscimo'}
@@ -416,7 +416,7 @@ const Resume = () => {
                     {formatCurrency(Math.abs(oldPrice - price))}
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </Col>
         </Row>

@@ -25,7 +25,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [validated, setValidated] = useState(false);
 
   const [price, setPrice] = useState(0);
-  const [oldPrice, setOldPrice] = useState(0);
+  // const [oldPrice, setOldPrice] = useState(0);
   const [type, setType] = useState("");
 
   const [slug, setSlug] = useState("jan25");
@@ -141,7 +141,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
         description,
         ownerId: me.me.id,
         price: Number(price),
-        oldPrice: Number(oldPrice),
+        // oldPrice: Number(oldPrice),
         type,
         slug,
         eventName,

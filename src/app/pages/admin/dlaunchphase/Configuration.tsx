@@ -232,7 +232,7 @@ const Configuration = () => {
   const [description, setDescription] = useState<string>("");
   const [status, setStatus] = useState<string>("1");
   const [price, setPrice] = useState(0);
-  const [oldPrice, setOldPrice] = useState(0);
+  // const [oldPrice, setOldPrice] = useState(0);
   const [type, setType] = useState("");
   const [installments, setInstallments] = useState("");
   const [renovationTime, setRenovationTime] = useState(0);
@@ -248,7 +248,7 @@ const Configuration = () => {
       setDescription(launch.description || "");
       setStatus(launch.status || "1");
       setPrice(launch.price || 0);
-      setOldPrice(launch.oldPrice || 0);
+      // setOldPrice(launch.oldPrice || 0);
       setType(launch.type || "");
       setInstallments(launch.installments || "");
       setRenovationTime(launch.renovationTime || 0);
@@ -276,7 +276,7 @@ const Configuration = () => {
         description,
         status: status,
         price: Number(price),
-        oldPrice: Number(oldPrice),
+        // oldPrice: Number(oldPrice),
         type,
         installments,
         renovationTime: Number(renovationTime),
@@ -311,7 +311,7 @@ const Configuration = () => {
       setDescription(launch.description || "");
       setStatus(launch.status || "1");
       setPrice(launch.price || 0);
-      setOldPrice(launch.oldPrice || 0);
+      // setOldPrice(launch.oldPrice || 0);
       setType(launch.type || "");
       setInstallments(launch.installments || "");
       setRenovationTime(launch.renovationTime || 0);
@@ -583,7 +583,7 @@ const Configuration = () => {
                 </div>
                 <div className="section-body">
                   <Row>
-                    <Col md={6}>
+                    {/* <Col md={6}>
                       <div className="form-group">
                         <Form.Label className="form-label">
                           Preço Original
@@ -602,7 +602,7 @@ const Configuration = () => {
                           {formatCurrency(oldPrice)}
                         </div>
                       </div>
-                    </Col>
+                    </Col> */}
                     <Col md={6}>
                       <div className="form-group">
                         <Form.Label className="form-label">
@@ -638,7 +638,7 @@ const Configuration = () => {
                   </div>
 
                   {/* Price Difference Indicator */}
-                  {oldPrice > 0 && price > 0 && (
+                  {/* {oldPrice > 0 && price > 0 && (
                     <div className="price-difference">
                       <div className="d-flex align-items-center">
                         <KTIcon iconName="chart-line" className="fs-3 me-2" />
@@ -652,7 +652,7 @@ const Configuration = () => {
                         </div>
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </Col>
