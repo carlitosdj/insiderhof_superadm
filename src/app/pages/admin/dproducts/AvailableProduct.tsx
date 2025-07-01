@@ -12,7 +12,7 @@ interface handleCloseProps {
   handleClose: () => void;
   child: Product;
 }
-const ManageAvailable = ({ handleClose, child }: handleCloseProps) => {
+const AvailableProduct = ({ handleClose, child }: handleCloseProps) => {
   const [inputList, setInputList] = useState([
     { launchId: "", availableDate: "", productId: child.id, deadline: "" },
   ]);
@@ -228,4 +228,4 @@ const ManageAvailable = ({ handleClose, child }: handleCloseProps) => {
   );
 };
 
-export default ManageAvailable;
+export default AvailableProduct;

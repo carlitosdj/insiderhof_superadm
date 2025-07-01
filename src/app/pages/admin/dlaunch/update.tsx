@@ -25,7 +25,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [status, setStatus] = useState<string>("1");
 
   const [price, setPrice] = useState(0);
-  const [oldPrice, setOldPrice] = useState(0);
+
   const [type, setType] = useState("");
 
   const [installments, setInstallments] = useState("");
@@ -40,7 +40,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setDescription(child.description);
     setStatus(child.status!);
     setPrice(child.price!);
-    setOldPrice(child.oldPrice!);
+
     setType(child.type!);
 
     setInstallments(child.installments!);
@@ -67,7 +67,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         description,
         status: status!,
         price: Number(price),
-        oldPrice: Number(oldPrice),
+
         type,
 
         installments,
@@ -116,24 +116,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 onChange={(e: any) => setDescription(e.target.value)}
                 as="textarea"
                 rows={8}
-                name="description"
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe a descrição do produto
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-
-            <Form.Group controlId="formDescription">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                OldPrice
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                //required
-                value={oldPrice}
-                onChange={(e: any) => setOldPrice(e.target.value)}
                 name="description"
                 className="form-control form-control-lg form-control-solid"
               />

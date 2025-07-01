@@ -43,7 +43,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setImage(child.image!);
     setStatus(child.status!);
     setPrice(child.price!.toString());
-    setOldPrice(child.oldPrice!.toString());
     setType(child.type!);
     setDuration(child.duration!)
   }, [child.name, child.description]);
@@ -68,7 +67,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             image: res.data.filename,
             status: status!,
             price: Number(price),
-            oldPrice: Number(oldPrice),
             type,
             duration: Number(duration)
           };
@@ -81,7 +79,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
           description,
           status: status!,
           price: Number(price),
-          oldPrice: Number(oldPrice),
           type,
           duration: Number(duration)
         };
@@ -230,22 +227,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             </Form.Group>
           </div>
           <div className="col-lg-6 py-lg-2 px-lg-6">
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Preço Antigo
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={oldPrice.toString()}
-                onChange={(e: any) => setOldPrice(e.target.value)}
-                name="tags"
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as tags
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Preço

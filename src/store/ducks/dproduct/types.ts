@@ -45,7 +45,6 @@ export interface Product {
   id?: number | undefined
   name?: string | undefined
   description?: string | undefined
-  oldPrice?: number | undefined
   price?: number | undefined
   type?: string | undefined
   image?: string | undefined

@@ -40,7 +40,6 @@ export interface Launch {
   id?: number | undefined;
   name?: string | undefined;
   description?: string | undefined;
-  oldPrice?: number | undefined;
   price?: number | undefined;
   type?: string | undefined;
   order?: number | undefined;

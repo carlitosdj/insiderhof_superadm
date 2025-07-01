@@ -42,7 +42,6 @@ export interface Offer {
   id?: number | undefined
   name?: string | undefined
   description?: string | undefined
-  oldPrice?: number | undefined
   price?: number | undefined 
   image?: string | undefined
   logoCertificate?: string | undefined

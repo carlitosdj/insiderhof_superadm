@@ -27,7 +27,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [status, setStatus] = useState<string>("1");
 
   const [price, setPrice] = useState("");
-  const [oldPrice, setOldPrice] = useState("");
+
   const [type, setType] = useState("");
 
   const [selectedFile, setSelectedFile] = useState<any>();
@@ -39,7 +39,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   useEffect(() => {
     setName(child.name);
     setDescription(child.description);
-    setOldPrice(child.oldPrice!.toString());
+
     setPrice(child.price!.toString());
     setType(child.type!);
     setImage(child.image!);
@@ -92,7 +92,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         name,
         description,
         price: Number(price),
-        oldPrice: Number(oldPrice),
+   
         type,
         image: imageFilename, // novo ou atual
         logoCertificate: logoFilename, // novo ou atual
@@ -148,22 +148,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             <br />
           </div>
           <div className="col-lg-6">
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                Preço Antigo
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={oldPrice.toString()}
-                onChange={(e: any) => setOldPrice(e.target.value)}
-                name="tags"
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as tags
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
+            
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Preço

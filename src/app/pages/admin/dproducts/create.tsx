@@ -28,7 +28,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
   const [price, setPrice] = useState("");
   const [type, setType] = useState("curso");
-  const [oldPrice, setOldPrice] = useState("");
+
 
   const [duration, setDuration] = useState(0);
 
@@ -57,7 +57,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
             image: res.data.filename,
             ownerId: me.me.id,
             price: Number(price),
-            oldPrice: Number(oldPrice),
             type,
             duration: Number(duration),
           };
@@ -69,7 +68,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
           description,
           ownerId: me.me.id,
           price: Number(price),
-          oldPrice: Number(oldPrice),
           type,
           duration: Number(duration),
         };
@@ -217,21 +215,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
             </Form.Group>
           </div>
           <div className="col-lg-6 py-lg-2 px-lg-6">
-            <Form.Group controlId="fromName">
-              <Form.Label className="fw-bold fs-6 mb-5">
-                Preço Antigo
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={oldPrice}
-                onChange={(e: any) => setOldPrice(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe a ordem
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
 
             <Form.Group controlId="fromName">
               <Form.Label className="fw-bold fs-6 mb-5">Preço</Form.Label>

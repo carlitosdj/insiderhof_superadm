@@ -10,11 +10,14 @@ import Update from "./update";
 
 import momentDurationFormatSetup from "moment-duration-format";
 
-import { AnimatePresence, Reorder } from "framer-motion";
+import { AnimatePresence, Reorder, useDragControls } from "framer-motion";
 import { Product } from "../../../../store/ducks/dproduct/types";
-import { deleteProductRequest, reorderProductsRequest, updateProductRequest } from "../../../../store/ducks/dproduct/actions";
-import ManageAvailable from "./ManageAvailable";
-
+import {
+  deleteProductRequest,
+  reorderProductsRequest,
+  updateProductRequest,
+} from "../../../../store/ducks/dproduct/actions";
+import AvailableProduct from "./AvailableProduct";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -23,6 +26,227 @@ type Props = {
   className: string;
   products: Product[];
 };
+
+// ====================================================================
+// INÍCIO DO COMPONENTE CORRIGIDO
+// ====================================================================
+const ProductItem: React.FC<{
+  child: Product;
+  index: number;
+  updateComponent: (child: Product) => void;
+  deleteComponent: (product: Product) => void;
+  manageAvailable: (child: Product) => void;
+}> = ({ child, index, updateComponent, deleteComponent, manageAvailable }) => {
+  const dragControls = useDragControls();
+  const { image } = child;
+
+  // Função para lidar com o fim do arraste
+  const handleDragEnd = () => {
+    // Restaura o cursor e a seleção de texto no corpo do documento
+    document.body.style.cursor = "default";
+    document.body.style.userSelect = "auto";
+    // Remove o ouvinte de evento para evitar acúmulo
+    window.removeEventListener("pointerup", handleDragEnd);
+  };
+
+  // Função para lidar com o início do arraste
+  const handleDragStart = (e: React.PointerEvent) => {
+    // Inicia o arraste com o Framer Motion
+    dragControls.start(e);
+    // Altera o cursor para indicar que algo está sendo arrastado
+    document.body.style.cursor = "grabbing";
+    // Desabilita a seleção de texto para evitar o problema
+    document.body.style.userSelect = "none";
+    // Adiciona um ouvinte de evento global para quando o botão do mouse for solto
+    window.addEventListener("pointerup", handleDragEnd);
+  };
+
+  return (
+    <Reorder.Item
+      key={child.id}
+      value={child}
+      as="div"
+      dragListener={false}      // Desabilita o drag automático
+      dragControls={dragControls} // Usa o controle manual
+      style={{ touchAction: "pan-y" }} // Permite scroll no item
+      onDragEnd={handleDragEnd} // Limpa os estilos quando o arraste termina
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{
+        y: -2,
+        transition: { duration: 0.2 },
+      }}
+    >
+      <div
+        className="card border mb-2 mb-md-3 product-card"
+        style={{
+          transition: "all 0.3s ease",
+          borderRadius: "6px",
+        }}
+        onMouseEnter={(e) => {
+          if (window.innerWidth > 768) {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (window.innerWidth > 768) {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }
+        }}
+        onPointerDownCapture={(e) => {
+          const dragHandle = e.currentTarget.querySelector('.drag-handle');
+          if (dragHandle && !dragHandle.contains(e.target as Node)) {
+            e.stopPropagation();
+          }
+        }}
+      >
+        <div className="card-body p-3 p-md-4">
+          <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+            <div className="d-flex align-items-center flex-grow-1 w-100">
+              {image && (
+                <div className="me-3 me-md-4 flex-shrink-0">
+                  <img
+                    className="rounded-3"
+                    style={{
+                      objectFit: "cover",
+                      width: "90px",
+                    }}
+                    src={
+                      image?.includes("https://")
+                        ? image
+                        : "https://app.insiderhof.com.br/files/" + image
+                    }
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null;
+                      currentTarget.src =
+                        "https://app.insiderhof.com.br/files/notfound.jpg";
+                    }}
+                  />
+                </div>
+              )}
+
+              <div className="flex-grow-1 min-w-0 me-3 me-md-4">
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
+                  <Link
+                    to={"/modules/" + child.id}
+                    className="text-decoration-none"
+                  >
+                    <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
+                      {child.name}
+                    </h5>
+                  </Link>
+                  <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
+                    {child.type}
+                  </span>
+                </div>
+
+                <p
+                  className="text-muted fs-8 fs-md-7 mb-2"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {child.description?.length! > 80
+                    ? child.description?.substring(0, 80) + "..."
+                    : child.description}
+                </p>
+
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                  <span className="fw-bold fs-8 fs-md-7 text-primary">
+                    {child.price?.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </span>
+                  <div className="d-flex align-items-center gap-1">
+                    <KTIcon iconName="check" className="fs-6 text-muted" />
+                    <span className="text-muted fs-8 fs-md-7">
+                      {child.availableProduct?.length || 0} disponíveis
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex flex-wrap align-items-center gap-2 flex-shrink-0 w-100 w-md-auto justify-content-between">
+              <button
+                className="btn btn-light-secondary btn-sm d-flex align-items-center justify-content-center gap-2 px-2 px-md-3 py-2 flex-grow-1"
+                onClick={() => manageAvailable(child)}
+                title="Gerenciar disponibilidade"
+              >
+                <KTIcon iconName="check" className="fs-6" />
+                <span className="fw-semibold d-sm-inline">
+                  Gerenciar acesso
+                </span>
+              </button>
+              <div className="d-flex align-items-center gap-2">
+                <button
+                  className="btn btn-outline-dark btn-sm d-flex align-items-center justify-content-center"
+                  onClick={() => updateComponent(child)}
+                  title="Editar produto"
+                  style={{ width: "36px", height: "36px" }}
+                >
+                  <KTIcon iconName="pencil" className="fs-6" />
+                </button>
+
+                <button
+                  className="btn btn-outline-danger btn-sm d-flex align-items-center justify-content-center"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Deseja realmente excluir "${child.name}"?`
+                      )
+                    ) {
+                      deleteComponent(child);
+                    }
+                  }}
+                  title="Excluir produto"
+                  style={{ width: "36px", height: "36px" }}
+                >
+                  <KTIcon iconName="trash" className="fs-6" />
+                </button>
+
+                {/* DRAG HANDLE - Único elemento que permite arrastar */}
+                <div
+                  className="drag-handle"
+                  style={{
+                    cursor: "grab",
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "4px",
+                    backgroundColor: "#f8f9fa",
+                    border: "1px solid #dee2e6",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    touchAction: "none",
+                  }}
+                  onPointerDown={handleDragStart} // <-- CORREÇÃO APLICADA AQUI
+                >
+                  <KTIcon
+                    iconName="arrow-up-down"
+                    className="text-muted fs-6"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Reorder.Item>
+  );
+};
+// ====================================================================
+// FIM DO COMPONENTE CORRIGIDO
+// ====================================================================
+
 
 const ManageProductsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
@@ -124,20 +348,20 @@ const ManageProductsWidget: React.FC<React.PropsWithChildren<Props>> = ({
             ""
           )}
           {action === "manageAvailable" ? (
-            <ManageAvailable handleClose={handleClose} child={child} />
+            <AvailableProduct handleClose={handleClose} child={child} />
           ) : (
             ""
           )}
         </div>
       </Modal>
 
-      <div className={`card ${className}`}>
+      <div className={`card ${className} border-0`}>
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
-            <span className="card-label fw-bolder fs-3 mb-1">
-              Produtos
+            <span className="card-label fw-bolder fs-3 mb-1">Produtos</span>
+            <span className="text-muted mt-1 fw-bold fs-7">
+              Gerencie seus produtos e cursos
             </span>
-            <span className="text-muted mt-1 fw-bold fs-7">Meus produtos</span>
           </h3>
           <div
             className="card-toolbar"
@@ -157,160 +381,55 @@ const ManageProductsWidget: React.FC<React.PropsWithChildren<Props>> = ({
           </div>
         </div>
 
-        <div className="card-body py-3 ">
-          <div className="table-responsive ">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bolder text-muted">
-                  <th className="min-w-120px">PRODUTO</th>
-                  <th className="min-w-30px">PREÇO</th>
-                  <th className="min-w-50px text-end">AÇÕES</th>
-                  <th className="w-15px"></th>
-                </tr>
-              </thead>
-              <Reorder.Group
-                as="tbody"
-                //axis='y'
-                values={products}
-                onReorder={reorder}
-                onTap={(e) => reorderToSave(products)}
-                onMouseUp={(e) => reorderToSave(products)}
-                style={{ touchAction: "none" }}
-              >
-                <AnimatePresence>
-                  {products.length === 0 && (
-                    <tr className="border-0">
-                      <td colSpan={3} className="text-center pt-10 ">
-                        Nenhum curso encontrado aqui. Adicione um curso clicando
-                        em "Adicionar curso".
-                      </td>
-                    </tr>
-                  )}
+        <div className="card-body py-3 px-3 px-md-4">
+          <div className="d-flex flex-column gap-3">
+            <Reorder.Group
+              as="div"
+              values={products}
+              onReorder={reorder}
+              onTap={(e) => reorderToSave(products)}
+              onMouseUp={(e) => reorderToSave(products)}
+              style={{ touchAction: "pan-y" }} // Permite scroll vertical
+            >
+              <AnimatePresence>
+                {products.length === 0 && (
+                  <div className="text-center py-8 py-md-12 px-3">
+                    <div className="mb-3 mb-md-4">
+                      <KTIcon
+                        iconName="element-plus"
+                        className="fs-2 fs-md-1 text-muted opacity-50"
+                      />
+                    </div>
+                    <h4 className="fw-bold text-dark mb-2 fs-5 fs-md-4">
+                      Nenhum produto encontrado
+                    </h4>
+                    <p className="text-muted mb-4 fs-7 fs-md-6">
+                      Comece adicionando seu primeiro produto para organizar
+                      seus cursos
+                    </p>
+                    <button
+                      className="btn btn-dark px-3 px-md-4 py-2 rounded-1 w-100 w-md-auto"
+                      onClick={createComponent}
+                    >
+                      <KTIcon iconName="plus" className="me-2" />
+                      Adicionar Primeiro Produto
+                    </button>
+                  </div>
+                )}
 
-                  {products.length !== 0 &&
-                    products?.map((child: Product, index: number) => {
-                      const { image } = child;
-                      return (
-                        <Reorder.Item
-                          key={child.id}
-                          value={child}
-                          as="tr"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          <td
-                            onPointerDownCapture={(e) => e.stopPropagation()}
-                            className="d-flex align-items-center border-0"
-                          >
-                            {image && (
-                              <div className="me-3">
-                                <img
-                                  className="embed-responsive-item rounded"
-                                  height={75}
-                                  src={
-                                    image?.includes("https://")
-                                      ? image
-                                      : "https://app.insiderhof.com.br/files/" +
-                                        image
-                                  }
-                                  // style={{ width: "100%" }}
-                                  onError={({ currentTarget }) => {
-                                    currentTarget.onerror = null; // prevents looping
-                                    currentTarget.src =
-                                      "https://app.insiderhof.com.br/files/notfound.jpg";
-                                  }}
-                                />
-                              </div>
-                            )}
-
-                            <div className="d-flex flex-row">
-                              <div>
-                                <Link
-                                  to={"/modules/" + child.id}
-                                  style={{ display: "flex" }}
-                                  className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
-                                >
-                                  {child.name}
-                                </Link>
-
-                                <span className="text-muted fw-semibold text-muted d-block fs-7">
-                                  {child.description?.length! > 50
-                                    ? child.description?.substring(0, 50) +
-                                      "..."
-                                    : child.description}
-                                </span>
-                                <span className="text-muted fw-semibold text-muted d-block fs-7">
-                                  {child.type}
-                                </span>
-                                
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            {child.price?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                          </td>
-
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <div className="d-flex justify-content-end flex-shrink-0">
-                              <a
-                                href="#!"
-                                onClick={() => manageAvailable(child)}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="check" iconType="outline" />
-                                <span className="text-muted text-sm">
-                                  <small>&nbsp;{child.availableProduct?.length}</small>
-                                </span>
-                              </a>
-
-                              {/* <a
-                                href="#!"
-                                onClick={() => navigate("/modules/" + child.id)}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="switch" iconType="outline" />
-                              </a> */}
-                              <a
-                                href="#!"
-                                onClick={() => updateComponent(child)}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="pencil" iconType="outline" />
-                              </a>
-                              <a
-                                href="#!"
-                                onClick={() => {
-                                  if (
-                                    window.confirm(
-                                      "Deseja realmente excluir: " +
-                                        child.name +
-                                        "?"
-                                    )
-                                  )
-                                    deleteComponent(child);
-                                }}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                              >
-                                <KTIcon iconName="trash" iconType="outline" />
-                              </a>
-                            </div>
-                          </td>
-
-                          <td style={{ touchAction: "none" }}>
-                            <div style={{ cursor: "grab" }}>
-                              <KTIcon
-                                iconName="arrow-up-down"
-                                iconType="outline"
-                              />
-                            </div>
-                          </td>
-                        </Reorder.Item>
-                      );
-                    })}
-                </AnimatePresence>
-              </Reorder.Group>
-            </table>
+                {products.length !== 0 &&
+                  products?.map((child: Product, index: number) => (
+                    <ProductItem
+                      key={child.id}
+                      child={child}
+                      index={index}
+                      updateComponent={updateComponent}
+                      deleteComponent={deleteComponent}
+                      manageAvailable={manageAvailable}
+                    />
+                  ))}
+              </AnimatePresence>
+            </Reorder.Group>
           </div>
         </div>
       </div>
