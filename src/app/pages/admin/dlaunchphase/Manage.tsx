@@ -49,6 +49,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
     dispatch(loadMyLaunchPhasesRequest(Number(launchId))); //Puxa componentes com seus filhos primários
     if (!launch.launch.id) {
       dispatch(loadMyLaunchsRequest(me.me.id!))
+      dispatch(loadLaunchRequest(Number(launchId)))
     }
   }, [dispatch]);
 

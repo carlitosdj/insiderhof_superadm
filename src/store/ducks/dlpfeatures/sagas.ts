@@ -52,11 +52,19 @@ export function* loadLPFeature(payload: ReturnType<typeof loadLPFeatureRequest>)
 //Create
 export function* createLPFeature(payload: ReturnType<typeof createLPFeatureRequest>) {
   try {
-    put(createLPFeatureRequest(payload.payload))
+    console.log("=== createLPFeature saga ===");
+    console.log("Payload received:", payload);
+    console.log("Payload data:", payload.payload);
+    console.log("Sending to API endpoint: lpfeatures");
+    
     const response: LPFeature = yield call(api.post, 'lpfeatures', payload.payload)
+    console.log("API Response:", response);
     yield put(createLPFeatureSuccess(response))
   } catch (error: any) {
-    yield put(createLPFeatureFailure(error.response.data))
+    console.error("API Error:", error);
+    console.error("Error response:", error.response);
+    console.error("Error message:", error.message);
+    yield put(createLPFeatureFailure(error.response?.data || error.message))
   }
 }
 

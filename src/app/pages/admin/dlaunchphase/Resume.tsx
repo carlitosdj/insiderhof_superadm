@@ -1,9 +1,10 @@
-import React from "react";
-import { Card, Row, Col, Badge, ProgressBar } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Row, Col, Badge, ProgressBar, Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { ApplicationState } from "../../../../store";
+import Manage from "../dlaunchhasoffers/Manage";
 
 // Estilos CSS customizados inspirados no Resume copy.tsx
 const resumeStyles = `
@@ -70,6 +71,9 @@ const resumeStyles = `
     border: 1px solid #e1e5e9;
     border-radius: 8px;
     margin-bottom: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   
   .section-header {
@@ -211,9 +215,62 @@ const resumeStyles = `
     font-size: 1.5rem;
     font-weight: 700;
   }
+  
+  .info-item .alert {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .info-item .info-label {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .info-item .info-value {
+    flex-shrink: 0;
+  }
+  
+  .action-buttons {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .btn-secondary {
+    background: #95a5a6;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+  }
 `;
 
-const Resume = () => {
+const Resume = ({ onEdit }: { onEdit?: () => void }) => {
   const { launchId } = useParams();
   
   // Get launch data from Redux state
@@ -259,6 +316,10 @@ const Resume = () => {
   // const oldPrice = launch?.oldPrice || 0;
   const price = launch?.price || 0;
 
+  const [showOffersModal, setShowOffersModal] = useState(false);
+  const handleOpenOffersModal = () => setShowOffersModal(true);
+  const handleCloseOffersModal = () => setShowOffersModal(false);
+
   if (!launch) {
     return (
       <div className="resume-container">
@@ -283,10 +344,10 @@ const Resume = () => {
       
       <div className="resume-container">
         {/* Header */}
-        {/* <div className="resume-header">
+        <div className="resume-header">
           <div className="d-flex justify-content-between align-items-start">
             <div>
-              <h2>{launch.name}</h2>
+              <h2>{launch.name} - Resumo</h2>
               <div className="subtitle">
                 Visão geral e métricas do lançamento • {launch.type || 'N/A'}
               </div>
@@ -295,7 +356,7 @@ const Resume = () => {
               {getStatusText(launch)}
             </Badge>
           </div>
-        </div> */}
+        </div>
 
         {/* Estatísticas Principais */}
         <div className="stats-grid">
@@ -322,10 +383,10 @@ const Resume = () => {
         </div>
 
         {/* Main Content */}
-        <Row className="g-4">
+        <Row className="g-4 align-items-stretch">
           {/* Informações do Lançamento */}
-          <Col lg={8}>
-            <div className="content-section">
+          <Col lg={6} className="h-100">
+            <div className="content-section h-100">
               <div className="section-header">
                 <h5>
                   <KTIcon iconName="information" className="fs-5" />
@@ -333,7 +394,7 @@ const Resume = () => {
                 </h5>
               </div>
               <div className="section-body">
-                <div className="info-grid">
+                <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div className="info-item">
                     <span className="info-label">Nome</span>
                     <span className="info-value">{launch.name}</span>
@@ -354,14 +415,79 @@ const Resume = () => {
                     <span className="info-label">Parcelas</span>
                     <span className="info-value">{launch.installments || 'Não informado'}</span>
                   </div>
+                  {launch.launchhasoffers && launch.launchhasoffers.length > 0 ? (
+                    <div className="info-item">
+                      
+                      <span className="info-label">
+                        <div className="d-flex align-items-center gap-2">
+                          {launch.launchhasoffers[0].offer?.image && (
+                            <img
+                              className="rounded"
+                              width={24}
+                              height={24}
+                              src={
+                                launch.launchhasoffers[0].offer?.image.includes("https://")
+                                  ? launch.launchhasoffers[0].offer?.image
+                                  : "https://app.insiderhof.com.br/files/" + launch.launchhasoffers[0].offer?.image
+                              }
+                              onError={({ currentTarget }) => {
+                                currentTarget.onerror = null;
+                                currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                              }}
+                              alt={launch.launchhasoffers[0].offer?.name}
+                            />
+                          )}
+                          <span className="fs-7 fw-semibold text-dark">
+                            {launch.launchhasoffers[0].offer?.name || 'Oferta não encontrada'}
+                          </span>
+                          
+                        </div>
+                      </span>
+                      <span className="info-value">
+                        <Button variant="outline-primary" size="sm" onClick={handleOpenOffersModal} className="btn-sm">
+                          <KTIcon iconName="gear" className="fs-6 me-1" />
+                          Gerenciar
+                        </Button>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="info-item">
+                      {/* <span className="info-label">Oferta Selecionada</span> */}
+                      <span className="info-label">
+                        <div className="alert alert-danger py-2 px-3 mb-0 w-100 text-center">
+                          <KTIcon iconName="cross" className="fs-4 me-1" />
+                          Nenhuma oferta selecionada
+                        </div>
+                      </span>
+                      <span className="info-value m-1">
+                        <Button variant="outline-primary" size="sm" onClick={handleOpenOffersModal} className="btn-sm">
+                          <KTIcon iconName="gear" className="fs-6 me-1" />
+                          Gerenciar
+                        </Button>
+                      </span>
+                    </div>
+                  )}
+                  <div className="info-item">
+                    <span className="info-label">Preço dos Produtos da Oferta</span>
+                    <span className="info-value text-muted" style={{ textDecoration: 'line-through' }}>
+                      {launch.launchhasoffers && launch.launchhasoffers.length > 0 &&
+                        launch.launchhasoffers[0].offer?.dOfferHasProducts &&
+                        launch.launchhasoffers[0].offer.dOfferHasProducts.length > 0
+                        ? formatCurrency(
+                            launch.launchhasoffers[0].offer.dOfferHasProducts.reduce(
+                              (total: number, offerProduct: any) => total + (offerProduct.product?.price || 0),
+                              0
+                            )
+                          )
+                        : formatCurrency(0)
+                      }
+                    </span>
+                  </div>
                   <div className="info-item">
                     <span className="info-label">Preço Atual</span>
                     <span className="info-value text-success">{formatCurrency(launch.price || 0)}</span>
                   </div>
-                  <div className="info-item">
-                    <span className="info-label">Preço Original</span>
-                    {/* <span className="info-value text-primary">{formatCurrency(launch.oldPrice || 0)}</span> */}
-                  </div>
+                  
                   <div className="info-item">
                     <span className="info-label">Leads Capturados</span>
                     <span className="info-value">{formatNumber(launch.leadsCount || 0)}</span>
@@ -386,114 +512,184 @@ const Resume = () => {
               </div>
             </div>
           </Col>
-
-          {/* Resumo Financeiro */}
-          <Col lg={4}>
-            <div className="financial-summary">
-              <h5 className="fw-bold mb-4 text-center">Resumo Financeiro</h5>
-              
-              <div className="financial-item">
-                <div className="financial-label">Preço Atual</div>
-                <div className="financial-value">{formatCurrency(launch.price || 0)}</div>
-              </div>
-              
-              <div className="financial-item">
-                <div className="financial-label">Preço Original</div>
-                {/* <div className="financial-value">{formatCurrency(launch.oldPrice || 0)}</div> */}
-              </div>
-              
-              <div className="financial-item">
-                <div className="financial-label">Ticket Médio</div>
-                <div className="financial-value">{formatCurrency(launch.price || 0)}</div>
-              </div>
-              
-              {/* {oldPrice > 0 && price > 0 && (
-                <div className="financial-item">
-                  <div className="financial-label">
-                    {oldPrice > price ? 'Desconto Aplicado' : 'Acréscimo'}
-                  </div>
-                  <div className="financial-value">
-                    {formatCurrency(Math.abs(oldPrice - price))}
-                  </div>
+          {/* Configurações de Renovação */}
+          {(launch.renovationTime || launch.renovationPrice || launch.renovationDescription) && (
+            <Col lg={6} className="h-100">
+              <div className="content-section h-100">
+                <div className="section-header">
+                  <h5>
+                    <KTIcon iconName="refresh" className="fs-5" />
+                    Configurações de Renovação
+                  </h5>
                 </div>
-              )} */}
-            </div>
-          </Col>
-        </Row>
+                <div className="section-body">
+                  <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {launch.renovationTime && (
+                      <div className="info-item">
+                        <span className="info-label">Tempo de Renovação (dias)</span>
+                        <span className="info-value">{launch.renovationTime}</span>
+                      </div>
+                    )}
+                    {launch.renovationPrice && (
+                      <div className="info-item">
+                        <span className="info-label">Preço de Renovação</span>
+                        <span className="info-value">{formatCurrency(launch.renovationPrice)}</span>
+                      </div>
+                    )}
+                    {launch.antecipateRenovationPrice && (
+                      <div className="info-item">
+                        <span className="info-label">Renovação Antecipada</span>
+                        <span className="info-value">{formatCurrency(launch.antecipateRenovationPrice)}</span>
+                      </div>
+                    )}
+                    {launch.renovationInstallments && (
+                      <div className="info-item">
+                        <span className="info-label">Parcelas de Renovação</span>
+                        <span className="info-value">{launch.renovationInstallments}</span>
+                      </div>
+                    )}
 
-        {/* Configurações de Renovação */}
-        {(launch.renovationTime || launch.renovationPrice || launch.renovationDescription) && (
-          <div className="content-section">
-            <div className="section-header">
-              <h5>
-                <KTIcon iconName="refresh" className="fs-5" />
-                Configurações de Renovação
-              </h5>
-            </div>
-            <div className="section-body">
-              <Row className="g-4">
-                {launch.renovationTime && (
-                  <Col lg={3} md={6}>
-                    <div className="metric-card">
-                      <div className="metric-icon bg-warning">
-                        <KTIcon iconName="clock" className="fs-2 text-white" />
-                      </div>
-                      <div className="metric-number text-warning">{launch.renovationTime}</div>
-                      <div className="metric-label">Tempo de Renovação (dias)</div>
-                    </div>
-                  </Col>
-                )}
-                {launch.renovationPrice && (
-                  <Col lg={3} md={6}>
-                    <div className="metric-card">
-                      <div className="metric-icon bg-success">
-                        <KTIcon iconName="dollar" className="fs-2 text-white" />
-                      </div>
-                      <div className="metric-number text-success">{formatCurrency(launch.renovationPrice)}</div>
-                      <div className="metric-label">Preço de Renovação</div>
-                    </div>
-                  </Col>
-                )}
-                {launch.antecipateRenovationPrice && (
-                  <Col lg={3} md={6}>
-                    <div className="metric-card">
-                      <div className="metric-icon bg-info">
-                        <KTIcon iconName="star" className="fs-2 text-white" />
-                      </div>
-                      <div className="metric-number text-info">{formatCurrency(launch.antecipateRenovationPrice)}</div>
-                      <div className="metric-label">Renovação Antecipada</div>
-                    </div>
-                  </Col>
-                )}
-                {launch.renovationInstallments && (
-                  <Col lg={3} md={6}>
-                    <div className="metric-card">
-                      <div className="metric-icon bg-primary">
-                        <KTIcon iconName="credit-card" className="fs-2 text-white" />
-                      </div>
-                      <div className="metric-number text-primary">{launch.renovationInstallments}</div>
-                      <div className="metric-label">Parcelas de Renovação</div>
-                    </div>
-                  </Col>
-                )}
-                {launch.renovationDescription && (
-                  <Col lg={12}>
-                    <div className="p-4 bg-light-dark bg-opacity-10 rounded">
+                  </div>
+                  
+                  {launch.renovationDescription && (
+                    <div className="mt-4 p-3 bg-light-warning bg-opacity-10 rounded">
                       <div className="d-flex align-items-start">
-                        <KTIcon iconName="document" className="fs-2 text-dark me-3 mt-1" />
+                        <KTIcon iconName="document" className="fs-2 text-primary me-3 mt-1" />
                         <div>
                           <div className="fw-bold text-dark mb-2">Descrição da Renovação</div>
                           <div className="text-dark">{launch.renovationDescription}</div>
                         </div>
                       </div>
                     </div>
-                  </Col>
-                )}
-              </Row>
+                  )}
+                </div>
+              </div>
+
+              <div className="content-section">
+              <div className="section-header">
+                <h5>
+                  <KTIcon iconName="link" className="fs-5" />
+                  LINKS IMPORTANTES
+                </h5>
+              </div>
+              <div className="section-body">
+                <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {/* Link da Captação */}
+                  {(() => {
+                    const captacaoPhase = useSelector((state: ApplicationState) => 
+                      state.launchphase.myLaunchPhases.find(
+                        (phase: any) => phase.launchId === Number(launchId) && phase.name === "Captação"
+                      )
+                    );
+                    
+                    return captacaoPhase ? (
+                      <div className="info-item">
+                        <span className="info-label">
+                          <div className="d-flex align-items-center gap-2">
+                            <KTIcon iconName="user-plus" className="fs-4 text-primary" />
+                            <span className="fw-semibold">Página de Captação</span>
+                          </div>
+                        </span>
+                        <span className="info-value">
+                          <a
+                            href={`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className=""
+                          >
+                            {/* <KTIcon iconName="external-link" className="fs-6 me-1" /> */}
+                            {`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
+                          </a>
+                        </span>
+                      </div>
+                    ) : null;
+                  })()}
+                  
+                  {/* Link das Vendas */}
+                  {(() => {
+                    const vendasPhase = useSelector((state: ApplicationState) => 
+                      state.launchphase.myLaunchPhases.find(
+                        (phase: any) => phase.launchId === Number(launchId) && phase.name === "Vendas"
+                      )
+                    );
+                    
+                    return vendasPhase ? (
+                      <div className="info-item">
+                        <span className="info-label">
+                          <div className="d-flex align-items-center gap-2">
+                            <KTIcon iconName="shopping-cart" className="fs-4 text-success" />
+                            <span className="fw-semibold">Página de Vendas</span>
+                          </div>
+                        </span>
+                        <span className="info-value">
+                          <a
+                            href={`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className=""
+                          >
+                            {/* <KTIcon iconName="external-link" className="fs-6 me-1" /> */}
+                            {`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
+                          </a>
+                        </span>
+                      </div>
+                    ) : null;
+                  })()}
+                  
+                  {/* Mensagem se não houver fases */}
+                  {(() => {
+                    const captacaoPhase = useSelector((state: ApplicationState) => 
+                      state.launchphase.myLaunchPhases.find(
+                        (phase: any) => phase.launchId === Number(launchId) && phase.name === "Captação"
+                      )
+                    );
+                    const vendasPhase = useSelector((state: ApplicationState) => 
+                      state.launchphase.myLaunchPhases.find(
+                        (phase: any) => phase.launchId === Number(launchId) && phase.name === "Vendas"
+                      )
+                    );
+                    
+                    if (!captacaoPhase && !vendasPhase) {
+                      return (
+                        <div className="info-item">
+                          <span className="info-label">
+                            <div className="alert alert-info py-2 px-3 mb-0 w-100 text-center">
+                              <KTIcon iconName="information" className="fs-4 me-1" />
+                              Nenhuma fase de Captação ou Vendas encontrada
+                            </div>
+                          </span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+              </div>
             </div>
+            </Col>
+          )}
+        </Row>
+
+
+        {/* Action Buttons */}
+        {onEdit && (
+          <div className="action-buttons">
+            <Button variant="primary" size="lg" onClick={onEdit}>
+              <KTIcon iconName="pencil" className="fs-5 me-2" />
+              Editar Configurações
+            </Button>
           </div>
         )}
       </div>
+
+      <Modal show={showOffersModal} onHide={handleCloseOffersModal} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>Gerenciar Ofertas</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Manage handleClose={handleCloseOffersModal} child={launch} />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

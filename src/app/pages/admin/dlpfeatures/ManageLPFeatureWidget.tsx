@@ -2,8 +2,9 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
@@ -20,15 +21,69 @@ import {
   reorderLPFeaturesRequest,
   updateLPFeatureRequest,
 } from "../../../../store/ducks/dlpfeatures/actions";
+import { LPSession } from "../../../../store/ducks/dlpsessions/types";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
+// Estilos CSS para o header e botão de ação
+const widgetStyles = `
+  .widget-container {
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  .widget-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+  
+  .widget-header h2 {
+    margin: 0;
+    font-weight: 700;
+  }
+  
+  .widget-header .subtitle {
+    opacity: 0.9;
+    margin-top: 0.5rem;
+  }
+  
+  .action-buttons {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .btn-secondary {
+    background: #95a5a6;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+  }
+`;
+
 type Props = {
   className: string;
-  lpfeatures: LPFeatureState;
+  lpfeatures?: LPFeatureState;
+  handleBackToLPSessions?: () => void;
+  selectedLPSession?: LPSession;
 };
 
 // Config Display Component
@@ -95,18 +150,45 @@ const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config
 const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   lpfeatures,
+  handleBackToLPSessions,
+  selectedLPSession,
 }) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LPFeature>({});
   const [oldChildren, setOldChildren] = useState<LPFeature[]>(
-    lpfeatures.myLPFeatures
+    lpfeatures?.myLPFeatures || []
   );
 
   const { lpSessionId } = useParams();
 
+  // Get launch data from Redux state to display in header
+  const { launchId, launchPhaseId } = useParams();
+  const launch = useSelector((state: ApplicationState) =>
+    state.launch.myLaunchs.find((l) => l.id === Number(launchId))
+  );
+  const launchPhase = useSelector((state: ApplicationState) =>
+    state.launchphase.myLaunchPhases.find(
+      (lp) => lp.id === Number(launchPhaseId)
+    )
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Se lpfeatures não estiver disponível, mostra loading
+  if (!lpfeatures) {
+    return (
+      <div className="widget-container">
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Carregando...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   const handleClose = () => {
     setShow(false);
   };
@@ -161,6 +243,8 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <>
+      <style>{widgetStyles}</style>
+      
       <Modal
         id="kt_modal_create_app"
         tabIndex={-1}
@@ -196,7 +280,7 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
           {action === "createComponent" ? (
             <Create
               handleClose={handleClose}
-              lpSessionId={Number(lpSessionId)}
+              lpSessionId={Number(selectedLPSession?.id)}
             />
           ) : (
             ""
@@ -209,170 +293,179 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
-      <div className={`card ${className}`}>
-        <div className="card-header border-0 pt-5">
-          <h3 className="card-title align-items-start flex-column">
-            <span className="card-label fw-bolder fs-3 mb-1">
-              Features da Sessão
-            </span>
-            <span className="text-muted mt-1 fw-bold fs-7">
-              Features nessa sessão
-            </span>
-          </h3>
-          <div
-            className="card-toolbar"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            data-bs-trigger="hover"
-            title="Click to add a user"
-          >
-            <a
-              href="#!"
-              className="btn btn-primary"
-              onClick={() => createComponent()}
-            >
-              <KTIcon iconName="plus" className="fs-2" />
-              Nova feature
-            </a>
-
-            {/* <a
-              href="#!"
-              className="btn btn-primary"
-              onClick={() => landingPage()}
-            >
-              <KTIcon iconName="plus" className="fs-2" />
-              Landing Page
-            </a> */}
+      <div className="widget-container">
+        {/* Header */}
+        <div className="widget-header">
+          <div className="d-flex justify-content-between align-items-start">
+            <div>
+              <h2>
+                {launch?.name || "Lançamento"} - {launchPhase?.name} - {selectedLPSession?.name}
+              </h2>
+              <div className="subtitle">
+                Gerenciamento de Features da Seção •{" "}
+                {lpfeatures.myLPFeatures.length} features cadastradas
+              </div>
+            </div>
+            <div className="d-flex justify-content-end align-items-center gap-2">
+              <div
+                className="card-toolbar"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-trigger="hover"
+                title="Click to add a feature"
+              >
+                <a
+                  href="#!"
+                  className="btn btn-primary"
+                  onClick={() => createComponent()}
+                >
+                  <KTIcon iconName="plus" className="fs-2" />
+                  Nova feature
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="card-body py-3">
-          <div className="table-responsive">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bolder text-muted">
-                  <th className="min-w-100px">CONFIG</th>
-                  <th className="min-w-100px">ORDEM</th>
-                  <th className="min-w-100px">STATUS</th>
-                  <th className="min-w-50px text-end">AÇÕES</th>
-                  <th className="w-15px"></th>
-                </tr>
-              </thead>
-              <Reorder.Group
-                as="tbody"
-                //axis='y'
-                values={lpfeatures.myLPFeatures}
-                onReorder={reorder}
-                onTap={(e) => reorderToSave(lpfeatures.myLPFeatures)}
-                onMouseUp={(e) => reorderToSave(lpfeatures.myLPFeatures)}
-                style={{ touchAction: "none" }}
-              >
-                <AnimatePresence>
-                  {lpfeatures.myLPFeatures.length === 0 && (
-                    <tr className="border-0">
-                      <td colSpan={5} className="text-center pt-10 ">
-                        Nenhuma feature encontrada aqui. Adicione uma feature
-                        clicando em "Nova feature".
-                      </td>
-                    </tr>
-                  )}
-
-                  {lpfeatures.myLPFeatures.length !== 0 &&
-                    lpfeatures.myLPFeatures?.map(
-                      (child: LPFeature, index: number) => {
-                        const isInactive = child.status === "0";
-                        return (
-                          <Reorder.Item
-                            key={child.id}
-                            value={child}
-                            as="tr"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className={isInactive ? "opacity-50" : ""}
-                          >
-                            <td
-                              onPointerDownCapture={(e) => e.stopPropagation()}
-                            >
-                              <div className="d-flex align-items-center border-0">
-                                <div className={`fw-bold d-block fs-6 ${isInactive ? "text-muted" : "text-gray-900"}`}>
-                                  <ConfigDisplay config={child.config} isInactive={isInactive} />
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div className="d-flex justify-content-end flex-shrink-0">
-                                <span className={isInactive ? "text-muted" : ""}>
-                                  {child.order}
-                                </span>
-                              </div>
-                            </td>
-                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                              <span className={`badge ${
-                                child.status === "1" 
-                                  ? "badge-light-success" 
-                                  : "badge-light-warning"
-                              }`}>
-                                {child.status === "1" ? "Ativo" : "Inativo"}
-                              </span>
-                            </td>
-                            <td>
-                              <div className="d-flex justify-content-end flex-shrink-0">
-                                {/* <a
-                                  href="#!"
-                                  onClick={() =>
-                                    navigate("/launchhasoffers/" + child.id)
-                                  }
-                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                >
-                                  <KTIcon
-                                    iconName="switch"
-                                    iconType="outline"
-                                  />
-                                </a> */}
-                                <a
-                                  href="#!"
-                                  onClick={() => updateComponent(child)}
-                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                                >
-                                  <KTIcon
-                                    iconName="pencil"
-                                    iconType="outline"
-                                  />
-                                </a>
-                                <a
-                                  href="#!"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Deseja realmente excluir: " +
-                                          child.config +
-                                          "?"
-                                      )
-                                    )
-                                      deleteComponent(child);
-                                  }}
-                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                                >
-                                  <KTIcon iconName="trash" iconType="outline" />
-                                </a>
-                              </div>
-                            </td>
-                            <td style={{ touchAction: "none" }}>
-                              <div style={{ cursor: "grab" }}>
-                                <KTIcon
-                                  iconName="arrow-up-down"
-                                  iconType="outline"
-                                />
-                              </div>
-                            </td>
-                          </Reorder.Item>
-                        );
-                      }
+        <div className={`card ${className}`}>
+          <div className="card-body py-3">
+            <div className="table-responsive">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr className="fw-bolder text-muted">
+                    <th className="min-w-100px">CONFIG</th>
+                    <th className="min-w-100px">ORDEM</th>
+                    <th className="min-w-100px">STATUS</th>
+                    <th className="min-w-50px text-end">AÇÕES</th>
+                    <th className="w-15px"></th>
+                  </tr>
+                </thead>
+                <Reorder.Group
+                  as="tbody"
+                  //axis='y'
+                  values={lpfeatures.myLPFeatures}
+                  onReorder={reorder}
+                  onTap={(e) => reorderToSave(lpfeatures.myLPFeatures)}
+                  onMouseUp={(e) => reorderToSave(lpfeatures.myLPFeatures)}
+                  style={{ touchAction: "none" }}
+                >
+                  <AnimatePresence>
+                    {lpfeatures.myLPFeatures.length === 0 && (
+                      <tr className="border-0">
+                        <td colSpan={5} className="text-center pt-10 ">
+                          Nenhuma feature encontrada aqui. Adicione uma feature
+                          clicando em "Nova feature".
+                        </td>
+                      </tr>
                     )}
-                </AnimatePresence>
-              </Reorder.Group>
-            </table>
+
+                    {lpfeatures.myLPFeatures.length !== 0 &&
+                      lpfeatures.myLPFeatures?.map(
+                        (child: LPFeature, index: number) => {
+                          const isInactive = child.status === "0";
+                          return (
+                            <Reorder.Item
+                              key={child.id}
+                              value={child}
+                              as="tr"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              className={isInactive ? "opacity-50" : ""}
+                            >
+                              <td
+                                onPointerDownCapture={(e) => e.stopPropagation()}
+                              >
+                                <div className="d-flex align-items-center border-0">
+                                  <div className={`fw-bold d-block fs-6 ${isInactive ? "text-muted" : "text-gray-900"}`}>
+                                    <ConfigDisplay config={child.config} isInactive={isInactive} />
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div className="d-flex justify-content-end flex-shrink-0">
+                                  <span className={isInactive ? "text-muted" : ""}>
+                                    {child.order}
+                                  </span>
+                                </div>
+                              </td>
+                              <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                                <span className={`badge ${
+                                  child.status === "1" 
+                                    ? "badge-light-success" 
+                                    : "badge-light-warning"
+                                }`}>
+                                  {child.status === "1" ? "Ativo" : "Inativo"}
+                                </span>
+                              </td>
+                              <td>
+                                <div className="d-flex justify-content-end flex-shrink-0">
+                                  {/* <a
+                                    href="#!"
+                                    onClick={() =>
+                                      navigate("/launchhasoffers/" + child.id)
+                                    }
+                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                  >
+                                    <KTIcon
+                                      iconName="switch"
+                                      iconType="outline"
+                                    />
+                                  </a> */}
+                                  <a
+                                    href="#!"
+                                    onClick={() => updateComponent(child)}
+                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                  >
+                                    <KTIcon
+                                      iconName="pencil"
+                                      iconType="outline"
+                                    />
+                                  </a>
+                                  <a
+                                    href="#!"
+                                    onClick={() => {
+                                      if (
+                                        window.confirm(
+                                          "Deseja realmente excluir: " +
+                                            child.config +
+                                            "?"
+                                        )
+                                      )
+                                        deleteComponent(child);
+                                    }}
+                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                                  >
+                                    <KTIcon iconName="trash" iconType="outline" />
+                                  </a>
+                                </div>
+                              </td>
+                              <td style={{ touchAction: "none" }}>
+                                <div style={{ cursor: "grab" }}>
+                                  <KTIcon
+                                    iconName="arrow-up-down"
+                                    iconType="outline"
+                                  />
+                                </div>
+                              </td>
+                            </Reorder.Item>
+                          );
+                        }
+                      )}
+                  </AnimatePresence>
+                </Reorder.Group>
+              </table>
+            </div>
+            
+            {/* Action Buttons */}
+            {handleBackToLPSessions && (
+              <div className="action-buttons">
+                <Button variant="secondary" size="lg" onClick={handleBackToLPSessions}>
+                  <KTIcon iconName="arrow-left" className="fs-5 me-2" />
+                  Voltar às Seções
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

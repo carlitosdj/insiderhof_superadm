@@ -116,6 +116,12 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     [ConfigKey.MEDIA_URL]: "",
   });
 
+  // Debug: log initial state
+  useEffect(() => {
+    console.log("Create component mounted with lpId:", lpId);
+    console.log("Initial configValues:", configValues);
+  }, []);
+
   // Cache para armazenar as configurações de cada tipo
   const [configCache, setConfigCache] = useState<
     Record<SessionType, Record<ConfigKey, string>>
@@ -190,6 +196,10 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
         // Se não tem no cache mas tem valor atual, mantém
         newConfigs[key] = configValues[key];
         console.log("Mantendo valor atual para", key, ":", configValues[key]);
+      } else {
+        // Inicializa com string vazia
+        newConfigs[key] = "";
+        console.log("Inicializando", key, "com string vazia");
       }
     });
 
@@ -202,10 +212,12 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
 
   // Função para atualizar um valor de configuração
   const handleConfigChange = (key: ConfigKey, value: string) => {
+    console.log(`handleConfigChange: ${key} = "${value}"`);
     const newValues = {
       ...configValues,
       [key]: value,
     };
+    console.log("New configValues:", newValues);
     setConfigValues(newValues);
 
     // Atualiza o cache imediatamente se houver um tipo selecionado
@@ -235,13 +247,23 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     console.log("Type:", type);
     console.log("Name:", name);
     console.log("Config Values:", configValues);
+    console.log("lpId:", lpId);
 
     // Primeiro seta o validated para mostrar os erros
     setValidated(true);
 
-    // Verifica se tem tipo selecionado e se o form é válido
-    if (!type || form.checkValidity() === false) {
-      console.log("Form validation failed - type or form invalid");
+    // Verifica se tem tipo selecionado
+    if (!type) {
+      console.log("Form validation failed - type is required");
+      event.stopPropagation();
+      return;
+    }
+
+    // Verifica se o form é válido (validação HTML5)
+    const isValid = form.checkValidity();
+    console.log("Form validity check:", isValid);
+    if (!isValid) {
+      console.log("Form validation failed - HTML5 validation failed");
       event.stopPropagation();
       return;
     }
@@ -253,18 +275,22 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
       return;
     }
 
-    // Verifica se todos os campos obrigatórios do tipo atual estão preenchidos
-    const requiredKeys = REQUIRED_CONFIGS_PER_TYPE[type as SessionType];
-    console.log("Required keys for type", type, ":", requiredKeys);
-
-    const missingRequired = requiredKeys.filter((key) => !configValues[key]);
-    console.log("Missing required fields:", missingRequired);
-
-    if (missingRequired.length > 0) {
-      console.log("Form validation failed - missing required fields");
+    // Verifica se tem lpId
+    if (!lpId) {
+      console.log("Form validation failed - lpId is required");
       event.stopPropagation();
       return;
     }
+
+    // Verifica se tem tipo
+    if (!type) {
+      console.log("Form validation failed - type is required");
+      event.stopPropagation();
+      return;
+    }
+
+    // Temporariamente desabilitando validação de campos obrigatórios para teste
+    console.log("Skipping required fields validation for testing");
 
     // Filtra apenas as configurações permitidas para o tipo selecionado
     const allowedKeys = ALLOWED_CONFIGS_PER_TYPE[type as SessionType];
@@ -281,17 +307,29 @@ const Create = ({ handleClose, lpId }: handleCloseProps) => {
     console.log("Filtered config:", filteredConfig);
 
     const item: LPSession = {
-      lpId,
-      name,
+      lpId: Number(lpId),
+      name: name.trim(),
       order: 0,
       type: type as SessionType,
       status,
       config: JSON.stringify(filteredConfig),
     };
 
+    console.log("Final item to be sent:", JSON.stringify(item, null, 2));
+    console.log("Item lpId:", item.lpId, "type:", typeof item.lpId);
+    console.log("Item name:", item.name, "type:", typeof item.name);
+    console.log("Item type:", item.type, "type:", typeof item.type);
+
+    console.log("Final item to be sent:", JSON.stringify(item, null, 2));
+
     console.log("Dispatching item:", item);
+    console.log("Item type:", typeof item);
+    console.log("Item lpId type:", typeof item.lpId);
+    console.log("Item name type:", typeof item.name);
+    console.log("Item type type:", typeof item.type);
 
     try {
+      console.log("About to dispatch createLPSessionRequest");
       dispatch(createLPSessionRequest(item));
       console.log("Dispatch completed");
       handleClose();

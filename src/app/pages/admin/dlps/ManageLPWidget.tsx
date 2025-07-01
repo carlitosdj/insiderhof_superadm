@@ -4,9 +4,11 @@ import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
+import { ManageLPSessionWidget } from "../dlpsessions/ManageLPSessionWidget";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -21,25 +23,101 @@ import {
   updateLPRequest,
   clearExportLP,
 } from "../../../../store/ducks/dlps/actions";
+import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
+import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
+import { loadMyLPSessionsRequest } from "../../../../store/ducks/dlpsessions/actions";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
+// Estilos CSS para o header e botão de ação
+const widgetStyles = `
+  .widget-container {
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  .widget-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+  }
+  
+  .widget-header h2 {
+    margin: 0;
+    font-weight: 700;
+  }
+  
+  .widget-header .subtitle {
+    opacity: 0.9;
+    margin-top: 0.5rem;
+  }
+  
+  .action-buttons {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .btn-secondary {
+    background: #95a5a6;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+  }
+`;
+
 type Props = {
   className: string;
   lps: LPState;
+  handleBackToItems?: () => void;
+  lpsessions?: LPSessionState;
+  lpfeatures?: LPFeatureState;
 };
 
 const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   lps,
+  handleBackToItems,
+  lpsessions,
+  lpfeatures,
 }) => {
+  // Obtém o estado atualizado do Redux
+  const currentLPSessions = useSelector((state: ApplicationState) => state.lpsessions);
+  const currentLPFeatures = useSelector((state: ApplicationState) => state.lpfeatures);
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LP>({});
   const [oldChildren, setOldChildren] = useState<LP[]>(lps.myLPs);
+  const [showLPSessions, setShowLPSessions] = useState<boolean>(false);
+  const [selectedLP, setSelectedLP] = useState<LP>({});
 
   const { launchPhaseId } = useParams();
+
+  // Get launch data from Redux state to display in header
+  const { launchId } = useParams();
+  const launch = useSelector((state: ApplicationState) =>
+    state.launch.myLaunchs.find((l) => l.id === Number(launchId))
+  );
+  const launchPhase = useSelector((state: ApplicationState) =>
+    state.launchphase.myLaunchPhases.find(
+      (lp) => lp.id === Number(launchPhaseId)
+    )
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -272,6 +350,31 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
     }
   };
 
+  const openLPSessions = (lp: LP) => {
+    setSelectedLP(lp);
+    setShowLPSessions(true);
+    // Carrega as lpsessions específicas da landing page
+    dispatch(loadMyLPSessionsRequest(Number(lp.id)));
+  };
+
+  const handleBackToLandingPages = () => {
+    setShowLPSessions(false);
+    setSelectedLP({});
+  };
+
+  // Se estiver mostrando LPSessions, renderiza o ManageLPSessionWidget
+  if (showLPSessions && selectedLP.id) {
+    return (
+      <ManageLPSessionWidget 
+        className={className} 
+        lpsessions={currentLPSessions}
+        handleBackToLandingPages={handleBackToLandingPages}
+        selectedLP={selectedLP}
+        lpfeatures={currentLPFeatures}
+      />
+    );
+  }
+
   // const openHasLaunchs = (child: LP) => {
   //   setAction("manageLaunchs");
   //   setShow(true);
@@ -280,6 +383,8 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <>
+      <style>{widgetStyles}</style>
+      
       <Modal
         id="kt_modal_create_app"
         tabIndex={-1}
@@ -328,237 +433,246 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
-      <div className={`card ${className}`}>
-        <div className="card-header border-0 pt-5">
-          <h3 className="card-title align-items-start flex-column">
-            <span className="card-label fw-bolder fs-3 mb-1">
-              Landing Pages
-            </span>
-            <span className="text-muted mt-1 fw-bold fs-7">
-              Páginas nessa fase
-            </span>
-          </h3>
-          <div className="d-flex justify-content-end align-items-center gap-2">
-            <div
-              className="card-toolbar"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              data-bs-trigger="hover"
-              title="Click to add a user"
-            >
-              <a
-                href="#!"
-                className="btn btn-primary"
-                onClick={() => createComponent()}
-              >
-                <KTIcon iconName="plus" className="fs-2" />
-                Nova landing page
-              </a>
+      <div className="widget-container">
+        {/* Header */}
+        <div className="widget-header">
+          <div className="d-flex justify-content-between align-items-start">
+            <div>
+              <h2>
+                {launch?.name || "Lançamento"} - {launchPhase?.name}
+              </h2>
+              <div className="subtitle">
+                Gerenciamento de Landing Pages •{" "}
+                {lps.myLPs.length} páginas cadastradas
+              </div>
             </div>
-
-            <div
-              className="card-toolbar"
-              data-bs-toggle="tooltip"
-              data-bs-placement="top"
-              data-bs-trigger="hover"
-              title="Click to add a user"
-            >
-              <a
-                href="#!"
-                className="btn btn-secondary"
-                onClick={() => importLP()}
+            <div className="d-flex justify-content-end align-items-center gap-2">
+              <div
+                className="card-toolbar"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-trigger="hover"
+                title="Click to add a landing page"
               >
-                <KTIcon iconName="file-up" className="fs-2" />
-                Importar landing page
-                {(lps.loadingImport || lps.loadingDuplicate) && <span className="spinner-border spinner-border-sm ms-2"></span>}
-              </a>
+                <a
+                  href="#!"
+                  className="btn btn-primary"
+                  onClick={() => createComponent()}
+                >
+                  <KTIcon iconName="plus" className="fs-2" />
+                  Nova landing page
+                </a>
+              </div>
+
+              <div
+                className="card-toolbar"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-trigger="hover"
+                title="Import landing page"
+              >
+                <a
+                  href="#!"
+                  className="btn btn-secondary"
+                  onClick={() => importLP()}
+                >
+                  <KTIcon iconName="file-up" className="fs-2" />
+                  Importar landing page
+                  {(lps.loadingImport || lps.loadingDuplicate) && <span className="spinner-border spinner-border-sm ms-2"></span>}
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="card-body py-3">
-          <div className="table-responsive">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bolder text-muted">
-                  <th className="min-w-150px">NOME</th>
-                  <th className="min-w-150px">SLUG</th>
-                  <th className="min-w-200px">DESCRIÇÃO</th>
-                  <th className="min-w-100px">ORDEM</th>
-                  <th className="min-w-100px">STATUS</th>
-                  <th className="min-w-100px">LAYOUT</th>
-                  <th className="min-w-50px text-end">AÇÕES</th>
-                  <th className="w-15px"></th>
-                </tr>
-              </thead>
-              <Reorder.Group
-                as="tbody"
-                //axis='y'
-                values={lps.myLPs}
-                onReorder={reorder}
-                onTap={(e) => reorderToSave(lps.myLPs)}
-                onMouseUp={(e) => reorderToSave(lps.myLPs)}
-                style={{ touchAction: "none" }}
-              >
-                <AnimatePresence>
-                  {lps.myLPs.length === 0 && (
-                    <tr className="border-0">
-                      <td colSpan={5} className="text-center pt-10 ">
-                        Nenhuma landing page encontrada aqui. Adicione uma
-                        landing page clicando em "Nova landing page".
-                      </td>
-                    </tr>
-                  )}
+        <div className={`card ${className}`}>
+          <div className="card-body py-3">
+            <div className="table-responsive">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr className="fw-bolder text-muted">
+                    <th className="min-w-150px">NOME</th>
+                    <th className="min-w-150px">SLUG</th>
+                    <th className="min-w-200px">DESCRIÇÃO</th>
+                    <th className="min-w-100px">ORDEM</th>
+                    <th className="min-w-100px">STATUS</th>
+                    <th className="min-w-100px">LAYOUT</th>
+                    <th className="min-w-50px text-end">AÇÕES</th>
+                    <th className="w-15px"></th>
+                  </tr>
+                </thead>
+                <Reorder.Group
+                  as="tbody"
+                  //axis='y'
+                  values={lps.myLPs}
+                  onReorder={reorder}
+                  onTap={(e) => reorderToSave(lps.myLPs)}
+                  onMouseUp={(e) => reorderToSave(lps.myLPs)}
+                  style={{ touchAction: "none" }}
+                >
+                  <AnimatePresence>
+                    {lps.myLPs.length === 0 && (
+                      <tr className="border-0">
+                        <td colSpan={8} className="text-center pt-10 ">
+                          Nenhuma landing page encontrada aqui. Adicione uma
+                          landing page clicando em "Nova landing page".
+                        </td>
+                      </tr>
+                    )}
 
-                  {lps.myLPs.length !== 0 &&
-                    lps.myLPs?.map((child: LP, index: number) => {
-                      const isInactive = child.status === "0";
-                      return (
-                        <Reorder.Item
-                          key={child.id}
-                          value={child}
-                          as="tr"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className={isInactive ? "opacity-50" : ""}
-                        >
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <div className="d-flex align-items-center border-0">
-                              <div>
-                                <Link
-                                  to={
-                                    "/lpsessions/" +
-                                    launchPhaseId +
-                                    "/" +
-                                    child.id
-                                  }
-                                  style={{ display: "flex" }}
-                                  className={`fw-bold text-hover-primary d-block fs-6 ${
-                                    isInactive ? "text-muted" : "text-gray-900"
-                                  }`}
-                                >
-                                  {child.name}
-                                </Link>
+                    {lps.myLPs.length !== 0 &&
+                      lps.myLPs?.map((child: LP, index: number) => {
+                        const isInactive = child.status === "0";
+                        return (
+                          <Reorder.Item
+                            key={child.id}
+                            value={child}
+                            as="tr"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className={isInactive ? "opacity-50" : ""}
+                          >
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <div className="d-flex align-items-center border-0">
+                                <div>
+                                  <a
+                                    href="#!"
+                                    onClick={() => openLPSessions(child)}
+                                    style={{ display: "flex" }}
+                                    className={`fw-bold text-hover-primary d-block fs-6 ${
+                                      isInactive ? "text-muted" : "text-gray-900"
+                                    }`}
+                                  >
+                                    {child.name}
+                                  </a>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <div className="d-flex align-items-center border-0">
-                              <div>
-                                <Link
-                                  to={
-                                    "/lpsessions/" +
-                                    launchPhaseId +
-                                    "/" +
-                                    child.id
-                                  }
-                                  style={{ display: "flex" }}
-                                  className={`fw-bold text-hover-primary d-block fs-6 ${
-                                    isInactive ? "text-muted" : "text-gray-900"
-                                  }`}
-                                >
-                                  {child.slug}
-                                </Link>
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <div className="d-flex align-items-center border-0">
+                                <div>
+                                  <a
+                                    href={`https://insiderhof.com.br/${launchPhase?.name === "Vendas" ? "join" : "subscribe"}/${launchPhase?.slug || launchPhaseId}/${child.slug}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ display: "flex" }}
+                                    className={`fw-bold text-hover-primary d-block fs-6 ${
+                                      isInactive ? "text-muted" : "text-gray-900"
+                                    }`}
+                                  >
+                                    https://insiderhof.com.br/{launchPhase?.name === "Vendas" ? "join" : "subscribe"}/{launchPhase?.slug || launchPhaseId}/{child.slug}
+                                  </a>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <span className={isInactive ? "text-muted" : ""}>
-                              {child.description}
-                            </span>
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <span className={isInactive ? "text-muted" : ""}>
-                              {child.order}
-                            </span>
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <span className={`badge ${
-                              child.status === "1" 
-                                ? "badge-light-success" 
-                                : "badge-light-warning"
-                            }`}>
-                              {child.status === "1" ? "Ativo" : "Inativo"}
-                            </span>
-                          </td>
-                          <td onPointerDownCapture={(e) => e.stopPropagation()}>
-                            <span className={isInactive ? "text-muted" : ""}>
-                              {child.layout}
-                            </span>
-                          </td>
-                          <td>
-                            <div className="d-flex justify-content-end flex-shrink-0">
-                              {/* <a
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <span className={isInactive ? "text-muted" : ""}>
+                                {child.description}
+                              </span>
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <span className={isInactive ? "text-muted" : ""}>
+                                {child.order}
+                              </span>
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <span className={`badge ${
+                                child.status === "1" 
+                                  ? "badge-light-success" 
+                                  : "badge-light-warning"
+                              }`}>
+                                {child.status === "1" ? "Ativo" : "Inativo"}
+                              </span>
+                            </td>
+                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                              <span className={isInactive ? "text-muted" : ""}>
+                                {child.layout}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="d-flex justify-content-end flex-shrink-0">
+                                {/* <a
+                                    href="#!"
+                                    onClick={() =>
+                                      navigate("/launchhasoffers/" + child.id)
+                                    }
+                                    className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                  >
+                                    <KTIcon
+                                      iconName="switch"
+                                      iconType="outline"
+                                    />
+                                  </a> */}
+                                {/* duplicate */}
+                                <a
                                   href="#!"
-                                  onClick={() =>
-                                    navigate("/launchhasoffers/" + child.id)
-                                  }
+                                  onClick={() => duplicateLP(Number(child.id))}
+                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                >
+                                  <KTIcon iconName="copy" iconType="outline" />
+                                </a>
+                                {/* export */}
+                                <a
+                                  href="#!"
+                                  onClick={() => exportLP(Number(child.id))}
                                   className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                 >
                                   <KTIcon
-                                    iconName="switch"
+                                    iconName="file-down"
                                     iconType="outline"
                                   />
-                                </a> */}
-                              {/* duplicate */}
-                              <a
-                                href="#!"
-                                onClick={() => duplicateLP(Number(child.id))}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="copy" iconType="outline" />
-                              </a>
-                              {/* export */}
-                              <a
-                                href="#!"
-                                onClick={() => exportLP(Number(child.id))}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
+                                </a>
+                                <a
+                                  href="#!"
+                                  onClick={() => updateComponent(child)}
+                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                >
+                                  <KTIcon iconName="pencil" iconType="outline" />
+                                </a>
+                                <a
+                                  href="#!"
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Deseja realmente excluir: " +
+                                          child.name +
+                                          "?"
+                                      )
+                                    )
+                                      deleteComponent(child);
+                                  }}
+                                  className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
+                                >
+                                  <KTIcon iconName="trash" iconType="outline" />
+                                </a>
+                              </div>
+                            </td>
+                            <td style={{ touchAction: "none" }}>
+                              <div style={{ cursor: "grab" }}>
                                 <KTIcon
-                                  iconName="file-down"
+                                  iconName="arrow-up-down"
                                   iconType="outline"
                                 />
-                              </a>
-                              <a
-                                href="#!"
-                                onClick={() => updateComponent(child)}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              >
-                                <KTIcon iconName="pencil" iconType="outline" />
-                              </a>
-                              <a
-                                href="#!"
-                                onClick={() => {
-                                  if (
-                                    window.confirm(
-                                      "Deseja realmente excluir: " +
-                                        child.name +
-                                        "?"
-                                    )
-                                  )
-                                    deleteComponent(child);
-                                }}
-                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm"
-                              >
-                                <KTIcon iconName="trash" iconType="outline" />
-                              </a>
-                            </div>
-                          </td>
-                          <td style={{ touchAction: "none" }}>
-                            <div style={{ cursor: "grab" }}>
-                              <KTIcon
-                                iconName="arrow-up-down"
-                                iconType="outline"
-                              />
-                            </div>
-                          </td>
-                        </Reorder.Item>
-                      );
-                    })}
-                </AnimatePresence>
-              </Reorder.Group>
-            </table>
+                              </div>
+                            </td>
+                          </Reorder.Item>
+                        );
+                      })}
+                  </AnimatePresence>
+                </Reorder.Group>
+              </table>
+            </div>
+            
+            {/* Action Buttons */}
+            {handleBackToItems && (
+              <div className="action-buttons">
+                <Button variant="secondary" size="lg" onClick={handleBackToItems}>
+                  <KTIcon iconName="arrow-left" className="fs-5 me-2" />
+                  Voltar aos Itens
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

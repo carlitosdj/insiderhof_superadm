@@ -28,19 +28,58 @@ import {
 import { loadMyLaunchPhaseExtrasRequest } from "../../../../store/ducks/dlaunchphaseextras/actions";
 import { loadLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 import { ApplicationState } from "../../../../store";
+import { LPState } from "../../../../store/ducks/dlps/types";
+import { loadMyLPsRequest } from "../../../../store/ducks/dlps/actions";
+import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
+import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
 // Estilos CSS customizados
 const tabStyles = `
+  .nav-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f8f9fa;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  
+  .nav-tabs::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .nav-tabs::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 3px;
+  }
+  
+  .nav-tabs::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 3px;
+  }
+  
+  .nav-tabs::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+  }
+  
+  .nav-tabs .nav-item {
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+  
   .nav-tabs .nav-link {
     border: none;
     border-radius: 8px 8px 0 0;
-    margin-right: 4px;
     padding: 12px 20px;
     font-weight: 500;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: fit-content;
   }
   
   .nav-tabs .nav-link.active {
@@ -85,6 +124,30 @@ const tabStyles = `
   .tab-pane .component-wrapper .card-body {
     padding: 1.5rem;
   }
+  
+  /* Responsividade para telas muito pequenas */
+  @media (max-width: 576px) {
+    .nav-tabs .nav-link {
+      padding: 10px 16px;
+      font-size: 0.875rem;
+    }
+    
+    .nav-tabs .nav-link .fs-6 {
+      font-size: 0.75rem !important;
+    }
+    
+    .tabs-container {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+  }
+  
+  /* Responsividade para telas médias */
+  @media (max-width: 768px) {
+    .nav-tabs .nav-link {
+      padding: 10px 14px;
+    }
+  }
 `;
 
 type Props = {
@@ -98,6 +161,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LaunchPhases>({});
   const [activeTab, setActiveTab] = useState<string>("resumo");
+  const [isEditing, setIsEditing] = useState(false);
 
   const { launchId, launchPhaseId } = useParams();
 
@@ -105,9 +169,14 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const navigate = useNavigate();
 
   // Redux state para launchphaseextras
-  const launch = useSelector((state: ApplicationState) => state.launch);
+  const launch = useSelector((state: ApplicationState) =>
+    state.launch.myLaunchs.find(l => l.id === Number(launchId))
+  );
   const launchphases = useSelector((state: ApplicationState) => state.launchphase);
   const launchphaseextras = useSelector((state: ApplicationState) => state.launchphaseextra);
+  const lps = useSelector((state: ApplicationState) => state.lps);
+  const lpsessions = useSelector((state: ApplicationState) => state.lpsessions);
+  const lpfeatures = useSelector((state: ApplicationState) => state.lpfeatures);
 
   const handleClose = () => {
     setShow(false);
@@ -160,17 +229,34 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   // };
 
   // useEffect principal para carregar dados apenas uma vez
-  // useEffect(() => {
-  //   console.log(
-  //     "ManageLaunchPhaseWidget: useEffect principal executando, launchId:",
-  //     launchId
-  //   );
-  //   if (!launch.launch) {
-  //     dispatch(loadLaunchRequest(Number(launchId)));
-  //     // dispatch(loadMyLaunchPhasesRequest(Number(launchId)));
-  //   }
-  // }, []); // Array vazio - executa apenas uma vez
-  console.log("launch-------", launch);
+  useEffect(() => {
+    console.log(
+      "ManageLaunchPhaseWidget: useEffect principal executando, launchId:",
+      launchId
+    );
+    if (launchId && !launchphases.myLaunchPhases.length) {
+      console.log("Carregando dados do launch e fases...");
+      dispatch(loadLaunchRequest(Number(launchId)));
+      dispatch(loadMyLaunchPhasesRequest(Number(launchId)));
+    }
+  }, [launchId, dispatch, launchphases.myLaunchPhases.length]); // Executa quando launchId muda ou quando não há fases carregadas
+  
+  // Logs de debug
+  console.log("ManageLaunchPhaseWidget - launch:", launch);
+  console.log("ManageLaunchPhaseWidget - launchphases:", launchphases);
+  console.log("ManageLaunchPhaseWidget - activeTab:", activeTab);
+  
+  // Função para scroll suave para a aba ativa
+  const scrollToActiveTab = () => {
+    const activeTabElement = document.querySelector('.nav-tabs .nav-link.active');
+    if (activeTabElement) {
+      activeTabElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  };
   // useEffect para configurar tab ativa baseada na URL
   useEffect(() => {
     console.log(
@@ -183,6 +269,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       setActiveTab(launchPhaseId);
     } else if (launchId) {
       setActiveTab("resumo");
+      // Reset editing state when navigating to resumo tab
+      setIsEditing(false);
     }
   }, [launchId, launchPhaseId]);
 
@@ -194,15 +282,26 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     );
     if (activeTab && activeTab !== "resumo" && activeTab !== "configuracao") {
       dispatch(loadMyLaunchPhaseExtrasRequest(Number(activeTab)));
+      dispatch(loadMyLPsRequest(Number(activeTab))); // Carrega os LPs da fase
+      // LPSessions e LPFeatures serão carregados sob demanda quando necessário
     }
-  }, [activeTab]);
+  }, [activeTab, dispatch]);
+  
+  // useEffect para scroll para a aba ativa
+  useEffect(() => {
+    if (activeTab && launchphases.myLaunchPhases.length > 0) {
+      // Pequeno delay para garantir que o DOM foi atualizado
+      setTimeout(scrollToActiveTab, 100);
+    }
+  }, [activeTab, launchphases.myLaunchPhases.length]);
 
   // Handle tab click to change URL
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
 
     if (tabId === "resumo") {
-      // Navigate to launch overview without phase
+      // Navigate to launch overview without phase and reset editing state
+      setIsEditing(false);
       navigate(`/launch/${launchId}`);
     } else if (tabId === "configuracao") {
       // Navigate to configuration tab
@@ -214,21 +313,32 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   };
 
   const renderTabContent = () => {
-    if (activeTab === "resumo") {
+    // Verifica se os dados estão carregando
+    if (launchphases.loading || !launch) {
       return (
-        <div className="tab-pane fade show active">
-          <div className="component-wrapper">
-            <Resume />
+        <div className="tab-pane fade show active p-4">
+          <div className="text-center py-8">
+            <div className="spinner-border text-primary mb-4" role="status">
+              <span className="visually-hidden">Carregando...</span>
+            </div>
+            <h4 className="text-muted mb-2">Carregando dados...</h4>
+            <p className="text-muted fs-6 mb-4">
+              Aguarde enquanto carregamos as informações do lançamento.
+            </p>
           </div>
         </div>
       );
     }
 
-    if (activeTab === "configuracao") {
+    if (activeTab === "resumo") {
       return (
         <div className="tab-pane fade show active">
           <div className="component-wrapper">
-            <Configuration />
+            {!isEditing ? (
+              <Resume onEdit={() => setIsEditing(true)} />
+            ) : (
+              <Configuration onCancel={() => setIsEditing(false)} />
+            )}
           </div>
         </div>
       );
@@ -275,12 +385,34 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <ManageLaunchPhaseExtraWidget
             launchPhaseId={Number(activeTab)}
             launchphaseextras={launchphaseextras}
+            lps={lps}
+            lpsessions={lpsessions}
+            lpfeatures={lpfeatures}
             className=""
           />
         </div>
       </div>
     );
   };
+
+  // Se ainda está carregando os dados básicos, mostra loading
+  if (!launch && launchphases.loading) {
+    return (
+      <div className="card">
+        <div className="card-body p-8">
+          <div className="text-center py-8">
+            <div className="spinner-border text-primary mb-4" role="status">
+              <span className="visually-hidden">Carregando...</span>
+            </div>
+            <h4 className="text-muted mb-2">Carregando lançamento...</h4>
+            <p className="text-muted fs-6 mb-4">
+              Aguarde enquanto carregamos as informações do lançamento.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -336,26 +468,30 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <h3 className="card-title align-items-start flex-column">
             <span className="card-label fw-bolder fs-3 mb-1">
               <KTIcon iconName="rocket" className="fs-2 text-primary me-2" />
-              Gerenciador de Fases
+              {launch ? `${launch.name} - Gerenciador de Fases` : "Carregando..."}
+              {/* {activeTab === "resumo" && "Resumo" } */}
+              {/* {activeTab === "resumo" ? "Resumo" : launchphases.myLaunchPhases.find(p => p.id?.toString() === activeTab)?.name}  */}
             </span>
             <span className="text-muted mt-1 fw-bold fs-7">
               Gerencie todas as fases do seu lançamento
             </span>
           </h3>
-          <div className="card-toolbar">
-            <Button
-              className="btn btn-primary btn-lg px-6"
-              onClick={() => createComponent()}
-            >
-              <KTIcon iconName="plus" className="fs-2 me-2" />
-              Nova Fase
-            </Button>
-          </div>
+          {/* <div className="card-toolbar">
+            {launch && !launchphases.loading && (
+              <Button
+                className="btn btn-primary btn-lg px-6"
+                onClick={() => createComponent()}
+              >
+                <KTIcon iconName="plus" className="fs-2 me-2" />
+                Nova Fase
+              </Button>
+            )}
+          </div> */}
         </div>
 
         <div className="card-body p-0">
           {/* Navegação por Abas */}
-          <Nav variant="tabs" className="border-0 px-6 pt-3">
+          <Nav variant="tabs" className="border-0 px-6 pt-3 tabs-container">
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "resumo"}
@@ -366,41 +502,45 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 Resumo
               </Nav.Link>
             </Nav.Item>
-            <Nav.Item>
-              <Nav.Link
-                active={activeTab === "configuracao"}
-                onClick={() => handleTabClick("configuracao")}
-                className="d-flex align-items-center"
-              >
-                <KTIcon iconName="gear" className="fs-6 me-2" />
-                Configuração
-              </Nav.Link>
-            </Nav.Item>
-            {launchphases.myLaunchPhases?.map(
-              (phase: LaunchPhases, index: number) => (
-                <Nav.Item key={phase.id}>
-                  <Nav.Link
-                    active={activeTab === phase.id?.toString()}
-                    onClick={() => handleTabClick(phase.id?.toString() || "")}
-                    className="d-flex align-items-center"
-                  >
-                    <KTIcon
-                      iconName={
-                        phase.name === "Captação"
-                          ? "user-plus"
-                          : phase.name === "Evento"
-                          ? "calendar"
-                          : phase.name === "Vendas"
-                          ? "shopping-cart"
-                          : "gear"
-                      }
-                      className="fs-6 me-2"
-                    />
-                    {phase.name}
-                    {/* <Badge bg="success" className="ms-2 fs-8">
-                    #{index + 1}
-                  </Badge> */}
-                  </Nav.Link>
+            {launchphases.myLaunchPhases && launchphases.myLaunchPhases.length > 0 ? (
+              launchphases.myLaunchPhases.map(
+                (phase: LaunchPhases, index: number) => (
+                  <Nav.Item key={phase.id}>
+                    <Nav.Link
+                      active={activeTab === phase.id?.toString()}
+                      onClick={() => handleTabClick(phase.id?.toString() || "")}
+                      className="d-flex align-items-center"
+                    >
+                      <KTIcon
+                        iconName={
+                          phase.name === "Captação"
+                            ? "user-plus"
+                            : phase.name === "Evento"
+                            ? "calendar"
+                            : phase.name === "Vendas"
+                            ? "shopping-cart"
+                            : "gear"
+                        }
+                        className="fs-6 me-2"
+                      />
+                      {phase.name}
+                      {/* <Badge bg="success" className="ms-2 fs-8">
+                      #{index + 1}
+                    </Badge> */}
+                    </Nav.Link>
+                  </Nav.Item>
+                )
+              )
+            ) : (
+              // Mostra loading nas abas se ainda não carregou
+              launchphases.loading && (
+                <Nav.Item>
+                  <div className="nav-link d-flex align-items-center">
+                    <div className="spinner-border spinner-border-sm text-primary me-2" role="status">
+                      <span className="visually-hidden">Carregando...</span>
+                    </div>
+                    <span className="text-muted">Carregando fases...</span>
+                  </div>
                 </Nav.Item>
               )
             )}

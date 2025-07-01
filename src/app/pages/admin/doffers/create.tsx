@@ -22,7 +22,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
   
   const [validated, setValidated] = useState(false);
   
-  const [price, setPrice] = useState("");
+  // const [price, setPrice] = useState("");
   const [type, setType] = useState("curso");
 
   const [selectedFile, setSelectedFile] = useState<any>();
@@ -76,7 +76,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
         const offer: Offer = {
           name,
           description,
-          price: Number(price),
+          //price: Number(price),
           type,
           ownerId: me.me.id,
           image: imageFilename,  // Principal
@@ -136,7 +136,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
           <div className="col-lg-6 py-lg-2 px-lg-6">
             
 
-            <Form.Group controlId="fromName">
+            {/* <Form.Group controlId="fromName">
               <Form.Label className="fw-bold fs-6 mb-5">Preço</Form.Label>
               <Form.Control
                 placeholder=""
@@ -148,7 +148,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
                 Por favor informe a ordem
               </Form.Control.Feedback>
             </Form.Group>
-            <br />
+            <br /> */}
 
             <SelectImg
               setSelectedFile={setSelectedFile}

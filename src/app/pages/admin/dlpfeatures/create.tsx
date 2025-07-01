@@ -18,6 +18,8 @@ interface handleCloseProps {
 }
 
 const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
+  console.log("Create LPFeature component mounted with lpSessionId:", lpSessionId);
+  
   const [config, setConfig] = useState({
     number: "",
     title: "",
@@ -35,14 +37,37 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
   const me = useSelector((state: ApplicationState) => state.me);
 
   const handleConfigChange = (key: string, value: string) => {
-    setConfig((prev) => ({ ...prev, [key]: value }));
+    console.log(`handleConfigChange: ${key} = "${value}"`);
+    setConfig((prev) => {
+      const newConfig = { ...prev, [key]: value };
+      console.log("New config:", newConfig);
+      return newConfig;
+    });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
-    if (form.checkValidity() === false) {
+    console.log("=== handleSubmit LPFeature ===");
+    console.log("Form validity:", form.checkValidity());
+    console.log("lpSessionId:", lpSessionId);
+    console.log("Config:", config);
+    console.log("Order:", order);
+    console.log("Status:", status);
+    
+    // Verifica se tem lpSessionId
+    if (!lpSessionId) {
+      console.log("Form validation failed - lpSessionId is required");
       event.stopPropagation();
+      return;
+    }
+    
+    const isValid = form.checkValidity();
+    console.log("Form validity check:", isValid);
+    if (!isValid) {
+      console.log("Form validation failed - HTML5 validation failed");
+      event.stopPropagation();
+      return;
     }
     setValidated(true);
 
@@ -51,14 +76,35 @@ const Create = ({ handleClose, lpSessionId }: handleCloseProps) => {
       Object.entries(config).filter(([_, value]) => value && value !== "")
     );
 
+    console.log("Filtered config:", filteredConfig);
+
+    // Verifica se pelo menos um campo de configuração está preenchido
+    if (Object.keys(filteredConfig).length === 0) {
+      console.log("Form validation failed - at least one config field is required");
+      event.stopPropagation();
+      return;
+    }
+
     const item: LPFeature = {
-      lpSessionId,
+      lpSessionId: Number(lpSessionId),
       order,
       status,
       config: JSON.stringify(filteredConfig),
     };
-    dispatch(createLPFeatureRequest(item));
-    handleClose();
+    
+    console.log("Dispatching item:", item);
+    console.log("Item JSON:", JSON.stringify(item, null, 2));
+    console.log("Item lpSessionId:", item.lpSessionId, "type:", typeof item.lpSessionId);
+    console.log("Item order:", item.order, "type:", typeof item.order);
+    console.log("Item status:", item.status, "type:", typeof item.status);
+    
+    try {
+      dispatch(createLPFeatureRequest(item));
+      console.log("Dispatch completed");
+      handleClose();
+    } catch (error) {
+      console.error("Error dispatching action:", error);
+    }
   };
 
   return (

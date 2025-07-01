@@ -285,10 +285,10 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                         </div>
                                       )}
                                       {hasoffer.offer?.name} {"->"} R${" "}
-                                      {hasoffer.offer?.price?.toLocaleString(
+                                      {/* {hasoffer.offer?.price?.toLocaleString(
                                         "pt-BR",
                                         { style: "currency", currency: "BRL" }
-                                      )}
+                                      )} */}
                                       <button
                                         className="btn btn-sm"
                                         onClick={() =>

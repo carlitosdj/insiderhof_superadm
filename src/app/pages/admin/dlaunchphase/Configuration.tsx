@@ -51,6 +51,7 @@ const configurationStyles = `
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #e1e5e9;
     background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
   }
   
   .section-header h5 {
@@ -127,7 +128,7 @@ const configurationStyles = `
   
   .action-buttons {
     background: white;
-    border: 1px solid #e1e5e9;
+    border: none;
     border-radius: 8px;
     padding: 1.5rem;
     margin-top: 2rem;
@@ -213,9 +214,37 @@ const configurationStyles = `
     color: #2c3e50;
     font-weight: 600;
   }
+  
+  .content-section {
+    background: white;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-item .alert {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .info-item .info-label {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .info-item .info-value {
+    flex-shrink: 0;
+  }
+  
+  .info-item .btn {
+    border: none;
+  }
 `;
 
-const Configuration = () => {
+const Configuration = ({ onCancel }: { onCancel?: () => void }) => {
   const dispatch = useDispatch();
   const { launchId } = useParams();
   
@@ -385,146 +414,174 @@ const Configuration = () => {
       
       <div className="configuration-container">
         {/* Header */}
-        {/* <div className="config-header">
+        <div className="config-header">
           <div className="d-flex justify-content-between align-items-start">
             <div>
               <h2>Configurações do Lançamento</h2>
               <div className="subtitle">
-                Gerencie as configurações do lançamento <strong>{launch.name}</strong>
-              </div>
-            </div>
-            {/* <div className="d-flex gap-3">
-              <Button 
-                variant="outline-light" 
-                size="sm"
-                onClick={openHasLaunchs}
-                className="d-flex align-items-center gap-2"
-              >
-                <KTIcon iconName="gear" className="fs-5" />
-                Gerenciar Ofertas
-              </Button>
-              <Button 
-                variant="outline-light" 
-                size="sm"
-                onClick={handleRestore}
-                disabled={isSubmitting}
-              >
-                <KTIcon iconName="refresh" className="fs-5 me-2" />
-                Restaurar
-              </Button>
-            </div> *x/}
-          </div>
-        </div> */}
-
-        {/* Success Alert */}
-        {showSuccess && (
-          <Alert variant="success" className="alert-success" dismissible onClose={() => setShowSuccess(false)}>
-            <div className="d-flex align-items-center">
-              <KTIcon iconName="check-circle" className="fs-2 me-3" />
-              <div>
-                <h6 className="fw-bold mb-1">Configurações salvas com sucesso!</h6>
-                <p className="mb-0">As alterações foram aplicadas ao lançamento.</p>
-              </div>
-            </div>
-          </Alert>
-        )}
-
-        {/* Ofertas Associadas */}
-        {launch?.launchhasoffers && launch.launchhasoffers.length > 0 && (
-          <div className="form-section mb-4">
-            <div className="section-header">
-              <h5>
-                <KTIcon iconName="gift" className="fs-5" />
-                Ofertas Associadas ({launch.launchhasoffers.length})
-              </h5>
-            </div>
-            <div className="section-body">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <span className="fs-7 fw-semibold text-dark">Ofertas configuradas para este lançamento</span>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  onClick={openHasLaunchs}
-                  className="btn-sm"
-                >
-                  <KTIcon iconName="gear" className="fs-6 me-1" />
-                  Gerenciar
-                </Button>
-              </div>
-              <div className="d-flex flex-wrap gap-2">
-                {launch.launchhasoffers.slice(0, 6).map((hasoffer) => (
-                  <div key={hasoffer.id} className="d-flex align-items-center bg-light rounded p-3 border">
-                    {hasoffer.offer?.image && (
-                      <img
-                        className="rounded me-3"
-                        width={32}
-                        height={32}
-                        src={
-                          hasoffer.offer?.image.includes("https://")
-                            ? hasoffer.offer?.image
-                            : "https://app.insiderhof.com.br/files/" + hasoffer.offer?.image
-                        }
-                        onError={({ currentTarget }) => {
-                          currentTarget.onerror = null;
-                          currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
-                        }}
-                        alt={hasoffer.offer?.name}
-                      />
-                    )}
-                    <div>
-                      <div className="fs-7 fw-semibold text-dark mb-1">
-                        {hasoffer.offer?.name}
-                      </div>
-                      <div className="fs-8 text-muted">
-                        {hasoffer.offer?.price ? `R$ ${hasoffer.offer.price}` : 'Preço não informado'}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {launch.launchhasoffers.length > 6 && (
-                  <div className="bg-light rounded p-3 border">
-                    <div className="text-center">
-                      <div className="fs-6 fw-bold text-muted mb-1">
-                        +{launch.launchhasoffers.length - 6}
-                      </div>
-                      <div className="fs-8 text-muted">mais ofertas</div>
-                    </div>
-                  </div>
-                )}
+                Gerencie as configurações do lançamento <strong>{name}</strong>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         <Form validated={validated} onSubmit={handleSubmit}>
-          <Row>
-            {/* Informações Básicas */}
-            <Col lg={6}>
-              <div className="form-section">
+          {/* Success Alert */}
+          {showSuccess && (
+            <Alert variant="success" className="alert-success" dismissible onClose={() => setShowSuccess(false)}>
+              <div className="d-flex align-items-center">
+                <KTIcon iconName="check-circle" className="fs-2 me-3" />
+                <div>
+                  <h6 className="fw-bold mb-1">Configurações salvas com sucesso!</h6>
+                  <p className="mb-0">As alterações foram aplicadas ao lançamento.</p>
+                </div>
+              </div>
+            </Alert>
+          )}
+
+          {/* Main Content */}
+          <Row className="g-4 align-items-stretch">
+            {/* Informações do Lançamento */}
+            <Col lg={6} className="h-100">
+              <div className="content-section h-100">
                 <div className="section-header">
                   <h5>
                     <KTIcon iconName="information" className="fs-5" />
-                    Informações Básicas
+                    Informações do Lançamento
                   </h5>
                 </div>
                 <div className="section-body">
-                  <div className="form-group">
-                    <Form.Label className="form-label required">
-                      Nome do Lançamento
-                    </Form.Label>
-                    <Form.Control
-                      placeholder="Digite o nome do lançamento"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="form-control"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Por favor informe o nome do lançamento
-                    </Form.Control.Feedback>
+                  <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div className="info-item">
+                      <span className="info-label">Nome</span>
+                      <span className="info-value">
+                        <Form.Control
+                          placeholder="Digite o nome do lançamento"
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="form-control"
+                        />
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Tipo</span>
+                      <span className="info-value">
+                        <Form.Control
+                          placeholder="Ex: Curso, Produto, Serviço"
+                          value={type}
+                          onChange={(e) => setType(e.target.value)}
+                          className="form-control"
+                        />
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Status</span>
+                      <span className="info-value">
+                        <Form.Select
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                          className="form-control"
+                        >
+                          <option value="1">🟢 Ativo</option>
+                          <option value="0">🔴 Inativo</option>
+                        </Form.Select>
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Parcelas</span>
+                      <span className="info-value">
+                        <Form.Control
+                          placeholder="Ex: 12x sem juros de R$ 97,00"
+                          value={installments}
+                          onChange={(e) => setInstallments(e.target.value)}
+                          className="form-control"
+                        />
+                      </span>
+                    </div>
+                    {launch?.launchhasoffers && launch.launchhasoffers.length > 0 ? (
+                      <div className="info-item">
+                        <span className="info-label">
+                          <div className="d-flex align-items-center gap-2">
+                            {launch.launchhasoffers[0].offer?.image && (
+                              <img
+                                className="rounded"
+                                width={24}
+                                height={24}
+                                src={
+                                  launch.launchhasoffers[0].offer?.image.includes("https://")
+                                    ? launch.launchhasoffers[0].offer?.image
+                                    : "https://app.insiderhof.com.br/files/" + launch.launchhasoffers[0].offer?.image
+                                }
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null;
+                                  currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                                }}
+                                alt={launch.launchhasoffers[0].offer?.name}
+                              />
+                            )}
+                            <span className="fs-7 fw-semibold text-dark">
+                              {launch.launchhasoffers[0].offer?.name || 'Oferta não encontrada'}
+                            </span>
+                          </div>
+                        </span>
+                        <span className="info-value">
+                          <Button variant="outline-primary" size="sm" onClick={openHasLaunchs} className="btn-sm">
+                            <KTIcon iconName="gear" className="fs-6 me-1" />
+                            Gerenciar
+                          </Button>
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="info-item">
+                        <span className="info-label">
+                          <div className="alert alert-danger py-2 px-3 mb-0 w-100 text-center">
+                            <KTIcon iconName="cross" className="fs-4 me-1" />
+                            Nenhuma oferta selecionada
+                          </div>
+                        </span>
+                        <span className="info-value m-1">
+                          <Button variant="outline-primary" size="sm" onClick={openHasLaunchs} className="btn-sm">
+                            <KTIcon iconName="gear" className="fs-6 me-1" />
+                            Gerenciar
+                          </Button>
+                        </span>
+                      </div>
+                    )}
+                    <div className="info-item">
+                      <span className="info-label">Preço dos Produtos da Oferta</span>
+                      <span className="info-value text-muted" style={{ textDecoration: 'line-through' }}>
+                        {launch?.launchhasoffers && launch.launchhasoffers.length > 0 &&
+                          launch.launchhasoffers[0].offer?.dOfferHasProducts &&
+                          launch.launchhasoffers[0].offer.dOfferHasProducts.length > 0
+                          ? formatCurrency(
+                              launch.launchhasoffers[0].offer.dOfferHasProducts.reduce(
+                                (total: number, offerProduct: any) => total + (offerProduct.product?.price || 0),
+                                0
+                              )
+                            )
+                          : formatCurrency(0)
+                        }
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Preço Atual</span>
+                      <span className="info-value">
+                        <InputGroup>
+                          <InputGroup.Text>R$</InputGroup.Text>
+                          <Form.Control
+                            type="number"
+                            placeholder="0,00"
+                            value={price}
+                            onChange={(e) => setPrice(Number(e.target.value))}
+                            className="form-control"
+                          />
+                        </InputGroup>
+                      </span>
+                    </div>
                   </div>
-
-                  <div className="form-group">
+                  
+                  <div className="form-group mt-4">
                     <Form.Label className="form-label">
                       Descrição
                     </Form.Label>
@@ -537,129 +594,25 @@ const Configuration = () => {
                       className="form-control"
                     />
                   </div>
-
-                  <Row>
-                    <Col md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Tipo
-                        </Form.Label>
-                        <Form.Control
-                          placeholder="Ex: Curso, Produto, Serviço"
-                          value={type}
-                          onChange={(e) => setType(e.target.value)}
-                          className="form-control"
-                        />
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Status
-                        </Form.Label>
-                        <Form.Select
-                          value={status}
-                          onChange={(e) => setStatus(e.target.value)}
-                          className="form-control"
-                        >
-                          <option value="1">🟢 Ativo</option>
-                          <option value="0">🔴 Inativo</option>
-                        </Form.Select>
-                      </div>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-            </Col>
-
-            {/* Preços e Valores */}
-            <Col lg={6}>
-              <div className="form-section">
-                <div className="section-header">
-                  <h5>
-                    <KTIcon iconName="dollar" className="fs-5" />
-                    Preços e Valores
-                  </h5>
-                </div>
-                <div className="section-body">
-                  <Row>
-                    {/* <Col md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Preço Original
-                        </Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>R$</InputGroup.Text>
-                          <Form.Control
-                            type="number"
-                            placeholder="0,00"
-                            value={oldPrice}
-                            onChange={(e) => setOldPrice(Number(e.target.value))}
-                            className="form-control"
-                          />
-                        </InputGroup>
-                        <div className="price-indicator text-success">
-                          {formatCurrency(oldPrice)}
-                        </div>
-                      </div>
-                    </Col> */}
-                    <Col md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Preço Atual
-                        </Form.Label>
-                        <InputGroup>
-                          <InputGroup.Text>R$</InputGroup.Text>
-                          <Form.Control
-                            type="number"
-                            placeholder="0,00"
-                            value={price}
-                            onChange={(e) => setPrice(Number(e.target.value))}
-                            className="form-control"
-                          />
-                        </InputGroup>
-                        <div className="price-indicator text-primary">
-                          {formatCurrency(price)}
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <div className="form-group">
-                    <Form.Label className="form-label">
-                      Parcelas
-                    </Form.Label>
-                    <Form.Control
-                      placeholder="Ex: 12x sem juros de R$ 97,00"
-                      value={installments}
-                      onChange={(e) => setInstallments(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-
-                  {/* Price Difference Indicator */}
-                  {/* {oldPrice > 0 && price > 0 && (
-                    <div className="price-difference">
-                      <div className="d-flex align-items-center">
-                        <KTIcon iconName="chart-line" className="fs-3 me-2" />
+                  
+                  {description && (
+                    <div className="mt-4 p-3 bg-light-primary bg-opacity-10 rounded">
+                      <div className="d-flex align-items-start">
+                        <KTIcon iconName="document" className="fs-2 text-primary me-3 mt-1" />
                         <div>
-                          <div className="difference-label">
-                            {oldPrice > price ? 'Desconto Aplicado' : 'Acréscimo'}
-                          </div>
-                          <div className="difference-value">
-                            {formatCurrency(Math.abs(oldPrice - price))}
-                          </div>
+                          <div className="fw-bold text-dark mb-2">Descrição</div>
+                          <div className="text-dark">{description}</div>
                         </div>
                       </div>
                     </div>
-                  )} */}
+                  )}
                 </div>
               </div>
             </Col>
 
             {/* Configurações de Renovação */}
-            <Col lg={12}>
-              <div className="form-section">
+            <Col lg={6} className="h-100">
+              <div className="content-section h-100">
                 <div className="section-header">
                   <h5>
                     <KTIcon iconName="refresh" className="fs-5" />
@@ -667,29 +620,22 @@ const Configuration = () => {
                   </h5>
                 </div>
                 <div className="section-body">
-                  <Row className="g-4">
-                    <Col lg={3} md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Tempo de Renovação
-                        </Form.Label>
-                        <div className="position-relative">
-                          <Form.Control
-                            type="number"
-                            placeholder="30"
-                            value={renovationTime}
-                            onChange={(e) => setRenovationTime(Number(e.target.value))}
-                            className="form-control"
-                          />
-                          <span className="position-absolute end-0 top-50 translate-middle-y me-3 text-muted">dias</span>
-                        </div>
-                      </div>
-                    </Col>
-                    <Col lg={3} md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Preço de Renovação
-                        </Form.Label>
+                  <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div className="info-item">
+                      <span className="info-label">Tempo de Renovação (dias)</span>
+                      <span className="info-value">
+                        <Form.Control
+                          type="number"
+                          placeholder="30"
+                          value={renovationTime}
+                          onChange={(e) => setRenovationTime(Number(e.target.value))}
+                          className="form-control"
+                        />
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Preço de Renovação</span>
+                      <span className="info-value">
                         <InputGroup>
                           <InputGroup.Text>R$</InputGroup.Text>
                           <Form.Control
@@ -700,16 +646,11 @@ const Configuration = () => {
                             className="form-control"
                           />
                         </InputGroup>
-                        <div className="price-indicator text-warning">
-                          {formatCurrency(renovationPrice)}
-                        </div>
-                      </div>
-                    </Col>
-                    <Col lg={3} md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Renovação Antecipada
-                        </Form.Label>
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Renovação Antecipada</span>
+                      <span className="info-value">
                         <InputGroup>
                           <InputGroup.Text>R$</InputGroup.Text>
                           <Form.Control
@@ -720,40 +661,46 @@ const Configuration = () => {
                             className="form-control"
                           />
                         </InputGroup>
-                        <div className="price-indicator text-info">
-                          {formatCurrency(antecipateRenovationPrice)}
-                        </div>
-                      </div>
-                    </Col>
-                    <Col lg={3} md={6}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Parcelas de Renovação
-                        </Form.Label>
+                      </span>
+                    </div>
+                    <div className="info-item">
+                      <span className="info-label">Parcelas de Renovação</span>
+                      <span className="info-value">
                         <Form.Control
                           placeholder="Ex: 12x sem juros"
                           value={renovationInstallments}
                           onChange={(e) => setRenovationInstallments(e.target.value)}
                           className="form-control"
                         />
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="form-group mt-4">
+                    <Form.Label className="form-label">
+                      Descrição da Renovação
+                    </Form.Label>
+                    <Form.Control
+                      placeholder="Descreva os benefícios da renovação..."
+                      value={renovationDescription}
+                      onChange={(e) => setRenovationDescription(e.target.value)}
+                      as="textarea"
+                      rows={3}
+                      className="form-control"
+                    />
+                  </div>
+                  
+                  {renovationDescription && (
+                    <div className="mt-4 p-3 bg-light-warning bg-opacity-10 rounded">
+                      <div className="d-flex align-items-start">
+                        <KTIcon iconName="document" className="fs-2 text-primary me-3 mt-1" />
+                        <div>
+                          <div className="fw-bold text-dark mb-2">Descrição da Renovação</div>
+                          <div className="text-dark">{renovationDescription}</div>
+                        </div>
                       </div>
-                    </Col>
-                    <Col lg={12}>
-                      <div className="form-group">
-                        <Form.Label className="form-label">
-                          Descrição da Renovação
-                        </Form.Label>
-                        <Form.Control
-                          placeholder="Descreva os benefícios da renovação..."
-                          value={renovationDescription}
-                          onChange={(e) => setRenovationDescription(e.target.value)}
-                          as="textarea"
-                          rows={3}
-                          className="form-control"
-                        />
-                      </div>
-                    </Col>
-                  </Row>
+                    </div>
+                  )}
                 </div>
               </div>
             </Col>
@@ -761,21 +708,17 @@ const Configuration = () => {
 
           {/* Action Buttons */}
           <div className="action-buttons">
-            <Button 
-              variant="secondary" 
-              size="lg"
-              onClick={handleRestore}
-              disabled={isSubmitting}
-            >
+            {onCancel && (
+              <Button variant="secondary" size="lg" onClick={onCancel} disabled={isSubmitting}>
+                <KTIcon iconName="arrow-left" className="fs-5 me-2" />
+                Voltar
+              </Button>
+            )}
+            {/* <Button variant="secondary" size="lg" onClick={handleRestore} disabled={isSubmitting}>
               <KTIcon iconName="cross" className="fs-5 me-2" />
               Cancelar
-            </Button>
-            <Button 
-              variant="primary" 
-              size="lg" 
-              type="submit"
-              disabled={isSubmitting}
-            >
+            </Button> */}
+            <Button variant="primary" size="lg" type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <div className="loading-spinner me-2"></div>

@@ -52,13 +52,22 @@ export function* loadLPSession(payload: ReturnType<typeof loadLPSessionRequest>)
 //Create
 export function* createLPSession(payload: ReturnType<typeof createLPSessionRequest>) {
   try {
-    console.log("Sending payload to API:", payload.payload);
+    console.log("=== createLPSession saga ===");
+    console.log("Payload received:", payload);
+    console.log("Payload data:", payload.payload);
+    console.log("Payload data type:", typeof payload.payload);
+    console.log("Payload data keys:", Object.keys(payload.payload));
+    console.log("Sending to API endpoint: lpsession");
+    
     const response: LPSession = yield call(api.post, 'lpsession', payload.payload)
     console.log("API Response:", response);
+    console.log("API Response type:", typeof response);
     yield put(createLPSessionSuccess(response))
   } catch (error: any) {
     console.error("API Error:", error);
-    yield put(createLPSessionFailure(error.response.data))
+    console.error("Error response:", error.response);
+    console.error("Error message:", error.message);
+    yield put(createLPSessionFailure(error.response?.data || error.message))
   }
 }
 

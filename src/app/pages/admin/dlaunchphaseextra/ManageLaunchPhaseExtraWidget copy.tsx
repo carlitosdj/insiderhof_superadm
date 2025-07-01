@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button, Modal, Badge } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
-import { ManageLPWidget } from "../dlps/ManageLPWidget";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -22,9 +21,6 @@ import {
   reorderLaunchPhaseExtrasRequest,
   updateLaunchPhaseExtrasRequest,
 } from "../../../../store/ducks/dlaunchphaseextras/actions";
-import { LPState } from "../../../../store/ducks/dlps/types";
-import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
-import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -82,21 +78,17 @@ type Props = {
   className: string;
   launchphaseextras: LaunchPhaseExtrasState;
   launchPhaseId: number;
-  lps?: LPState;
-  lpsessions?: LPSessionState;
-  lpfeatures?: LPFeatureState;
 };
 
 const ManageLaunchPhaseExtraWidget: React.FC<
   React.PropsWithChildren<Props>
-> = ({ className, launchphaseextras, launchPhaseId, lps, lpsessions, lpfeatures }) => {
+> = ({ className, launchphaseextras, launchPhaseId }) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LaunchPhaseExtras>({});
   const [oldChildren, setOldChildren] = useState<LaunchPhaseExtras[]>(
     launchphaseextras.myLaunchPhaseExtras
   );
-  const [showLandingPages, setShowLandingPages] = useState<boolean>(false);
 
   // Get launch data from Redux state to display in header
   const { launchId } = useParams();
@@ -108,11 +100,6 @@ const ManageLaunchPhaseExtraWidget: React.FC<
       (lp) => lp.id === Number(launchPhaseId)
     )
   );
-
-  // Reset showLandingPages when launchPhaseId changes (tab click)
-  useEffect(() => {
-    setShowLandingPages(false);
-  }, [launchPhaseId]);
 
   //const { launchPhaseId } = useParams();
 
@@ -127,12 +114,8 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     setShow(true);
   };
 
-  const openLPSessions = () => {
-    setShowLandingPages(true);
-  };
-
-  const handleBackToItems = () => {
-    setShowLandingPages(false);
+  const lpsessions = () => {
+    navigate("/lps/" + launchPhaseId);
   };
 
   const updateComponent = (child: LaunchPhaseExtras) => {
@@ -175,19 +158,6 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     setShow(true);
     setChild(child);
   };
-
-  // Se estiver mostrando Landing Pages, renderiza o ManageLPWidget
-  if (showLandingPages && lps) {
-    return (
-      <ManageLPWidget 
-        className={className} 
-        lps={lps} 
-        handleBackToItems={handleBackToItems}
-        lpsessions={lpsessions}
-        lpfeatures={lpfeatures}
-      />
-    );
-  }
 
   return (
     <>
@@ -254,8 +224,8 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                 {launchphaseextras.myLaunchPhaseExtras.length} itens cadastrados
               </div>
             </div>
-            <div className="d-flex flex-column gap-2">
-              {/* <div
+            <div className="d-flex justify-content-end align-items-center gap-2">
+              <div
                 className="card-toolbar"
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
@@ -264,31 +234,29 @@ const ManageLaunchPhaseExtraWidget: React.FC<
               >
                 <a
                   //href="#!"
-                  className="btn btn-primary btn-sm"
+                  className="btn btn-primary"
                   onClick={() => createComponent()}
                 >
-                  <KTIcon iconName="plus" className="fs-6 me-1" />
-                  Item
+                  <KTIcon iconName="plus" className="fs-2" />
+                  Novo item
                 </a>
-              </div> */}
-              {(launchPhase?.name === "Captação" || launchPhase?.name === "Vendas") && (
-                <div
-                  className="card-toolbar"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  data-bs-trigger="hover"
-                  title="Manage landing pages"
+              </div>
+              <div
+                className="card-toolbar"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-trigger="hover"
+                title="Manage landing pages"
+              >
+                <a
+                  //href="#!"
+                  className="btn btn-secondary"
+                  onClick={() => lpsessions()}
                 >
-                  <a
-                    //href="#!"
-                    className="btn btn-primary btn-sm"
-                    onClick={() => openLPSessions()}
-                  >
-                    {/* <KTIcon iconName="plus" className="fs-6 me-1" /> */}
-                    Landing pages
-                  </a>
-                </div>
-              )}
+                  <KTIcon iconName="plus" className="fs-2" />
+                  Landing Pages
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -318,7 +286,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                   }
                   style={{ touchAction: "none" }}
                 >
-                  {/* <AnimatePresence> */}
+                  <AnimatePresence>
                     {launchphaseextras.myLaunchPhaseExtras.length === 0 && (
                       <tr className="border-0">
                         <td colSpan={3} className="text-center pt-10 ">
@@ -347,13 +315,13 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                               >
                                 <div className="d-flex align-items-center border-0">
                                   <div>
-                                    <div
-                                      //to={"/launchhasoffers/" + child.id}
+                                    <Link
+                                      to={"/launchhasoffers/" + child.id}
                                       style={{ display: "flex" }}
-                                      className="text-gray-900 fw-bold  d-block fs-6"
+                                      className="text-gray-900 fw-bold text-hover-primary d-block fs-6"
                                     >
                                       {child.key}
-                                    </div>
+                                    </Link>
                                   </div>
                                 </div>
                               </td>
@@ -389,7 +357,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                                       iconType="outline"
                                     />
                                   </a>
-                                  {/* <a
+                                  <a
                                     href="#!"
                                     onClick={() => {
                                       if (
@@ -407,7 +375,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                                       iconName="trash"
                                       iconType="outline"
                                     />
-                                  </a> */}
+                                  </a>
                                 </div>
                               </td>
                               <td style={{ touchAction: "none" }}>
@@ -422,7 +390,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                           );
                         }
                       )}
-                  {/* </AnimatePresence> */}
+                  </AnimatePresence>
                 </Reorder.Group>
               </table>
             </div>

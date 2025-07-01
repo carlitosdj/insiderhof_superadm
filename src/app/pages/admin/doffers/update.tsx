@@ -26,7 +26,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [description, setDescription] = useState<string | undefined>("");
   const [status, setStatus] = useState<string>("1");
 
-  const [price, setPrice] = useState("");
+  // const [price, setPrice] = useState("");
 
   const [type, setType] = useState("");
 
@@ -40,7 +40,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setName(child.name);
     setDescription(child.description);
 
-    setPrice(child.price!.toString());
+    // setPrice(child.price!.toString());
     setType(child.type!);
     setImage(child.image!);
     setStatus(child.status!);
@@ -91,7 +91,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         id: child.id,
         name,
         description,
-        price: Number(price),
+        // price: Number(price),
    
         type,
         image: imageFilename, // novo ou atual
@@ -149,7 +149,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
           </div>
           <div className="col-lg-6">
             
-            <Form.Group controlId="fromName">
+            {/* <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Preço
               </Form.Label>
@@ -164,7 +164,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 Por favor informe as tags
               </Form.Control.Feedback>
             </Form.Group>
-            <br />
+            <br /> */}
             {/* <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
                 Image

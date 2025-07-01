@@ -209,9 +209,9 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                               <div className="flex-grow-1">
                                 <h6 className="fw-bold text-gray-800 mb-1">{offer.name}</h6>
                                 <div className="d-flex align-items-center gap-2">
-                                  <Badge bg="success" className="fs-8">
+                                  {/* <Badge bg="success" className="fs-8">
                                     {formatCurrency(offer.price || 0)}
-                                  </Badge>
+                                  </Badge> */}
                                   {isSelected && (
                                     <Badge bg="success" className="fs-8">
                                       Selecionada
@@ -312,9 +312,9 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 )}
                                 <div>
                                   <h6 className="fw-bold text-gray-800 mb-1">{child.offer?.name}</h6>
-                                  <Badge bg="success" className="fs-8">
+                                  {/* <Badge bg="success" className="fs-8">
                                     {formatCurrency(child.offer?.price || 0)}
-                                  </Badge>
+                                  </Badge> */}
                                 </div>
                               </div>
                               
