@@ -8,7 +8,12 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import Update from "./update";
 
 import momentDurationFormatSetup from "moment-duration-format";
-import { AnimatePresence, Reorder, useDragControls, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  Reorder,
+  useDragControls,
+  motion,
+} from "framer-motion";
 import { Launch, LaunchsState } from "../../../../store/ducks/dlaunch/types";
 import {
   deleteLaunchRequest,
@@ -65,7 +70,7 @@ const LaunchItem: React.FC<{
       key={child.id}
       value={child}
       as="div"
-      dragListener={false}      // Desabilita o drag automático
+      dragListener={false} // Desabilita o drag automático
       dragControls={dragControls} // Usa o controle manual
       style={{ touchAction: "pan-y" }} // Permite scroll no item
       onDragEnd={handleDragEnd} // Limpa os estilos quando o arraste termina
@@ -99,7 +104,7 @@ const LaunchItem: React.FC<{
         // Previne drag em todo o card exceto no handle
         onPointerDownCapture={(e) => {
           // Verifica se o clique foi no drag handle ou em seus filhos
-          const dragHandle = e.currentTarget.querySelector('.drag-handle');
+          const dragHandle = e.currentTarget.querySelector(".drag-handle");
           if (dragHandle && !dragHandle.contains(e.target as Node)) {
             e.stopPropagation();
           }
@@ -114,13 +119,14 @@ const LaunchItem: React.FC<{
                     className="rounded-3"
                     style={{
                       objectFit: "cover",
-                      width: "90px",
+                      width: "120px",
                       //height: "90px",
                     }}
                     src={
                       firstOffer.image?.includes("https://")
                         ? firstOffer.image
-                        : "https://app.insiderhof.com.br/files/" + firstOffer.image
+                        : "https://app.insiderhof.com.br/files/" +
+                          firstOffer.image
                     }
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null;
@@ -159,7 +165,7 @@ const LaunchItem: React.FC<{
                     </h5>
                   </Link>
                   <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
-                    Lançamento
+                    {child.type}
                   </span>
                 </div>
 
@@ -185,41 +191,32 @@ const LaunchItem: React.FC<{
                         currency: "BRL",
                       })}
                     </span>
-                    {firstOffer?.price && (
+                    {/* {firstOffer?.price && (
                       <span className="text-muted fs-8 fs-md-7 text-decoration-line-through">
                         ({firstOffer.price.toLocaleString("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         })})
                       </span>
+                    )} */}
+                  </div>
+                  {firstOffer?.dOfferHasProducts &&
+                    firstOffer.dOfferHasProducts.length > 0 && (
+                      <div className="d-flex align-items-center gap-1">
+                        <span className="text-muted fs-8 fs-md-7 text-decoration-line-through">
+                          (
+                          {firstOffer.dOfferHasProducts
+                            .reduce((total, offerProduct) => {
+                              return total + (offerProduct.product?.price || 0);
+                            }, 0)
+                            .toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          )
+                        </span>
+                      </div>
                     )}
-                  </div>
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="element-plus" className="fs-6 text-muted" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {child.launchhasoffers?.length === 1 ? "1 oferta" : child.launchhasoffers?.length + " ofertas"}
-                    </span>
-                  </div>
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="user" className="fs-6 text-success" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {child.leadsCount || 0} leads
-                    </span>
-                  </div>
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="cart" className="fs-6 text-warning" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {child.cartCount || 0} vendas
-                    </span>
-                  </div>
-                  {child.leadsCount && child.cartCount && (
-                    <div className="d-flex align-items-center gap-1">
-                      <KTIcon iconName="chart-simple" className="fs-6 text-info" />
-                      <span className="text-muted fs-8 fs-md-7">
-                        {((child.cartCount / child.leadsCount) * 100).toFixed(1)}% conversão
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Ofertas do lançamento */}
@@ -264,6 +261,44 @@ const LaunchItem: React.FC<{
                     )}
                   </div>
                 )}
+
+                <div className="d-flex align-items-center gap-1">
+                  {/* <div className="d-flex align-items-center gap-1">
+                    <KTIcon
+                      iconName="element-plus"
+                      className="fs-6 text-muted"
+                    />
+                    <span className="text-muted fs-8 fs-md-7">
+                      {child.launchhasoffers?.length === 1
+                        ? "1 oferta"
+                        : child.launchhasoffers?.length + " ofertas"}
+                    </span>
+                  </div> */}
+                  {(child.leadsCount ?? 0) > 0 && (
+                    <div className="d-flex align-items-center gap-1">
+                      <KTIcon iconName="user" className="fs-6 text-success" />
+                      <span className="text-muted fs-8 fs-md-7">
+                        {child.leadsCount} leads
+                      </span>
+                    </div>
+                  )}
+                  {(child.cartCount ?? 0) > 0 && (
+                    <div className="d-flex align-items-center gap-1">
+                      <KTIcon iconName="purchase" className="fs-6 text-success" />
+                      <span className="text-muted fs-8 fs-md-7">
+                        {child.cartCount} vendas
+                      </span>
+                    </div>
+                  )}
+                  {(child.leadsCount ?? 0) > 0 && (child.cartCount ?? 0) > 0 && (
+                    <div className="d-flex align-items-center gap-1">
+                      <KTIcon iconName="chart-simple" className="fs-6 text-success" />
+                      <span className="text-muted fs-8 fs-md-7">
+                        {(((child.cartCount ?? 0) / (child.leadsCount ?? 1)) * 100).toFixed(1)}% conversão
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -469,10 +504,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
             data-bs-trigger="hover"
             title="Click to add a user"
           >
-            <a
-              className="btn btn-primary"
-              onClick={() => createComponent()}
-            >
+            <a className="btn btn-primary" onClick={() => createComponent()}>
               <KTIcon iconName="plus" className="fs-2" />
               Novo Lançamento
             </a>
@@ -502,8 +534,8 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       Nenhum lançamento encontrado
                     </h4>
                     <p className="text-muted mb-4 fs-7 fs-md-6">
-                      Comece criando seu primeiro lançamento para organizar
-                      suas campanhas
+                      Comece criando seu primeiro lançamento para organizar suas
+                      campanhas
                     </p>
                     <button
                       className="btn btn-dark px-3 px-md-4 py-2 rounded-1 w-100 w-md-auto"

@@ -86,10 +86,7 @@ const AuthLayout = () => {
 
           {/* begin::Text */}
           <div className="text-white fs-base text-center">
-            Plataforma intuitiva e eficiente, projetada para que os
-            administradores possam gerenciar de <br/>forma centralizada toda a
-            aplicação e as funcionalidades envolvidas na oferta de aulas e
-            cursos.
+            Plataforma de gestão de lançamentos digitais.
           </div>
           {/* end::Text */}
         </div>

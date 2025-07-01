@@ -10,17 +10,16 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { loginUserRequest } from "../../../../store/ducks/me/actions";
+import { KTIcon } from "../../../../_metronic/helpers";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    // .email('Wrong email format')
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Email is required"),
+    .min(1, "Email é obrigatório")
+    //.email('Email inválido')
+    .required("Email é obrigatório"),
   password: Yup.string()
-    .min(3, "Minimum 3 symbols")
-    .max(50, "Maximum 50 symbols")
-    .required("Password is required"),
+    .min(1, "Senha é obrigatória")
+    .required("Senha é obrigatória"),
 });
 
 const initialValues = {
@@ -36,236 +35,245 @@ const initialValues = {
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const { saveAuth, setCurrentUser } = useAuth();
-
-  const [login, setLogin] = useState("");
-  const [pass, setPass] = useState("");
   const dispatch = useDispatch();
-  //Redux:
   const me = useSelector((state: ApplicationState) => state.me);
-  console.log("me", me);
+
+  // Detecta tema atual
+  const isDark = typeof document !== 'undefined' && document.documentElement.getAttribute('data-bs-theme') === 'dark';
 
   useEffect(() => {
     if (me.error) {
-      setLoading(false)
+      setLoading(false);
     }
   }, [me.me]);
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
-    onSubmit: async (values, { setStatus, setSubmitting }) => {
+    onSubmit: async (values) => {
+      setFormSubmitted(true);
       setLoading(true);
-      // try {
-      //   const {data: auth} = await login(values.email, values.password)
-      //   saveAuth(auth)
-      //   const {data: user} = await getUserByToken(auth.api_token)
-      //   setCurrentUser(user)
-      // } catch (error) {
-      //   console.error(error)
-      //   saveAuth(undefined)
-      //   setStatus('The login details are incorrect')
-      //   setSubmitting(false)
-      //   setLoading(false)
-      // }
-      // console.log("values email", values.email);
-      // console.log("values password", values.password);
-      //event.preventDefault();
       if (values.email && values.password) {
-        setLoading(true);
         me.error = false;
         console.log("System is trying to login user...");
         await dispatch(
           loginUserRequest({ email: values.email, password: values.password })
         );
-        //setCurrentUser(me.data)
-        //setLoading(false)
       } else {
-        //errMsg('Dados inválidos, preencha novamente');
         console.log("Erro!");
         setLoading(false);
       }
     },
   });
 
+  // Debug para verificar o estado do formulário
+  console.log("Formik state:", {
+    values: formik.values,
+    touched: formik.touched,
+    errors: formik.errors,
+    isValid: formik.isValid,
+    isSubmitting: formik.isSubmitting,
+    loading: loading
+  });
+
   return (
-    <form
-      className="form w-100"
-      onSubmit={formik.handleSubmit}
-      noValidate
-      id="kt_login_signin_form"
-    >
-      {/* begin::Heading */}
-      <div className="text-center mb-11">
-        <h1 className="text-gray-900 fw-bolder mb-3">Entrar</h1>
-        <div className="text-gray-500 fw-semibold fs-6">
-          Painel de admnistração
-        </div>
-      </div>
-      {/* begin::Heading */}
+    <div className="d-flex flex-center flex-column flex-lg-row-fluid">
+      {/* begin::Card */}
+      <div
+        className="card card-custom w-100 w-lg-400px shadow-lg"
+        style={{
+          borderRadius: '16px',
+          border: isDark ? '1px solid rgba(255,255,255,0.08)' : 'none',
+          background: isDark ? 'rgba(30,30,30,0.92)' : '#fff',
+          boxShadow: isDark
+            ? '0 8px 32px rgba(0,0,0,0.7)'
+            : '0 8px 32px rgba(0,0,0,0.10)',
+          transition: 'background 0.3s, box-shadow 0.3s, border 0.3s',
+        }}
+      >
+        {/* begin::Card body */}
+        <div className="card-body p-10">
+          {/* begin::Logo */}
+          {/* <div className="text-center mb-10">
+            <Link to="/" className="mb-12">
+              <img
+                alt="Logo"
+                src={toAbsoluteUrl("media/logos/logo-dark.png")}
+                className="h-50px theme-light-show"
+              />
+              <img
+                alt="Logo"
+                src={toAbsoluteUrl("media/logos/logo-light.png")}
+                className="h-50px theme-dark-show"
+              />
+            </Link>
+          </div> */}
+          {/* end::Logo */}
 
-      {/* begin::Login options */}
-      {/* <div className="row g-3 mb-9">
-        {/* begin::Col *x/}
-        <div className="col-md-6">
-          {/* begin::Google link *x/}
-          <a
-            href="#"
-            className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
+          {/* begin::Form */}
+          <form
+            className="form w-100"
+            onSubmit={formik.handleSubmit}
+            noValidate
+            id="kt_login_signin_form"
           >
-            <img
-              alt="Logo"
-              src={toAbsoluteUrl("media/svg/brand-logos/google-icon.svg")}
-              className="h-15px me-3"
-            />
-            Sign in with Google
-          </a>
-          {/* end::Google link *x/}
-        </div>
-        {/* end::Col *x/}
-
-        {/* begin::Col *x/}
-        <div className="col-md-6">
-          {/* begin::Google link *x/}
-          <a
-            href="#"
-            className="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100"
-          >
-            <img
-              alt="Logo"
-              src={toAbsoluteUrl("media/svg/brand-logos/apple-black.svg")}
-              className="theme-light-show h-15px me-3"
-            />
-            <img
-              alt="Logo"
-              src={toAbsoluteUrl("media/svg/brand-logos/apple-black-dark.svg")}
-              className="theme-dark-show h-15px me-3"
-            />
-            Sign in with Apple
-          </a>
-          {/* end::Google link *x/}
-        </div>
-        {/* end::Col *x/}
-      </div> */}
-      {/* end::Login options */}
-
-      {/* begin::Separator *x/}
-      <div className="separator separator-content my-14">
-        <span className="w-125px text-gray-500 fw-semibold fs-7">
-          Or with email
-        </span>
-      </div>
-      {/* end::Separator */}
-      {/* 
-      {formik.status ? (
-        <div className="mb-lg-15 alert alert-danger">
-          <div className="alert-text font-weight-bold">{formik.status}</div>
-        </div>
-      ) : (
-        <div className="mb-10 bg-light-info p-8 rounded">
-          <div className="text-info">
-            Use account <strong>admin@demo.com</strong> and password{" "}
-            <strong>demo</strong> to continue.
-          </div>
-        </div>
-      )} */}
-
-        {me.error && <div className="mb-lg-15 alert alert-danger">
-          <div className="alert-text font-weight-bold">{me.error.message}</div>
-        </div>}
-
-      {/* begin::Form group */}
-      <div className="fv-row mb-8">
-        <label className="form-label fs-6 fw-bolder text-gray-900">Email</label>
-        <input
-          placeholder="Email"
-          {...formik.getFieldProps("email")}
-          className={clsx(
-            "form-control bg-transparent",
-            { "is-invalid": formik.touched.email && formik.errors.email },
-            {
-              "is-valid": formik.touched.email && !formik.errors.email,
-            }
-          )}
-          type="email"
-          name="email"
-          autoComplete="off"
-          autoFocus
-        />
-        {formik.touched.email && formik.errors.email && (
-          <div className="fv-plugins-message-container">
-            <span role="alert">{formik.errors.email}</span>
-          </div>
-        )}
-      </div>
-      {/* end::Form group */}
-
-      {/* begin::Form group */}
-      <div className="fv-row mb-3">
-        <label className="form-label fw-bolder text-gray-900 fs-6 mb-0">
-          Password
-        </label>
-        <input
-          type="password"
-          autoComplete="off"
-          {...formik.getFieldProps("password")}
-          className={clsx(
-            "form-control bg-transparent",
-            {
-              "is-invalid": formik.touched.password && formik.errors.password,
-            },
-            {
-              "is-valid": formik.touched.password && !formik.errors.password,
-            }
-          )}
-        />
-        {formik.touched.password && formik.errors.password && (
-          <div className="fv-plugins-message-container">
-            <div className="fv-help-block">
-              <span role="alert">{formik.errors.password}</span>
+            {/* begin::Heading */}
+            <div className="text-center mb-10">
+              <h1 className="text-gray-900 fw-bolder mb-3 fs-2x">Entrar</h1>
+              <div className="text-gray-500 fw-semibold fs-6">
+                Painel de administração
+              </div>
             </div>
-          </div>
-        )}
+            {/* end::Heading */}
+
+            {/* begin::Error Alert */}
+            {me.error && (
+              <div className="alert alert-danger d-flex align-items-center p-5 mb-10">
+                <KTIcon iconName="shield-cross" className="fs-2hx text-danger me-4" />
+                <div className="d-flex flex-column">
+                  <h4 className="mb-1 text-danger">Erro no login</h4>
+                  <span>{me.error.message}</span>
+                </div>
+              </div>
+            )}
+
+            {/* begin::Form group */}
+            <div className="fv-row mb-8">
+              <label className="form-label fs-6 fw-bolder text-gray-900">Email</label>
+              <input
+                placeholder="Digite seu email"
+                {...formik.getFieldProps("email")}
+                className={clsx(
+                  "form-control form-control-lg form-control-solid",
+                  { "is-invalid": formSubmitted && formik.errors.email },
+                )}
+                type="email"
+                name="email"
+                autoComplete="off"
+                autoFocus
+                style={{
+                  borderRadius: '8px',
+                  border: '1px solid var(--kt-input-border-color)',
+                  backgroundColor: isDark ? '#23272f' : '#f5f6fa',
+                  color: isDark ? '#fff' : '#222',
+                }}
+              />
+              {formSubmitted && formik.errors.email && (
+                <div className="fv-plugins-message-container invalid-feedback">
+                  <div className="fv-help-block">
+                    <span role="alert">{formik.errors.email}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* end::Form group */}
+
+            {/* begin::Form group */}
+            <div className="fv-row mb-8">
+              <label className="form-label fw-bolder text-gray-900 fs-6 mb-0">
+                Senha
+              </label>
+              <div className="position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="off"
+                  {...formik.getFieldProps("password")}
+                  className={clsx(
+                    "form-control form-control-lg form-control-solid",
+                    { "is-invalid": formSubmitted && formik.errors.password },
+                  )}
+                  placeholder="Digite sua senha"
+                  style={{
+                    borderRadius: '8px',
+                    border: '1px solid var(--kt-input-border-color)',
+                    backgroundColor: isDark ? '#23272f' : '#f5f6fa',
+                    color: isDark ? '#fff' : '#222',
+                    paddingRight: '100px',
+                  }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-icon btn-clear position-absolute top-50 end-0 translate-middle-y"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '8px',
+                    borderRadius: '4px',
+                    transition: 'background-color 0.2s ease',
+                    zIndex: 10,
+                    right: '24px',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--kt-gray-200)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <KTIcon 
+                    iconName={showPassword ? "eye-slash" : "eye"} 
+                    className="fs-2 text-gray-500"
+                  />
+                </button>
+                <style>{`
+                  input.form-control.is-valid, input.form-control.is-invalid {
+                    background-image: none !important;
+                  }
+                `}</style>
+              </div>
+              {formSubmitted && formik.errors.password && (
+                <div className="fv-plugins-message-container invalid-feedback">
+                  <div className="fv-help-block">
+                    <span role="alert">{formik.errors.password}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* end::Form group */}
+
+            {/* begin::Wrapper */}
+            <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+              <div />
+              <Link to="/auth/forgot-password" className="link-primary">
+                Esqueceu a senha?
+              </Link>
+            </div>
+            {/* end::Wrapper */}
+
+            {/* begin::Action */}
+            <div className="d-grid mb-10">
+              <button
+                type="submit"
+                id="kt_sign_in_submit"
+                className="btn btn-primary btn-lg"
+                disabled={loading || !formik.values.email || !formik.values.password}
+                style={{
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {!loading && <span className="indicator-label">Entrar</span>}
+                {loading && (
+                  <span className="indicator-progress" style={{ display: "block" }}>
+                    Entrando...
+                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                )}
+              </button>
+            </div>
+            {/* end::Action */}
+          </form>
+          {/* end::Form */}
+        </div>
+        {/* end::Card body */}
       </div>
-      {/* end::Form group */}
-
-      {/* begin::Wrapper */}
-      {/* <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
-        <div />
-
-        {/* begin::Link *x/}
-        <Link to="/auth/forgot-password" className="link-primary">
-          Forgot Password ?
-        </Link>
-        {/* end::Link *x/}
-      </div> */}
-      {/* end::Wrapper */}
-
-      {/* begin::Action */}
-      <div className="d-grid mb-10">
-        <button
-          type="submit"
-          id="kt_sign_in_submit"
-          className="btn btn-primary"
-          disabled={formik.isSubmitting || !formik.isValid}
-        >
-          {!loading && <span className="indicator-label">Continue</span>}
-          {loading && (
-            <span className="indicator-progress" style={{ display: "block" }}>
-              Please wait...
-              <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-            </span>
-          )}
-        </button>
-      </div>
-      {/* end::Action */}
-
-      {/* <div className="text-gray-500 text-center fw-semibold fs-6">
-        Not a Member yet?{" "}
-        <Link to="/auth/registration" className="link-primary">
-          Sign up
-        </Link>
-      </div> */}
-    </form>
+      {/* end::Card */}
+    </div>
   );
 };

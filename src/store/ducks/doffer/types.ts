@@ -42,7 +42,6 @@ export interface Offer {
   id?: number | undefined
   name?: string | undefined
   description?: string | undefined
-  price?: number | undefined 
   image?: string | undefined
   logoCertificate?: string | undefined
   type?: string | undefined
@@ -53,7 +52,6 @@ export interface Offer {
   ownerId?: number | undefined
   dOfferHasProducts? : OfferHasProducts[] | undefined
   launchhasoffers?: LaunchHasOffers[] | undefined
-
 }
 /**
  * State type

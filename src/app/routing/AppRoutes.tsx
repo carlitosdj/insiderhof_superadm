@@ -5,7 +5,7 @@
  * components (e.g: `src/app/modules/Auth/pages/AuthPage`, `src/app/BasePage`).
  */
 
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { ErrorsPage } from "../modules/errors/ErrorsPage";
@@ -26,33 +26,49 @@ import { authfromcookie } from "../../store/ducks/me/actions";
 const { BASE_URL } = import.meta.env;
 
 const AppRoutes: FC = () => {
-  //const {currentUser, setCurrentUser} = useAuth()
-  //console.log("currentUser", currentUser);
-
   const me = useSelector((state: ApplicationState) => state.me);
-  //Cookies:
   const [cookies, setCookie] = useCookies(["userAdmINSIDER"]);
   const cookieUser: User = cookies.userAdmINSIDER;
   const dispatch = useDispatch();
+  const [isLogoutProcess, setIsLogoutProcess] = useState(false);
+  const [hasAttemptedAuth, setHasAttemptedAuth] = useState(false);
 
-  // Para o refresh da página:
-  if (!me.logged && cookieUser) {
-    console.log("tem cookie user!", cookieUser);
-    // console.log('Cookie user found routes...', cookieUser)
+  // Verifica se está no processo de logout
+  useEffect(() => {
+    const isLogoutRoute = window.location.pathname.includes('/logout');
+    if (isLogoutRoute) {
+      setIsLogoutProcess(true);
+      console.log("🚪 Detectada rota de logout - bloqueando reautenticação");
+    }
+  }, []);
 
+  // Para o refresh da página - só reautentica se não estiver no processo de logout
+  // e se não tiver tentado autenticar ainda
+  if (!me.logged && cookieUser && !isLogoutProcess && !hasAttemptedAuth) {
+    console.log("🔄 Tentando reautenticação com cookie:", cookieUser);
+    setHasAttemptedAuth(true);
     dispatch(authfromcookie(cookieUser));
   }
-  if (me.logged && !cookieUser) {
-    console.log("Está conectado mas sem cookieUser, cadastrando cookie:");
+  
+  if (me.logged && !cookieUser && !isLogoutProcess && !hasAttemptedAuth) {
+    console.log("🍪 Usuário logado sem cookie - criando cookie");
+    setHasAttemptedAuth(true);
     var date = new Date();
     date.setTime(date.getTime() + 1 * 24 * 60 * 60 * 1000); //Days *
-    //Seta cookie:
     setCookie("userAdmINSIDER", me.me, {
       path: "/",
-      expires: date, //maxAge?
+      expires: date,
     });
-    // return <div>eai</div>
   }
+
+  // Reset do estado quando não está mais na rota de logout
+  useEffect(() => {
+    if (!window.location.pathname.includes('/logout') && isLogoutProcess) {
+      console.log("🔄 Saindo do processo de logout - resetando estados");
+      setIsLogoutProcess(false);
+      setHasAttemptedAuth(false);
+    }
+  }, [isLogoutProcess]);
 
   return (
     <BrowserRouter basename={BASE_URL} future={{ v7_startTransition: true }}>

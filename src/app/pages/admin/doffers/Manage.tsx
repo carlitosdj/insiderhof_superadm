@@ -11,6 +11,7 @@ import { OffersState } from "../../../../store/ducks/doffer/types";
 import Loading from "../../../loading";
 import { ManageOfferWidget } from "./ManageOfferWidget";
 
+
 type Props = {
   offer: OffersState;
 };

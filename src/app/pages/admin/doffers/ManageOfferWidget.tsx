@@ -113,7 +113,7 @@ const OfferItem: React.FC<{
                     className="rounded-3"
                     style={{
                       objectFit: "cover",
-                      width: "90px",
+                      width: "100px",
                       //height: "90px",
                     }}
                     src={
@@ -160,10 +160,20 @@ const OfferItem: React.FC<{
 
                 <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 mb-2">
                   <span className="fw-bold fs-8 fs-md-7 text-primary">
-                    {child.price?.toLocaleString("pt-BR", {
+                    {/* {child.price?.toLocaleString("pt-BR", {
                       style: "currency",
                       currency: "BRL",
-                    })}
+                    })} */}
+                    {child.dOfferHasProducts && child.dOfferHasProducts.length > 0 && (
+                      <span className="">
+                        {child.dOfferHasProducts.reduce((total, offerProduct) => {
+                          return total + (offerProduct.product?.price || 0);
+                        }, 0).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </span>
+                    )}
                   </span>
                   <div className="d-flex align-items-center gap-1">
                     <KTIcon iconName="element-plus" className="fs-6 text-muted" />
@@ -176,7 +186,7 @@ const OfferItem: React.FC<{
                 {/* Produtos da oferta */}
                 {child.dOfferHasProducts && child.dOfferHasProducts.length > 0 && (
                   <div className="d-flex flex-wrap gap-1 mb-2">
-                    {child.dOfferHasProducts.slice(0, 3).map((product) => (
+                    {child.dOfferHasProducts.slice(0, 1).map((product) => (
                       <div
                         key={product.id}
                         className="d-flex align-items-center gap-1 bg-light-secondary rounded-3 px-2 py-1"
@@ -208,9 +218,9 @@ const OfferItem: React.FC<{
                         </span>
                       </div>
                     ))}
-                    {child.dOfferHasProducts.length > 3 && (
+                    {child.dOfferHasProducts.length > 1 && (
                       <span className="text-muted fs-8">
-                        +{child.dOfferHasProducts.length - 3} mais
+                        +{child.dOfferHasProducts.length - 1} mais
                       </span>
                     )}
                   </div>
