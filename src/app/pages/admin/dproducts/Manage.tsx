@@ -10,8 +10,9 @@ import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar"
 
 import Loading from "../../../loading";
 import { Product } from "../../../../store/ducks/dproduct/types";
-import { ManageProductsWidget } from "./ManageProductsWidget";
+
 import { loadMyProductsRequest } from "../../../../store/ducks/dproduct/actions";
+import { ManageProductsWidget } from "./ManageProductsWidget";
 
 
 

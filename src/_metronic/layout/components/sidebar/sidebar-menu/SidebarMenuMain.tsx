@@ -14,6 +14,12 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.DASHBOARD" })}
         fontIcon="bi-app-indicator"
       />
+      <SidebarMenuItem
+        to="/ideaction"
+        icon="element-11"
+        title="Ideação"
+        fontIcon="bi-app-indicator"
+      />
       {/* <SidebarMenuItem
         to="/builder"
         icon="switch"
@@ -90,6 +96,7 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.LAUNCHES" })}
       />
+      
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">

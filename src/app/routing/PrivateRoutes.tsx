@@ -109,6 +109,11 @@ const PrivateRoutes = () => {
     []
   );
 
+  const Ideaction = useMemo(
+    () => lazy(() => import("../pages/admin/ideaction")),
+    []
+  );
+
   const CreateLaunch = useMemo(
     () => lazy(() => import("../pages/admin/dlaunch/CreateLaunch")),
     []
@@ -376,6 +381,15 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <Contact />
+            </SuspensedView>
+          }
+        />
+
+        <Route
+          path="ideaction"
+          element={
+            <SuspensedView>
+              <Ideaction />
             </SuspensedView>
           }
         />

@@ -97,6 +97,8 @@ import { loadMyLPFeatures, loadLPFeature, createLPFeature, updateLPFeature, dele
 import { LPSTypes } from './dlps/types'
 import { loadMyLPs, loadLP, createLP, updateLP, deleteLP, importLP, duplicateLP } from './dlps/sagas'
 import { exportLP } from './dlps/sagas'
+import { IdeactionTypes } from './ideaction/types'
+import { loadMyIdeactions, loadIdeaction, createIdeaction, updateIdeaction, deleteIdeaction, } from './ideaction/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -289,6 +291,13 @@ export default function* rootSaga() {
     takeLatest(LPFeaturesTypes.CREATE_LPFEATURE_REQUEST, createLPFeature),
     takeLatest(LPFeaturesTypes.UPDATE_LPFEATURE_REQUEST, updateLPFeature),
     takeLatest(LPFeaturesTypes.DELETE_LPFEATURE_REQUEST, deleteLPFeature),
+
+    //Ideaction
+    takeLatest(IdeactionTypes.LOAD_MY_IDEACTIONS_REQUEST, loadMyIdeactions),
+    takeLatest(IdeactionTypes.LOAD_IDEACTION_REQUEST, loadIdeaction),
+    takeLatest(IdeactionTypes.CREATE_IDEACTION_REQUEST, createIdeaction),
+    takeLatest(IdeactionTypes.UPDATE_IDEACTION_REQUEST, updateIdeaction),
+    takeLatest(IdeactionTypes.DELETE_IDEACTION_REQUEST, deleteIdeaction),
 
 
     

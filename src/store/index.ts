@@ -38,6 +38,7 @@ import { SingleMailState } from './ducks/singlemail/types'
 import { LPSessionState } from './ducks/dlpsessions/types'
 import { LPFeatureState } from './ducks/dlpfeatures/types'
 import { LPState } from './ducks/dlps/types'
+import { IdeactionState } from './ducks/ideaction/types'
 
 
 export interface ApplicationState {
@@ -81,6 +82,7 @@ export interface ApplicationState {
   lps: LPState
   lpsessions: LPSessionState
   lpfeatures: LPFeatureState
+  ideaction: IdeactionState
 }
 
 const sagaMiddleware = createSagaMiddleware()
