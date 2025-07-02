@@ -84,6 +84,8 @@ type Props = {
   lpfeatures?: LPFeatureState;
   handleBackToLPSessions?: () => void;
   selectedLPSession?: LPSession;
+  launchPhaseId?: number;
+  selectedLP?: any;
 };
 
 // Config Display Component
@@ -152,6 +154,8 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
   lpfeatures,
   handleBackToLPSessions,
   selectedLPSession,
+  launchPhaseId: propLaunchPhaseId,
+  selectedLP,
 }) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
@@ -163,13 +167,13 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const { lpSessionId } = useParams();
 
   // Get launch data from Redux state to display in header
-  const { launchId, launchPhaseId } = useParams();
+  const { launchId, launchPhaseId: urlLaunchPhaseId } = useParams();
   const launch = useSelector((state: ApplicationState) =>
     state.launch.myLaunchs.find((l) => l.id === Number(launchId))
   );
   const launchPhase = useSelector((state: ApplicationState) =>
     state.launchphase.myLaunchPhases.find(
-      (lp) => lp.id === Number(launchPhaseId)
+      (lp) => lp.id === (propLaunchPhaseId || Number(urlLaunchPhaseId))
     )
   );
 
@@ -299,7 +303,7 @@ const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <div className="d-flex justify-content-between align-items-start">
             <div>
               <h2>
-                {launch?.name || "Lançamento"} - {launchPhase?.name} - {selectedLPSession?.name}
+                {launch?.name || "Lançamento"} - Landing Page {launchPhase?.name || "Fase"} - {selectedLP?.name || "Landing Page"} - {selectedLPSession?.name || "Seção"}
               </h2>
               <div className="subtitle">
                 Gerenciamento de Features da Seção •{" "}

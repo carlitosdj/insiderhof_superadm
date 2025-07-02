@@ -6,7 +6,7 @@ import { KTIcon } from "../../../../_metronic/helpers";
 
 
 import momentDurationFormatSetup from "moment-duration-format";
-import { LaunchPhaseExtras } from "../../../../store/ducks/dlaunchphaseextras/types";
+import { LaunchPhaseExtras, LaunchPhaseExtraType } from "../../../../store/ducks/dlaunchphaseextras/types";
 import { createLaunchPhaseExtrasRequest } from "../../../../store/ducks/dlaunchphaseextras/actions";
 
 
@@ -21,6 +21,8 @@ interface handleCloseProps {
 const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
   const [key, setKey] = useState("");
   const [value, setValue] = useState("");
+  const [name, setName] = useState("");
+  const [type, setType] = useState<LaunchPhaseExtraType>("text");
   const [validated, setValidated] = useState(false);
 
   const dispatch = useDispatch();
@@ -38,6 +40,8 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
       const item: LaunchPhaseExtras = {
         key,
         value,
+        name,
+        type,
         launchPhaseId
       };
       console.log("item", item);
@@ -84,6 +88,38 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
                 Por favor informe a descrição
               </Form.Control.Feedback>
             </Form.Group>
+            <br />
+            <Form.Group controlId="formDescription">
+              <Form.Label className="fw-bold fs-6 mb-5">Name</Form.Label>
+              <Form.Control
+                placeholder=""
+                //required
+                value={name}
+                onChange={(e: any) => setName(e.target.value)}
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe o nome
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
+            <Form.Group controlId="formDescription">
+              <Form.Label className="fw-bold fs-6 mb-5">Type</Form.Label>
+              <Form.Select
+                value={type}
+                onChange={(e: any) => setType(e.target.value as LaunchPhaseExtraType)}
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="text">Texto</option>
+                <option value="link">Link</option>
+                <option value="datetime">Data/Hora</option>
+                <option value="image">Imagem</option>
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                Por favor selecione o tipo
+              </Form.Control.Feedback>
+            </Form.Group>
+           
           </div>
           
         </div>

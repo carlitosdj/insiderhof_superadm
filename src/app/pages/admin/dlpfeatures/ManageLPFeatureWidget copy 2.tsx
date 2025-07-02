@@ -8,23 +8,22 @@ import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
-import { ManageLPFeatureWidget } from "../dlpfeatures/ManageLPFeatureWidget";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
 
 import {
-  LPSession,
-  LPSessionState,
-} from "../../../../store/ducks/dlpsessions/types";
+  LPFeature,
+  LPFeatureState,
+} from "../../../../store/ducks/dlpfeatures/types";
 import {
-  deleteLPSessionRequest,
-  reorderLPSessionsRequest,
-  updateLPSessionRequest,
-} from "../../../../store/ducks/dlpsessions/actions";
-import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
-import { LP } from "../../../../store/ducks/dlps/types";
-import { loadMyLPFeaturesRequest } from "../../../../store/ducks/dlpfeatures/actions";
+  deleteLPFeatureRequest,
+  reorderLPFeaturesRequest,
+  updateLPFeatureRequest,
+} from "../../../../store/ducks/dlpfeatures/actions";
+import { LPSession } from "../../../../store/ducks/dlpsessions/types";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -80,6 +79,13 @@ const widgetStyles = `
   }
 `;
 
+type Props = {
+  className: string;
+  lpfeatures?: LPFeatureState;
+  handleBackToLPSessions?: () => void;
+  selectedLPSession?: LPSession;
+};
+
 // Config Display Component
 const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config, isInactive = false }) => {
   if (!config) {
@@ -105,7 +111,6 @@ const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config
           </span>
         );
       }
-      
       return (
         <div className="d-flex flex-column gap-1">
           {entries.slice(0, 6).map(([key, value], index) => (
@@ -142,54 +147,37 @@ const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config
   );
 };
 
-type Props = {
-  className: string;
-  lpsessions?: LPSessionState;
-  handleBackToLandingPages?: () => void;
-  selectedLP?: LP;
-  lpfeatures?: LPFeatureState;
-  launchPhaseId?: number;
-};
-
-const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
+const ManageLPFeatureWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
-  lpsessions,
-  handleBackToLandingPages,
-  selectedLP,
   lpfeatures,
-  launchPhaseId: propLaunchPhaseId,
+  handleBackToLPSessions,
+  selectedLPSession,
 }) => {
-  const { launchPhaseId: urlLaunchPhaseId, lpId } = useParams();
+  const [show, setShow] = useState<boolean>(false);
+  const [action, setAction] = useState<string>("");
+  const [child, setChild] = useState<LPFeature>({});
+  const [oldChildren, setOldChildren] = useState<LPFeature[]>(
+    lpfeatures?.myLPFeatures || []
+  );
+
+  const { lpSessionId } = useParams();
 
   // Get launch data from Redux state to display in header
-  const { launchId } = useParams();
+  const { launchId, launchPhaseId } = useParams();
   const launch = useSelector((state: ApplicationState) =>
     state.launch.myLaunchs.find((l) => l.id === Number(launchId))
   );
   const launchPhase = useSelector((state: ApplicationState) =>
     state.launchphase.myLaunchPhases.find(
-      (lp) => lp.id === (propLaunchPhaseId || Number(urlLaunchPhaseId))
+      (lp) => lp.id === Number(launchPhaseId)
     )
   );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Obtém o estado atualizado do Redux
-  const currentLPSessions = useSelector((state: ApplicationState) => state.lpsessions);
-  const currentLPFeatures = useSelector((state: ApplicationState) => state.lpfeatures);
-  
-  const [show, setShow] = useState<boolean>(false);
-  const [action, setAction] = useState<string>("");
-  const [child, setChild] = useState<LPSession>({});
-  const [oldChildren, setOldChildren] = useState<LPSession[]>(
-    currentLPSessions?.myLPSessions || []
-  );
-  const [showLPFeatures, setShowLPFeatures] = useState<boolean>(false);
-  const [selectedLPSession, setSelectedLPSession] = useState<LPSession>({});
-  
-  // Se lpsessions não estiver disponível, mostra loading
-  if (!currentLPSessions) {
+  // Se lpfeatures não estiver disponível, mostra loading
+  if (!lpfeatures) {
     return (
       <div className="widget-container">
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
@@ -210,22 +198,22 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(true);
   };
 
-  // const landingPage = () => {
-  //   navigate("/landingpage/" + lpId);
-  // };
+  const landingPage = () => {
+    navigate("/landingpage/" + lpSessionId);
+  };
 
-  const updateComponent = (child: LPSession) => {
+  const updateComponent = (child: LPFeature) => {
     setAction("updateComponent");
     setShow(true);
     setChild(child);
   };
 
   // Deleta componente: CHILD
-  const deleteComponent = (child: LPSession) => {
-    dispatch(deleteLPSessionRequest(child.id!));
+  const deleteComponent = (child: LPFeature) => {
+    dispatch(deleteLPFeatureRequest(child.id!));
   };
 
-  const reorder = (children: LPSession[]) => {
+  const reorder = (children: LPFeature[]) => {
     // console.log("children", children);
     children.map((child) => {
       let index = children.findIndex((item): any => item.id === child.id);
@@ -233,47 +221,21 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
         children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
       }
     });
-    dispatch(reorderLPSessionsRequest(children));
+    dispatch(reorderLPFeaturesRequest(children));
   };
 
-  const reorderToSave = (children: LPSession[]) => {
+  const reorderToSave = (children: LPFeature[]) => {
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
       children.map((child) => {
-        dispatch(updateLPSessionRequest({ id: child.id, order: child.order }));
+        dispatch(updateLPFeatureRequest({ id: child.id, order: child.order }));
       });
       //seta a lista de old para o novo:
       setOldChildren(children);
     }
   };
 
-  const openLPFeatures = (lpSession: LPSession) => {
-    setSelectedLPSession(lpSession);
-    setShowLPFeatures(true);
-    // Carrega as lpfeatures específicas da seção
-    dispatch(loadMyLPFeaturesRequest(Number(lpSession.id)));
-  };
-
-  const handleBackToLPSessions = () => {
-    setShowLPFeatures(false);
-    setSelectedLPSession({});
-  };
-
-  // Se estiver mostrando LPFeatures, renderiza o ManageLPFeatureWidget
-  if (showLPFeatures && selectedLPSession.id) {
-    return (
-      <ManageLPFeatureWidget 
-        className={className} 
-        lpfeatures={currentLPFeatures}
-        handleBackToLPSessions={handleBackToLPSessions}
-        selectedLPSession={selectedLPSession}
-        launchPhaseId={propLaunchPhaseId}
-        selectedLP={selectedLP}
-      />
-    );
-  }
-
-  const openHasLaunchs = (child: LPSession) => {
+  const openHasLaunchs = (child: LPFeature) => {
     setAction("manageLaunchs");
     setShow(true);
     setChild(child);
@@ -294,8 +256,8 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
       >
         <div className="modal-header">
           <h2>
-            {action === "updateComponent" ? "Editar sessão" : ""}
-            {action === "createComponent" ? "Adicionar sessão" : ""}
+            {action === "updateComponent" ? "Editar feature" : ""}
+            {action === "createComponent" ? "Adicionar feature" : ""}
             {/* {action === "manageLaunchs" ? "Gerenciar ofertas" : ""} */}
           </h2>
 
@@ -316,7 +278,10 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
             ""
           )}
           {action === "createComponent" ? (
-            <Create handleClose={handleClose} lpId={Number(selectedLP?.id)} />
+            <Create
+              handleClose={handleClose}
+              lpSessionId={Number(selectedLPSession?.id)}
+            />
           ) : (
             ""
           )}
@@ -334,11 +299,11 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <div className="d-flex justify-content-between align-items-start">
             <div>
               <h2>
-                {launch?.name || "Lançamento"} - Landing Page {launchPhase?.name || "Fase"} - {selectedLP?.name || "Landing Page"}
+                {launch?.name || "Lançamento"} - {launchPhase?.name} - {selectedLPSession?.name}
               </h2>
               <div className="subtitle">
-                Gerenciamento de Seções da Landing Page •{" "}
-                {currentLPSessions.myLPSessions.length} seções cadastradas
+                Gerenciamento de Features da Seção •{" "}
+                {lpfeatures.myLPFeatures.length} features cadastradas
               </div>
             </div>
             <div className="d-flex justify-content-end align-items-center gap-2">
@@ -347,7 +312,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
                 data-bs-trigger="hover"
-                title="Click to add a session"
+                title="Click to add a feature"
               >
                 <a
                   href="#!"
@@ -355,7 +320,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   onClick={() => createComponent()}
                 >
                   <KTIcon iconName="plus" className="fs-2" />
-                  Nova seção
+                  Nova feature
                 </a>
               </div>
             </div>
@@ -368,10 +333,8 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bolder text-muted">
-                    <th className="min-w-150px">NOME</th>
                     <th className="min-w-100px">CONFIG</th>
                     <th className="min-w-100px">ORDEM</th>
-                    <th className="min-w-100px">TIPO</th>
                     <th className="min-w-100px">STATUS</th>
                     <th className="min-w-50px text-end">AÇÕES</th>
                     <th className="w-15px"></th>
@@ -380,25 +343,25 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 <Reorder.Group
                   as="tbody"
                   //axis='y'
-                  values={currentLPSessions.myLPSessions}
+                  values={lpfeatures.myLPFeatures}
                   onReorder={reorder}
-                  onTap={(e) => reorderToSave(currentLPSessions.myLPSessions)}
-                  onMouseUp={(e) => reorderToSave(currentLPSessions.myLPSessions)}
+                  onTap={(e) => reorderToSave(lpfeatures.myLPFeatures)}
+                  onMouseUp={(e) => reorderToSave(lpfeatures.myLPFeatures)}
                   style={{ touchAction: "none" }}
                 >
                   <AnimatePresence>
-                    {currentLPSessions.myLPSessions.length === 0 && (
+                    {lpfeatures.myLPFeatures.length === 0 && (
                       <tr className="border-0">
-                        <td colSpan={7} className="text-center pt-10 ">
-                          Nenhuma seção encontrada aqui. Adicione uma seção
-                          clicando em "Nova seção".
+                        <td colSpan={5} className="text-center pt-10 ">
+                          Nenhuma feature encontrada aqui. Adicione uma feature
+                          clicando em "Nova feature".
                         </td>
                       </tr>
                     )}
 
-                    {currentLPSessions.myLPSessions.length !== 0 &&
-                      currentLPSessions.myLPSessions?.map(
-                        (child: LPSession, index: number) => {
+                    {lpfeatures.myLPFeatures.length !== 0 &&
+                      lpfeatures.myLPFeatures?.map(
+                        (child: LPFeature, index: number) => {
                           const isInactive = child.status === "0";
                           return (
                             <Reorder.Item
@@ -414,32 +377,17 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 onPointerDownCapture={(e) => e.stopPropagation()}
                               >
                                 <div className="d-flex align-items-center border-0">
-                                  <div>
-                                    <a
-                                      href="#!"
-                                      onClick={() => openLPFeatures(child)}
-                                      style={{ display: "flex" }}
-                                      className={`fw-bold text-hover-primary d-block fs-6 ${
-                                        isInactive ? "text-muted" : "text-gray-900"
-                                      }`}
-                                    >
-                                      {child.name}
-                                    </a>
+                                  <div className={`fw-bold d-block fs-6 ${isInactive ? "text-muted" : "text-gray-900"}`}>
+                                    <ConfigDisplay config={child.config} isInactive={isInactive} />
                                   </div>
                                 </div>
                               </td>
                               <td>
-                                <ConfigDisplay config={child.config} isInactive={isInactive} />
-                              </td>
-                              <td>
-                                <span className={isInactive ? "text-muted" : ""}>
-                                  {child.order}
-                                </span>
-                              </td>
-                              <td>
-                                <span className={isInactive ? "text-muted" : ""}>
-                                  {child.type}
-                                </span>
+                                <div className="d-flex justify-content-end flex-shrink-0">
+                                  <span className={isInactive ? "text-muted" : ""}>
+                                    {child.order}
+                                  </span>
+                                </div>
                               </td>
                               <td onPointerDownCapture={(e) => e.stopPropagation()}>
                                 <span className={`badge ${
@@ -464,7 +412,6 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                       iconType="outline"
                                     />
                                   </a> */}
-                                  
                                   <a
                                     href="#!"
                                     onClick={() => updateComponent(child)}
@@ -481,7 +428,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                       if (
                                         window.confirm(
                                           "Deseja realmente excluir: " +
-                                            child.name +
+                                            child.config +
                                             "?"
                                         )
                                       )
@@ -511,11 +458,11 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
             </div>
             
             {/* Action Buttons */}
-            {handleBackToLandingPages && (
+            {handleBackToLPSessions && (
               <div className="action-buttons">
-                <Button variant="secondary" size="lg" onClick={handleBackToLandingPages}>
+                <Button variant="secondary" size="lg" onClick={handleBackToLPSessions}>
                   <KTIcon iconName="arrow-left" className="fs-5 me-2" />
-                  Voltar às Landing Pages
+                  Voltar às Seções
                 </Button>
               </div>
             )}
@@ -526,4 +473,4 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   );
 };
 
-export { ManageLPSessionWidget };
+export { ManageLPFeatureWidget };

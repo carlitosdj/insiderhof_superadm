@@ -114,23 +114,23 @@ const Step4CreateProduct: React.FC<Step4CreateProductProps> = ({ onPrevious, ste
       expertName: step1Data?.expertName || "",
       type: step1Data?.type || "",
       domain: step1Data?.domain || "",
-      cartOpenDate: step1Data?.cartOpenDate?.toLocaleDateString('pt-BR') || "",
-      cartCloseDate: step1Data?.cartCloseDate?.toLocaleDateString('pt-BR') || "",
+      cartOpenDate: step1Data?.cartOpenDate ? formatDateTime(step1Data.cartOpenDate) : "",
+      cartCloseDate: step1Data?.cartCloseDate ? formatDateTime(step1Data.cartCloseDate) : "",
       
       // Dados do Step 2
       eventName: step2Data?.eventName || "",
       eventGroupLink: step2Data?.eventGroupLink || "",
       leadForm: step2Data?.leadForm || "",
-      leadSignUpStartDate: step2Data?.leadSignUpStartDate?.toLocaleDateString('pt-BR') || "",
-      leadSignUpEndDate: step2Data?.leadSignUpEndDate?.toLocaleDateString('pt-BR') || "",
+      leadSignUpStartDate: step2Data?.leadSignUpStartDate ? formatDateTime(step2Data.leadSignUpStartDate) : "",
+      leadSignUpEndDate: step2Data?.leadSignUpEndDate ? formatDateTime(step2Data.leadSignUpEndDate) : "",
       
       // Dados do Step 3
       cpl1: step3Data?.cpl1 || "",
       cpl2: step3Data?.cpl2 || "",
       cpl3: step3Data?.cpl3 || "",
-      dateCpl1: step3Data?.dateCpl1?.toLocaleDateString('pt-BR') || "",
-      dateCpl2: step3Data?.dateCpl2?.toLocaleDateString('pt-BR') || "",
-      dateCpl3: step3Data?.dateCpl3?.toLocaleDateString('pt-BR') || "",
+      dateCpl1: step3Data?.dateCpl1 ? formatDateTime(step3Data.dateCpl1) : "",
+      dateCpl2: step3Data?.dateCpl2 ? formatDateTime(step3Data.dateCpl2) : "",
+      dateCpl3: step3Data?.dateCpl3 ? formatDateTime(step3Data.dateCpl3) : "",
       
       // Dados do Step 4
       productName: formData.productName,
@@ -160,6 +160,15 @@ const Step4CreateProduct: React.FC<Step4CreateProductProps> = ({ onPrevious, ste
       style: 'currency',
       currency: 'BRL'
     }).format(value);
+  };
+
+  const formatDateTime = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
 
   return (

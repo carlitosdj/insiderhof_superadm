@@ -8,7 +8,6 @@ import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
-import { ManageLPWidget } from "../dlps/ManageLPWidget";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -22,9 +21,7 @@ import {
   reorderLaunchPhaseExtrasRequest,
   updateLaunchPhaseExtrasRequest,
 } from "../../../../store/ducks/dlaunchphaseextras/actions";
-import { LPState } from "../../../../store/ducks/dlps/types";
-import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
-import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
+
 
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -82,21 +79,17 @@ type Props = {
   className: string;
   launchphaseextras: LaunchPhaseExtrasState;
   launchPhaseId: number;
-  lps?: LPState;
-  lpsessions?: LPSessionState;
-  lpfeatures?: LPFeatureState;
 };
 
 const ManageLaunchPhaseExtraWidget: React.FC<
   React.PropsWithChildren<Props>
-> = ({ className, launchphaseextras, launchPhaseId, lps, lpsessions, lpfeatures }) => {
+> = ({ className, launchphaseextras, launchPhaseId }) => {
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<LaunchPhaseExtras>({});
   const [oldChildren, setOldChildren] = useState<LaunchPhaseExtras[]>(
     launchphaseextras.myLaunchPhaseExtras
   );
-  const [showLandingPages, setShowLandingPages] = useState<boolean>(false);
 
   // Get launch data from Redux state to display in header
   const { launchId } = useParams();
@@ -109,10 +102,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     )
   );
 
-  // Reset showLandingPages when launchPhaseId changes (tab click)
-  useEffect(() => {
-    setShowLandingPages(false);
-  }, [launchPhaseId]);
+
 
   //const { launchPhaseId } = useParams();
 
@@ -127,13 +117,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     setShow(true);
   };
 
-  const openLPSessions = () => {
-    setShowLandingPages(true);
-  };
 
-  const handleBackToItems = () => {
-    setShowLandingPages(false);
-  };
 
   const updateComponent = (child: LaunchPhaseExtras) => {
     setAction("updateComponent");
@@ -176,18 +160,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     setChild(child);
   };
 
-  // Se estiver mostrando Landing Pages, renderiza o ManageLPWidget
-  if (showLandingPages && lps) {
-    return (
-      <ManageLPWidget 
-        className={className} 
-        lps={lps} 
-        handleBackToItems={handleBackToItems}
-        lpsessions={lpsessions}
-        lpfeatures={lpfeatures}
-      />
-    );
-  }
+
 
   return (
     <>
@@ -271,24 +244,6 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                   Item
                 </a>
               </div> */}
-              {(launchPhase?.name === "Captação" || launchPhase?.name === "Vendas") && (
-                <div
-                  className="card-toolbar"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  data-bs-trigger="hover"
-                  title="Manage landing pages"
-                >
-                  <a
-                    //href="#!"
-                    className="btn btn-primary btn-sm"
-                    onClick={() => openLPSessions()}
-                  >
-                    {/* <KTIcon iconName="plus" className="fs-6 me-1" /> */}
-                    Landing pages
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -301,6 +256,8 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                   <tr className="fw-bolder text-muted">
                     <th className="min-w-150px">ITEM</th>
                     <th className="min-w-150px">VALUE</th>
+                    <th className="min-w-150px">NAME</th>
+                    <th className="min-w-150px">TYPE</th>
                     <th className="min-w-50px text-end">AÇÕES</th>
                     <th className="w-15px"></th>
                   </tr>
@@ -363,6 +320,12 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                                 }
                               >
                                 {child.value}
+                              </td>
+                              <td>
+                                {child.name}
+                              </td>
+                              <td>
+                                {child.type}
                               </td>
 
                               <td>

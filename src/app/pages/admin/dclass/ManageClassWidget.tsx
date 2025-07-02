@@ -15,7 +15,12 @@ import {
   reorderClassesRequest,
   updateClassRequest,
 } from "../../../../store/ducks/dclass/actions";
-import { AnimatePresence, Reorder, useDragControls, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  Reorder,
+  useDragControls,
+  motion,
+} from "framer-motion";
 import { Class } from "../../../../store/ducks/dclass/types";
 import InfoProgress from "./infoProgress";
 import InfoRate from "./infoRate";
@@ -38,7 +43,16 @@ const ClassItem: React.FC<{
   infoRate: (child: Class) => void;
   productId: string | undefined;
   moduleId: string | undefined;
-}> = ({ child, index, updateComponent, deleteComponent, infoProgress, infoRate, productId, moduleId }) => {
+}> = ({
+  child,
+  index,
+  updateComponent,
+  deleteComponent,
+  infoProgress,
+  infoRate,
+  productId,
+  moduleId,
+}) => {
   const dragControls = useDragControls();
   const { image, video } = child;
 
@@ -66,10 +80,7 @@ const ClassItem: React.FC<{
   // Calcula a média das avaliações
   const averageRate = child.rate
     ?.filter((rateItem) => rateItem.rate)
-    .reduce(
-      (avg, value, _, { length }) => avg + value.rate! / length,
-      0
-    )
+    .reduce((avg, value, _, { length }) => avg + value.rate! / length, 0)
     .toFixed(2);
 
   return (
@@ -77,7 +88,7 @@ const ClassItem: React.FC<{
       key={child.id}
       value={child}
       as="div"
-      dragListener={false}      // Desabilita o drag automático
+      dragListener={false} // Desabilita o drag automático
       dragControls={dragControls} // Usa o controle manual
       style={{ touchAction: "pan-y" }} // Permite scroll no item
       onDragEnd={handleDragEnd} // Limpa os estilos quando o arraste termina
@@ -111,7 +122,7 @@ const ClassItem: React.FC<{
         // Previne drag em todo o card exceto no handle
         onPointerDownCapture={(e) => {
           // Verifica se o clique foi no drag handle ou em seus filhos
-          const dragHandle = e.currentTarget.querySelector('.drag-handle');
+          const dragHandle = e.currentTarget.querySelector(".drag-handle");
           if (dragHandle && !dragHandle.contains(e.target as Node)) {
             e.stopPropagation();
           }
@@ -119,105 +130,105 @@ const ClassItem: React.FC<{
       >
         <div className="card-body p-3 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-            <div className="d-flex align-items-center flex-grow-1 w-100">
-              {video && (
-                <div className="me-3 me-md-4 flex-shrink-0">
-                  <div className="rounded-3 overflow-hidden" style={{ width: "90px", height: "90px" }}>
-                    <iframe
-                      title="video"
-                      className="w-100 h-100"
-                      src={video}
-                      frameBorder={0}
-                      style={{ objectFit: "cover" }}
+            <Link
+              to={"/extras/" + productId + "/" + moduleId + "/" + child.id}
+              className="text-decoration-none w-100"
+            >
+              <div className="d-flex align-items-center flex-grow-1 w-100">
+                {video && (
+                  <div className="me-3 me-md-4 flex-shrink-0">
+                    <div
+                      className="rounded-3 overflow-hidden"
+                      style={{ width: "90px", height: "90px" }}
+                    >
+                      <iframe
+                        title="video"
+                        className="w-100 h-100"
+                        src={video}
+                        frameBorder={0}
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  </div>
+                )}
+                {image && !video && (
+                  <div className="me-3 me-md-4 flex-shrink-0">
+                    <img
+                      className="rounded-3"
+                      style={{
+                        objectFit: "cover",
+                        width: "90px",
+                        //height: "90px",
+                      }}
+                      src={
+                        image?.includes("https://")
+                          ? image
+                          : "https://app.insiderhof.com.br/files/" + image
+                      }
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src =
+                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                      }}
                     />
                   </div>
-                </div>
-              )}
-              {image && !video && (
-                <div className="me-3 me-md-4 flex-shrink-0">
-                  <img
-                    className="rounded-3"
-                    style={{
-                      objectFit: "cover",
-                      width: "90px",
-                      //height: "90px",
-                    }}
-                    src={
-                      image?.includes("https://")
-                        ? image
-                        : "https://app.insiderhof.com.br/files/" + image
-                    }
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null;
-                      currentTarget.src =
-                        "https://app.insiderhof.com.br/files/notfound.jpg";
-                    }}
-                  />
-                </div>
-              )}
+                )}
 
-              <div className="flex-grow-1 min-w-0 me-3 me-md-4">
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
-                  <Link
-                    to={
-                      "/extras/" +
-                      productId +
-                      "/" +
-                      moduleId +
-                      "/" +
-                      child.id
-                    }
-                    className="text-decoration-none"
-                  >
+                <div className="flex-grow-1 min-w-0 me-3 me-md-4">
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
                     <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
                       {child.name}
                     </h5>
-                  </Link>
-                  <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
-                    Aula
-                  </span>
-                </div>
 
-                <p
-                  className="text-muted fs-8 fs-md-7 mb-2"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {child.description?.length! > 80
-                    ? child.description?.substring(0, 80) + "..."
-                    : child.description}
-                </p>
-
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="timer" className="fs-6 text-primary" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {MOMENT.duration(child.duration, "seconds").format("hh:mm:ss", {
-                        trim: false,
-                      })}
+                    <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
+                      Aula
                     </span>
                   </div>
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="eye" className="fs-6 text-warning" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {child.completed?.length || 0} concluiram
-                    </span>
-                  </div>
-                  {averageRate && (
+
+                  <p
+                    className="text-muted fs-8 fs-md-7 mb-2"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {child.description?.length! > 80
+                      ? child.description?.substring(0, 80) + "..."
+                      : child.description}
+                  </p>
+
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
                     <div className="d-flex align-items-center gap-1">
-                      <KTIcon iconName="star" className="fs-6 text-warning" />
+                      <KTIcon iconName="timer" className="fs-6 text-primary" />
                       <span className="text-muted fs-8 fs-md-7">
-                        {averageRate} avaliação
+                        {MOMENT.duration(child.duration, "seconds").format(
+                          "hh:mm:ss",
+                          {
+                            trim: false,
+                          }
+                        )}
                       </span>
                     </div>
-                  )}
+                    <div className="d-flex align-items-center gap-1">
+                      <KTIcon iconName="eye" className="fs-6 text-warning" />
+                      <span className="text-muted fs-8 fs-md-7">
+                        {child.completed?.length || 0} concluiram
+                      </span>
+                    </div>
+                    {averageRate && (
+                      <div className="d-flex align-items-center gap-1">
+                        <KTIcon iconName="star" className="fs-6 text-warning" />
+                        <span className="text-muted fs-8 fs-md-7">
+                          {averageRate} avaliação
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 flex-shrink-0 w-100 w-md-auto justify-content-between">
               <button
@@ -226,9 +237,7 @@ const ClassItem: React.FC<{
                 title="Ver progresso"
               >
                 <KTIcon iconName="eye" className="fs-6" />
-                <span className="fw-semibold d-sm-inline">
-                  Ver progresso
-                </span>
+                <span className="fw-semibold d-sm-inline">Ver progresso</span>
               </button>
               <div className="d-flex align-items-center gap-2">
                 <button
@@ -465,8 +474,8 @@ const ManageClassWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       Nenhuma aula encontrada
                     </h4>
                     <p className="text-muted mb-4 fs-7 fs-md-6">
-                      Comece adicionando sua primeira aula para organizar
-                      o conteúdo do módulo
+                      Comece adicionando sua primeira aula para organizar o
+                      conteúdo do módulo
                     </p>
                     <button
                       className="btn btn-dark px-3 px-md-4 py-2 rounded-1 w-100 w-md-auto"

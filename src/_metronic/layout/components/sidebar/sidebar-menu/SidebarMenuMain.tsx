@@ -16,7 +16,7 @@ const SidebarMenuMain = () => {
       />
       <SidebarMenuItem
         to="/ideaction"
-        icon="element-11"
+        icon="sun"
         title="Ideação"
         fontIcon="bi-app-indicator"
       />

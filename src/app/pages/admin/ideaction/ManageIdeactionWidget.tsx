@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Button, Modal, Card, Badge, Row, Col } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
@@ -12,6 +12,8 @@ import { AnimatePresence, Reorder, useDragControls } from "framer-motion";
 
 import Create from "./create";
 import Update from "./update";
+import View from "./view";
+import { HowItWorks } from "./howitworks";
 
 type Props = {
   className?: string;
@@ -19,15 +21,66 @@ type Props = {
 };
 
 // ====================================================================
-// COMPONENTE IDEACTION ITEM
+// COMPONENTE IDEACTION ITEM (VERSÃO COM 5 ZONAS DE SCORE)
 // ====================================================================
 const IdeactionItem: React.FC<{
   ideaction: Ideaction;
   index: number;
   updateComponent: (ideaction: Ideaction) => void;
+  viewComponent: (ideaction: Ideaction) => void;
   deleteComponent: (ideaction: Ideaction) => void;
-}> = ({ ideaction, index, updateComponent, deleteComponent }) => {
+}> = ({ ideaction, index, updateComponent, viewComponent, deleteComponent }) => {
   const dragControls = useDragControls();
+
+  // O useMemo agora retorna um objeto completo com o score e sua categoria (5 níveis)
+  const scoreInfo = useMemo(() => {
+    const P = Number(ideaction.passion ?? 0);
+    const S = Number(ideaction.skill ?? 0);
+    const D = Number(ideaction.demand ?? 0);
+    const E = Number(ideaction.effort ?? 0);
+    const R = Number(ideaction.risk ?? 0);
+
+    const numerator = P * S * D;
+    const denominator = E + R;
+
+    const scoreValue = denominator > 0 ? numerator / denominator : 0;
+
+    // Lógica para definir a categoria e a cor da badge em 5 níveis
+    // A ordem do 'if' é importante: do maior para o menor.
+    if (scoreValue >= 120) {
+      return {
+        value: scoreValue,
+        category: "Excepcional 🚀",
+        variant: "primary",
+      };
+    }
+    if (scoreValue >= 70) {
+      return {
+        value: scoreValue,
+        category: "Prioridade Alta",
+        variant: "success",
+      };
+    }
+    if (scoreValue >= 30) {
+      return {
+        value: scoreValue,
+        category: "Potencial a Discutir",
+        variant: "warning",
+      };
+    }
+    if (scoreValue >= 10) {
+        return {
+          value: scoreValue,
+          category: "Análise Crítica",
+          variant: "info",
+        };
+    }
+    return {
+      value: scoreValue,
+      category: "Repensar ou Descartar",
+      variant: "danger",
+    };
+  }, [ideaction]);
 
   // Função para lidar com o fim do arraste
   const handleDragEnd = () => {
@@ -81,7 +134,7 @@ const IdeactionItem: React.FC<{
           }
         }}
         onPointerDownCapture={(e) => {
-          const dragHandle = e.currentTarget.querySelector('.drag-handle');
+          const dragHandle = e.currentTarget.querySelector(".drag-handle");
           if (dragHandle && !dragHandle.contains(e.target as Node)) {
             e.stopPropagation();
           }
@@ -90,21 +143,11 @@ const IdeactionItem: React.FC<{
         <div className="card-body p-3 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
             <div className="d-flex align-items-center flex-grow-1 w-100">
-              {/* <div className="me-3 me-md-4 flex-shrink-0">
-                <div className="bg-light-primary rounded-3 d-flex align-items-center justify-content-center" 
-                     style={{ width: "90px", height: "90px" }}>
-                  <KTIcon iconName="bulb" className="fs-2 text-primary" />
-                </div>
-              </div> */}
-
               <div className="flex-grow-1 min-w-0 me-3 me-md-4">
                 <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
                   <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
                     {ideaction.name}
                   </h5>
-                  {/* <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
-                    Ideação #{index + 1}
-                  </span> */}
                 </div>
 
                 <p
@@ -121,28 +164,26 @@ const IdeactionItem: React.FC<{
                     : ideaction.description}
                 </p>
 
-                {/* <div className="d-flex flex-wrap align-items-center gap-2">
-                  <Badge bg="success" className="fs-8 fs-md-7">
-                    Paixão: {ideaction.passion}/10
+                <div className="d-flex flex-wrap align-items-center gap-2">
+                  <Badge bg={scoreInfo.variant} className="fs-8 fs-md-7 fw-bold">
+                    <KTIcon iconName="star" className="fs-7 me-1" />
+                    SCORE: {scoreInfo.value.toFixed(2)} ({scoreInfo.category})
                   </Badge>
-                  <Badge bg="info" className="fs-8 fs-md-7">
-                    Habilidade: {ideaction.skill}/10
-                  </Badge>
-                  <Badge bg="primary" className="fs-8 fs-md-7">
-                    Demanda: {ideaction.demand}/10
-                  </Badge>
-                  <Badge bg="warning" className="fs-8 fs-md-7">
-                    Esforço: {ideaction.effort}/10
-                  </Badge>
-                  <Badge bg="danger" className="fs-8 fs-md-7">
-                    Risco: {ideaction.risk}/10
-                  </Badge>
-                </div> */}
+                </div>
               </div>
             </div>
 
             <div className="d-flex flex-wrap align-items-center gap-2 flex-shrink-0 w-100 w-md-auto justify-content-between">
               <div className="d-flex align-items-center gap-2">
+                <button
+                  className="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center"
+                  onClick={() => viewComponent(ideaction)}
+                  title="Visualizar ideação"
+                  style={{ width: "36px", height: "36px" }}
+                >
+                  <KTIcon iconName="eye" className="fs-6" />
+                </button>
+
                 <button
                   className="btn btn-outline-dark btn-sm d-flex align-items-center justify-content-center"
                   onClick={() => updateComponent(ideaction)}
@@ -201,7 +242,7 @@ const IdeactionItem: React.FC<{
 };
 
 // ====================================================================
-// COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL (SEM ALTERAÇÕES)
 // ====================================================================
 const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
@@ -211,6 +252,8 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [action, setAction] = useState<string>("");
   const [selectedIdeaction, setSelectedIdeaction] = useState<Ideaction>({});
   const [oldIdeactions, setOldIdeactions] = useState<Ideaction[]>([]);
+  const [showInfoModal, setShowInfoModal] = useState<boolean>(false);
+  const [showViewModal, setShowViewModal] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -219,7 +262,10 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   // Inicializar oldIdeactions quando ideactions mudar
   useEffect(() => {
     console.log("ManageIdeactionWidget useEffect - ideactions:", ideactions);
-    console.log("ManageIdeactionWidget useEffect - oldIdeactions:", oldIdeactions);
+    console.log(
+      "ManageIdeactionWidget useEffect - oldIdeactions:",
+      oldIdeactions
+    );
     if (ideactions.length > 0 && oldIdeactions.length === 0) {
       console.log("ManageIdeactionWidget useEffect - setting oldIdeactions");
       setOldIdeactions([...ideactions]);
@@ -238,36 +284,71 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   }, []);
 
   const updateComponent = useCallback((ideaction: Ideaction) => {
-    console.log("ManageIdeactionWidget updateComponent - ideaction:", ideaction);
+    console.log(
+      "ManageIdeactionWidget updateComponent - ideaction:",
+      ideaction
+    );
     setAction("updateComponent");
     setSelectedIdeaction(ideaction);
     setShow(true);
   }, []);
 
-  const deleteComponent = useCallback((ideaction: Ideaction) => {
-    console.log("ManageIdeactionWidget deleteComponent - ideaction:", ideaction);
-    dispatch(deleteIdeactionRequest(ideaction.id!));
-  }, [dispatch]);
+  const viewComponent = useCallback((ideaction: Ideaction) => {
+    console.log(
+      "ManageIdeactionWidget viewComponent - ideaction:",
+      ideaction
+    );
+    setSelectedIdeaction(ideaction);
+    setShowViewModal(true);
+  }, []);
+
+  const deleteComponent = useCallback(
+    (ideaction: Ideaction) => {
+      console.log(
+        "ManageIdeactionWidget deleteComponent - ideaction:",
+        ideaction
+      );
+      dispatch(deleteIdeactionRequest(ideaction.id!));
+    },
+    [dispatch]
+  );
 
   const reorder = (newIdeactions: Ideaction[]) => {
-    console.log("ManageIdeactionWidget reorder - newIdeactions:", newIdeactions);
+    console.log(
+      "ManageIdeactionWidget reorder - newIdeactions:",
+      newIdeactions
+    );
     newIdeactions.map((ideaction) => {
-      let index = newIdeactions.findIndex((item): any => item.id === ideaction.id);
+      let index = newIdeactions.findIndex(
+        (item): any => item.id === ideaction.id
+      );
       if (index !== -1) {
         newIdeactions[index] = { ...newIdeactions[index], order: index + 1 };
       }
     });
-    console.log("ManageIdeactionWidget reorder - dispatching reorderIdeactionsRequest");
+    console.log(
+      "ManageIdeactionWidget reorder - dispatching reorderIdeactionsRequest"
+    );
     dispatch(reorderIdeactionsRequest(newIdeactions));
   };
 
   const reorderToSave = (newIdeactions: Ideaction[]) => {
-    console.log("ManageIdeactionWidget reorderToSave - newIdeactions:", newIdeactions);
-    console.log("ManageIdeactionWidget reorderToSave - oldIdeactions:", oldIdeactions);
+    console.log(
+      "ManageIdeactionWidget reorderToSave - newIdeactions:",
+      newIdeactions
+    );
+    console.log(
+      "ManageIdeactionWidget reorderToSave - oldIdeactions:",
+      oldIdeactions
+    );
     if (JSON.stringify(oldIdeactions) !== JSON.stringify(newIdeactions)) {
-      console.log("ManageIdeactionWidget reorderToSave - dispatching updateIdeactionRequest for each ideaction");
+      console.log(
+        "ManageIdeactionWidget reorderToSave - dispatching updateIdeactionRequest for each ideaction"
+      );
       newIdeactions.map((ideaction) => {
-        dispatch(updateIdeactionRequest({ id: ideaction.id, order: ideaction.order }));
+        dispatch(
+          updateIdeactionRequest({ id: ideaction.id, order: ideaction.order })
+        );
       });
       setOldIdeactions(newIdeactions);
     }
@@ -311,18 +392,35 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
+      {/* Componente HowItWorks */}
+      <HowItWorks show={showInfoModal} onHide={() => setShowInfoModal(false)} />
+
+      {/* Componente View */}
+      <View 
+        show={showViewModal} 
+        onHide={() => setShowViewModal(false)} 
+        ideaction={selectedIdeaction} 
+      />
+
       <div className={`card ${className} border-0`}>
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
             <span className="card-label fw-bolder fs-3 mb-1">
-              {/* <KTIcon iconName="bulb" className="fs-2 text-primary me-2" /> */}
               Gestão de Ideias
             </span>
             <span className="text-muted mt-1 fw-bold fs-7">
               Gerencie suas ideias de negócio
             </span>
           </h3>
-          <div className="card-toolbar">
+          <div className="card-toolbar d-flex gap-2">
+            <Button
+              variant="outline-info"
+              className="btn btn-lg px-4"
+              onClick={() => setShowInfoModal(true)}
+            >
+              <KTIcon iconName="question" className="fs-2 me-2" />
+              Como Funciona
+            </Button>
             <Button
               className="btn btn-primary btn-lg px-6"
               onClick={() => createComponent()}
@@ -356,8 +454,8 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       Nenhuma ideação encontrada
                     </h4>
                     <p className="text-muted mb-4 fs-7 fs-md-6">
-                      Comece criando sua primeira ideação para organizar
-                      suas ideias de negócio
+                      Comece criando sua primeira ideação para organizar suas
+                      ideias de negócio
                     </p>
                     <button
                       className="btn btn-dark px-3 px-md-4 py-2 rounded-1 w-100 w-md-auto"
@@ -376,6 +474,7 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       ideaction={ideaction}
                       index={index}
                       updateComponent={updateComponent}
+                      viewComponent={viewComponent}
                       deleteComponent={deleteComponent}
                     />
                   ))}
@@ -388,4 +487,4 @@ const ManageIdeactionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   );
 };
 
-export { ManageIdeactionWidget }; 
+export { ManageIdeactionWidget };

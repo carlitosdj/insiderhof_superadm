@@ -112,86 +112,84 @@ const LaunchItem: React.FC<{
       >
         <div className="card-body p-3 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-            <div className="d-flex align-items-center flex-grow-1 w-100">
-              <div className="me-3 me-md-4 flex-shrink-0">
-                {firstOffer?.image ? (
-                  <img
-                    className="rounded-3"
-                    style={{
-                      objectFit: "cover",
-                      width: "120px",
-                      //height: "90px",
-                    }}
-                    src={
-                      firstOffer.image?.includes("https://")
-                        ? firstOffer.image
-                        : "https://app.insiderhof.com.br/files/" +
-                          firstOffer.image
-                    }
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null;
-                      currentTarget.src =
-                        "https://app.insiderhof.com.br/files/notfound.jpg";
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="rounded-3 d-flex align-items-center justify-content-center text-center"
-                    style={{
-                      width: "90px",
-                      height: "90px",
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      fontSize: "0.75rem",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <div>
-                      <KTIcon iconName="plus" className="fs-4 mb-1" />
-                      <div>Inclua uma oferta</div>
+            <Link to={"/launch/" + child.id} className="text-decoration-none w-100">
+              <div className="d-flex align-items-center flex-grow-1 w-100">
+                <div className="me-3 me-md-4 flex-shrink-0">
+                  {firstOffer?.image ? (
+                    <img
+                      className="rounded-3"
+                      style={{
+                        objectFit: "cover",
+                        width: "120px",
+                        //height: "90px",
+                      }}
+                      src={
+                        firstOffer.image?.includes("https://")
+                          ? firstOffer.image
+                          : "https://app.insiderhof.com.br/files/" +
+                            firstOffer.image
+                      }
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src =
+                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="rounded-3 d-flex align-items-center justify-content-center text-center"
+                      style={{
+                        width: "120px",
+                        height: "160px",
+                        backgroundColor: "#dc3545",
+                        color: "white",
+                        fontSize: "0.75rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      <div>
+                        <KTIcon iconName="plus" className="fs-4 mb-1" />
+                        <div>Inclua uma oferta</div>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex-grow-1 min-w-0 me-3 me-md-4">
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
-                  <Link
-                    to={"/launch/" + child.id}
-                    className="text-decoration-none"
-                  >
-                    <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
-                      {child.name}
-                    </h5>
-                  </Link>
-                  <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
-                    {child.type}
-                  </span>
+                  )}
                 </div>
 
-                <p
-                  className="text-muted fs-8 fs-md-7 mb-2"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {child.description?.length! > 80
-                    ? child.description?.substring(0, 80) + "..."
-                    : child.description}
-                </p>
-
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 mb-2">
-                  <div className="d-flex align-items-center gap-1">
-                    <span className="fw-bold fs-8 fs-md-7 text-primary">
-                      {child.price?.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
+                <div className="flex-grow-1 min-w-0 me-3 me-md-4">
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
+                    <div className="text-decoration-none">
+                      <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
+                        {child.name}
+                      </h5>
+                    </div>
+                    <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
+                      {child.type}
                     </span>
-                    {/* {firstOffer?.price && (
+                  </div>
+
+                  <p
+                    className="text-muted fs-8 fs-md-7 mb-2"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {child.description?.length! > 80
+                      ? child.description?.substring(0, 80) + "..."
+                      : child.description}
+                  </p>
+
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 mb-2">
+                    <div className="d-flex align-items-center gap-1">
+                      <span className="fw-bold fs-8 fs-md-7 text-primary">
+                        {child.price?.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </span>
+                      {/* {firstOffer?.price && (
                       <span className="text-muted fs-8 fs-md-7 text-decoration-line-through">
                         ({firstOffer.price.toLocaleString("pt-BR", {
                           style: "currency",
@@ -199,71 +197,74 @@ const LaunchItem: React.FC<{
                         })})
                       </span>
                     )} */}
+                    </div>
+                    {firstOffer?.dOfferHasProducts &&
+                      firstOffer.dOfferHasProducts.length > 0 && (
+                        <div className="d-flex align-items-center gap-1">
+                          <span className="text-muted fs-8 fs-md-7 text-decoration-line-through">
+                            (
+                            {firstOffer.dOfferHasProducts
+                              .reduce((total, offerProduct) => {
+                                return (
+                                  total + (offerProduct.product?.price || 0)
+                                );
+                              }, 0)
+                              .toLocaleString("pt-BR", {
+                                style: "currency",
+                                currency: "BRL",
+                              })}
+                            )
+                          </span>
+                        </div>
+                      )}
                   </div>
-                  {firstOffer?.dOfferHasProducts &&
-                    firstOffer.dOfferHasProducts.length > 0 && (
-                      <div className="d-flex align-items-center gap-1">
-                        <span className="text-muted fs-8 fs-md-7 text-decoration-line-through">
-                          (
-                          {firstOffer.dOfferHasProducts
-                            .reduce((total, offerProduct) => {
-                              return total + (offerProduct.product?.price || 0);
-                            }, 0)
-                            .toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
-                          )
-                        </span>
-                      </div>
-                    )}
-                </div>
 
-                {/* Ofertas do lançamento */}
-                {child.launchhasoffers && child.launchhasoffers.length > 0 && (
-                  <div className="d-flex flex-wrap gap-1 mb-2">
-                    {child.launchhasoffers.slice(0, 3).map((hasoffer) => (
-                      <div
-                        key={hasoffer.id}
-                        className="d-flex align-items-center gap-1 bg-light-secondary rounded-3 px-2 py-1"
-                        style={{ fontSize: "0.75rem" }}
-                      >
-                        {hasoffer.offer?.image && (
-                          <img
-                            className="rounded-1"
-                            style={{
-                              width: "16px",
-                              height: "16px",
-                              objectFit: "cover",
-                            }}
-                            src={
-                              hasoffer.offer?.image?.includes("https://")
-                                ? hasoffer.offer?.image
-                                : "https://app.insiderhof.com.br/files/" +
-                                  hasoffer.offer?.image
-                            }
-                            onError={({ currentTarget }) => {
-                              currentTarget.onerror = null;
-                              currentTarget.src =
-                                "https://app.insiderhof.com.br/files/notfound.jpg";
-                            }}
-                          />
+                  {/* Ofertas do lançamento */}
+                  {child.launchhasoffers &&
+                    child.launchhasoffers.length > 0 && (
+                      <div className="d-flex flex-wrap gap-1 mb-2">
+                        {child.launchhasoffers.slice(0, 3).map((hasoffer) => (
+                          <div
+                            key={hasoffer.id}
+                            className="d-flex align-items-center gap-1 bg-light-secondary rounded-3 px-2 py-1"
+                            style={{ fontSize: "0.75rem" }}
+                          >
+                            {hasoffer.offer?.image && (
+                              <img
+                                className="rounded-1"
+                                style={{
+                                  width: "16px",
+                                  height: "16px",
+                                  objectFit: "cover",
+                                }}
+                                src={
+                                  hasoffer.offer?.image?.includes("https://")
+                                    ? hasoffer.offer?.image
+                                    : "https://app.insiderhof.com.br/files/" +
+                                      hasoffer.offer?.image
+                                }
+                                onError={({ currentTarget }) => {
+                                  currentTarget.onerror = null;
+                                  currentTarget.src =
+                                    "https://app.insiderhof.com.br/files/notfound.jpg";
+                                }}
+                              />
+                            )}
+                            <span className="text-muted fw-semibold">
+                              {hasoffer.offer?.name}
+                            </span>
+                          </div>
+                        ))}
+                        {child.launchhasoffers.length > 3 && (
+                          <span className="text-muted fs-8">
+                            +{child.launchhasoffers.length - 3} mais
+                          </span>
                         )}
-                        <span className="text-muted fw-semibold">
-                          {hasoffer.offer?.name}
-                        </span>
                       </div>
-                    ))}
-                    {child.launchhasoffers.length > 3 && (
-                      <span className="text-muted fs-8">
-                        +{child.launchhasoffers.length - 3} mais
-                      </span>
                     )}
-                  </div>
-                )}
 
-                <div className="d-flex align-items-center gap-1">
-                  {/* <div className="d-flex align-items-center gap-1">
+                  <div className="d-flex align-items-center gap-1">
+                    {/* <div className="d-flex align-items-center gap-1">
                     <KTIcon
                       iconName="element-plus"
                       className="fs-6 text-muted"
@@ -274,33 +275,46 @@ const LaunchItem: React.FC<{
                         : child.launchhasoffers?.length + " ofertas"}
                     </span>
                   </div> */}
-                  {(child.leadsCount ?? 0) > 0 && (
-                    <div className="d-flex align-items-center gap-1">
-                      <KTIcon iconName="user" className="fs-6 text-success" />
-                      <span className="text-muted fs-8 fs-md-7">
-                        {child.leadsCount} leads
-                      </span>
-                    </div>
-                  )}
-                  {(child.cartCount ?? 0) > 0 && (
-                    <div className="d-flex align-items-center gap-1">
-                      <KTIcon iconName="purchase" className="fs-6 text-success" />
-                      <span className="text-muted fs-8 fs-md-7">
-                        {child.cartCount} vendas
-                      </span>
-                    </div>
-                  )}
-                  {(child.leadsCount ?? 0) > 0 && (child.cartCount ?? 0) > 0 && (
-                    <div className="d-flex align-items-center gap-1">
-                      <KTIcon iconName="chart-simple" className="fs-6 text-success" />
-                      <span className="text-muted fs-8 fs-md-7">
-                        {(((child.cartCount ?? 0) / (child.leadsCount ?? 1)) * 100).toFixed(1)}% conversão
-                      </span>
-                    </div>
-                  )}
+                    {(child.leadsCount ?? 0) > 0 && (
+                      <div className="d-flex align-items-center gap-1">
+                        <KTIcon iconName="user" className="fs-6 text-success" />
+                        <span className="text-muted fs-8 fs-md-7">
+                          {child.leadsCount} leads
+                        </span>
+                      </div>
+                    )}
+                    {(child.cartCount ?? 0) > 0 && (
+                      <div className="d-flex align-items-center gap-1">
+                        <KTIcon
+                          iconName="purchase"
+                          className="fs-6 text-success"
+                        />
+                        <span className="text-muted fs-8 fs-md-7">
+                          {child.cartCount} vendas
+                        </span>
+                      </div>
+                    )}
+                    {(child.leadsCount ?? 0) > 0 &&
+                      (child.cartCount ?? 0) > 0 && (
+                        <div className="d-flex align-items-center gap-1">
+                          <KTIcon
+                            iconName="chart-simple"
+                            className="fs-6 text-success"
+                          />
+                          <span className="text-muted fs-8 fs-md-7">
+                            {(
+                              ((child.cartCount ?? 0) /
+                                (child.leadsCount ?? 1)) *
+                              100
+                            ).toFixed(1)}
+                            % conversão
+                          </span>
+                        </div>
+                      )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 flex-shrink-0 w-100 w-md-auto justify-content-between">
               <button

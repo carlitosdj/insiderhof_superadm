@@ -40,13 +40,48 @@ const Step3CreateSale: React.FC<Step3CreateSaleProps> = ({ onNext, onPrevious, s
     if (step3Data) {
       return step3Data;
     }
+    
+    // Calculate initial CPL dates based on step1Data if available
+    let initialDateCpl1 = new Date();
+    let initialDateCpl2 = new Date();
+    let initialDateCpl3 = new Date();
+    
+    if (step1Data?.cartOpenDate) {
+      const cartOpenDate = new Date(step1Data.cartOpenDate);
+      
+      // Encontrar a segunda-feira da semana anterior à abertura do carrinho
+      const weekBeforeCart = new Date(cartOpenDate);
+      weekBeforeCart.setDate(cartOpenDate.getDate() - 7);
+      const dayOfWeek = weekBeforeCart.getDay();
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      weekBeforeCart.setDate(weekBeforeCart.getDate() - daysToMonday);
+      
+      // CPL1: Segunda-feira da semana anterior às 20h
+      const dateCpl1 = new Date(weekBeforeCart);
+      dateCpl1.setHours(20, 0, 0, 0);
+      
+      // CPL2: Terça-feira da semana anterior às 20h
+      const dateCpl2 = new Date(weekBeforeCart);
+      dateCpl2.setDate(weekBeforeCart.getDate() + 1);
+      dateCpl2.setHours(20, 0, 0, 0);
+      
+      // CPL3: Quinta-feira da semana anterior às 20h
+      const dateCpl3 = new Date(weekBeforeCart);
+      dateCpl3.setDate(weekBeforeCart.getDate() + 3);
+      dateCpl3.setHours(20, 0, 0, 0);
+      
+      initialDateCpl1 = dateCpl1;
+      initialDateCpl2 = dateCpl2;
+      initialDateCpl3 = dateCpl3;
+    }
+    
     return {
       cpl1: "https://www.youtube.com/embed/am-FQ86mKV0",
       cpl2: "https://www.youtube.com/embed/u-6XK1yy3rE",
       cpl3: "https://www.youtube.com/embed/BJYpPfyz3ks",
-      dateCpl1: new Date(),
-      dateCpl2: new Date(),
-      dateCpl3: new Date()
+      dateCpl1: initialDateCpl1,
+      dateCpl2: initialDateCpl2,
+      dateCpl3: initialDateCpl3
     };
   });
 
@@ -95,12 +130,16 @@ const Step3CreateSale: React.FC<Step3CreateSaleProps> = ({ onNext, onPrevious, s
         dateCpl3
       };
       setFormData(newFormData);
-      updateStep3Data(newFormData); // Update context
+      updateStep3Data(newFormData); // Update context immediately
+      
+
     }
   };
 
   React.useEffect(() => {
-    calculateCplDates();
+    if (step1Data?.cartOpenDate) {
+      calculateCplDates();
+    }
   }, [step1Data?.cartOpenDate]);
 
   // Salvar dados default no contexto quando o componente monta
@@ -109,6 +148,14 @@ const Step3CreateSale: React.FC<Step3CreateSaleProps> = ({ onNext, onPrevious, s
       updateStep3Data(formData);
     }
   }, []);
+
+  // Recalculate dates when step1Data becomes available
+  React.useEffect(() => {
+    if (step1Data?.cartOpenDate && !step3Data) {
+
+      calculateCplDates();
+    }
+  }, [step1Data]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
@@ -376,7 +423,12 @@ const Step3CreateSale: React.FC<Step3CreateSaleProps> = ({ onNext, onPrevious, s
                             <div className="mb-3">
                               <span className="fw-bold fs-7 text-gray-600">Fechamento Carrinho:</span>
                               <p className="text-gray-900 fw-bold fs-6 mb-0">
-                                {step1Data?.cartCloseDate ? new Date(step1Data.cartCloseDate).toLocaleDateString('pt-BR') + ' às ' + new Date(step1Data.cartCloseDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Não definido'}
+                                {step1Data?.cartOpenDate ? (() => {
+                                  const closeDate = new Date(step1Data.cartOpenDate);
+                                  closeDate.setDate(closeDate.getDate() + 4);
+                                  closeDate.setHours(20, 0, 0, 0);
+                                  return closeDate.toLocaleDateString('pt-BR') + ' às ' + closeDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                                })() : 'Não definido'}
                               </p>
                             </div>
                           </div>

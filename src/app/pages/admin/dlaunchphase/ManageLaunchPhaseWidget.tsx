@@ -15,6 +15,7 @@ import { AnimatePresence, Reorder } from "framer-motion";
 import Manage from "../dlaunchhasoffers/Manage";
 import { ManageLaunchPhaseExtraWidget } from "../dlaunchphaseextra/ManageLaunchPhaseExtraWidget";
 import Resume from "./Resume";
+import { ManageLPWidget } from "../dlps/ManageLPWidget";
 import {
   LaunchPhases,
   LaunchPhasesState,
@@ -162,6 +163,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [child, setChild] = useState<LaunchPhases>({});
   const [activeTab, setActiveTab] = useState<string>("resumo");
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedLandingPage, setSelectedLandingPage] = useState<string>("");
+  const [lpListResetFlag, setLpListResetFlag] = useState(0);
 
   const { launchId, launchPhaseId } = useParams();
 
@@ -187,46 +190,11 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(true);
   };
 
-  // const updateComponent = (child: LaunchPhases) => {
-  //   setAction("updateComponent");
-  //   setShow(true);
-  //   setChild(child);
-  // };
-
-  // Deleta componente: CHILD
-  // const deleteComponent = (child: LaunchPhases) => {
-  //   dispatch(deleteLaunchPhasesRequest(child.id!));
-  // };
-
-  // const reorder = (children: LaunchPhases[]) => {
-  //   // console.log("children", children);
-  //   children.map((child) => {
-  //     let index = children.findIndex((item): any => item.id === child.id);
-  //     if (index !== -1) {
-  //       children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
-  //     }
-  //   });
-  //   dispatch(reorderLaunchPhasesRequest(children));
-  // };
-
-  // const reorderToSave = (children: LaunchPhases[]) => {
-  //   //Verifica se o old é igual ao children para atualizar no backend:
-  //   if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-  //     children.map((child) => {
-  //       dispatch(
-  //         updateLaunchPhasesRequest({ id: child.id, order: child.order })
-  //       );
-  //     });
-  //     //seta a lista de old para o novo:
-  //     setOldChildren(children);
-  //   }
-  // };
-
-  // const openHasLaunchs = (child: LaunchPhases) => {
-  //   setAction("manageLaunchs");
-  //   setShow(true);
-  //   setChild(child);
-  // };
+  const updateComponent = (phase: LaunchPhases) => {
+    setAction("updateComponent");
+    setChild(phase);
+    setShow(true);
+  };
 
   // useEffect principal para carregar dados apenas uma vez
   useEffect(() => {
@@ -265,7 +233,13 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       "launchPhaseId:",
       launchPhaseId
     );
-    if (launchPhaseId) {
+    if (launchPhaseId === "landing-page-captacao") {
+      setActiveTab("landing-page-captacao");
+      setSelectedLandingPage("captacao");
+    } else if (launchPhaseId === "landing-page-vendas") {
+      setActiveTab("landing-page-vendas");
+      setSelectedLandingPage("vendas");
+    } else if (launchPhaseId) {
       setActiveTab(launchPhaseId);
     } else if (launchId) {
       setActiveTab("resumo");
@@ -280,12 +254,36 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       "ManageLaunchPhaseWidget: useEffect fase ativa, activeTab:",
       activeTab
     );
-    if (activeTab && activeTab !== "resumo" && activeTab !== "configuracao") {
+    if (activeTab && activeTab !== "resumo" && activeTab !== "configuracao" && activeTab !== "landing-page-captacao" && activeTab !== "landing-page-vendas") {
       dispatch(loadMyLaunchPhaseExtrasRequest(Number(activeTab)));
       dispatch(loadMyLPsRequest(Number(activeTab))); // Carrega os LPs da fase
       // LPSessions e LPFeatures serão carregados sob demanda quando necessário
     }
   }, [activeTab, dispatch]);
+
+  // useEffect para carregar dados das landing pages quando a tab for ativada
+  useEffect(() => {
+    console.log(
+      "ManageLaunchPhaseWidget: useEffect tab landing pages ativada, activeTab:",
+      activeTab
+    );
+    if ((activeTab === "landing-page-captacao" || activeTab === "landing-page-vendas") && launchphases.myLaunchPhases.length > 0) {
+      // Encontra a fase correspondente à landing page selecionada
+      const targetPhase = launchphases.myLaunchPhases.find(phase => {
+        if (activeTab === "landing-page-captacao") {
+          return phase.name === "Captação";
+        } else if (activeTab === "landing-page-vendas") {
+          return phase.name === "Vendas";
+        }
+        return false;
+      });
+
+      if (targetPhase) {
+        console.log("Carregando landing pages para a fase:", targetPhase.name, "ID:", targetPhase.id);
+        dispatch(loadMyLPsRequest(Number(targetPhase.id)));
+      }
+    }
+  }, [activeTab, launchphases.myLaunchPhases, dispatch]);
   
   // useEffect para scroll para a aba ativa
   useEffect(() => {
@@ -300,21 +298,30 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setActiveTab(tabId);
 
     if (tabId === "resumo") {
-      // Navigate to launch overview without phase and reset editing state
       setIsEditing(false);
       navigate(`/launch/${launchId}`);
     } else if (tabId === "configuracao") {
-      // Navigate to configuration tab
       navigate(`/launch/${launchId}/configuracao`);
+    } else if (tabId === "landing-page-captacao" || tabId === "landing-page-vendas") {
+      setSelectedLandingPage(tabId === "landing-page-captacao" ? "captacao" : "vendas");
+      setLpListResetFlag(flag => flag + 1); // incrementa para forçar reset
+      navigate(`/launch/${launchId}/${tabId}`);
     } else {
-      // Navigate to specific phase
       navigate(`/launch/${launchId}/${tabId}`);
     }
   };
 
+  // Handle back to landing pages list
+  const handleBackToLandingPages = () => {
+    // This function is passed to ManageLPWidget but not used in this context
+  };
+
   const renderTabContent = () => {
+    console.log("renderTabContent - Iniciando renderização");
+    
     // Verifica se os dados estão carregando
     if (launchphases.loading || !launch) {
+      console.log("renderTabContent - Mostrando loading");
       return (
         <div className="tab-pane fade show active p-4">
           <div className="text-center py-8">
@@ -339,6 +346,59 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
             ) : (
               <Configuration onCancel={() => setIsEditing(false)} />
             )}
+          </div>
+        </div>
+      );
+    }
+
+    if (activeTab === "landing-page-captacao" || activeTab === "landing-page-vendas") {
+      return (
+        <div className="tab-pane fade show active">
+          <div className="component-wrapper">
+            <div className="p-0">
+              {/* <div className="card-header border-0 pt-5 pb-3">
+                <div className="d-flex align-items-center">
+                  <h3 className="card-title mb-0">
+                    <KTIcon 
+                      iconName={activeTab === "landing-page-captacao" ? "user-plus" : "shopping-cart"} 
+                      className="fs-2 text-primary me-2" 
+                    />
+                    Landing Page: {activeTab === "landing-page-captacao" ? "Captação" : "Vendas"}
+                  </h3>
+                </div>
+              </div> */}
+              
+              <div className="card-body p-0">
+                {(() => {
+                  // Encontra a fase correspondente à landing page selecionada
+                  const targetPhase = launchphases.myLaunchPhases.find(phase => {
+                    if (activeTab === "landing-page-captacao") {
+                      return phase.name === "Captação";
+                    } else if (activeTab === "landing-page-vendas") {
+                      return phase.name === "Vendas";
+                    }
+                    return false;
+                  });
+                  
+                  console.log("ManageLaunchPhaseWidget - targetPhase:", targetPhase);
+                  console.log("ManageLaunchPhaseWidget - lps.myLPs:", lps.myLPs);
+                  console.log("ManageLaunchPhaseWidget - lps.loading:", lps.loading);
+                  
+                  return (
+                    <ManageLPWidget 
+                      key={activeTab}
+                      resetToListFlag={lpListResetFlag}
+                      className="" 
+                      lps={lps} 
+                      //handleBackToItems={handleBackToLandingPages}
+                      lpsessions={lpsessions}
+                      lpfeatures={lpfeatures}
+                      launchPhaseId={targetPhase ? Number(targetPhase.id) : undefined}
+                    />
+                  );
+                })()}
+              </div>
+            </div>
           </div>
         </div>
       );
@@ -385,9 +445,6 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <ManageLaunchPhaseExtraWidget
             launchPhaseId={Number(activeTab)}
             launchphaseextras={launchphaseextras}
-            lps={lps}
-            lpsessions={lpsessions}
-            lpfeatures={lpfeatures}
             className=""
           />
         </div>
@@ -395,8 +452,20 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     );
   };
 
+  // Logs de debug para identificar problemas
+  console.log("ManageLaunchPhaseWidget - Estado atual:", {
+    launchId,
+    launchPhaseId,
+    activeTab,
+    launch: !!launch,
+    launchphasesLoading: launchphases.loading,
+    launchphasesCount: launchphases.myLaunchPhases.length,
+    isEditing
+  });
+
   // Se ainda está carregando os dados básicos, mostra loading
   if (!launch && launchphases.loading) {
+    console.log("Mostrando loading - dados básicos carregando");
     return (
       <div className="card">
         <div className="card-body p-8">
@@ -407,6 +476,27 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
             <h4 className="text-muted mb-2">Carregando lançamento...</h4>
             <p className="text-muted fs-6 mb-4">
               Aguarde enquanto carregamos as informações do lançamento.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não tem launch mas não está carregando, pode ser erro
+  if (!launch && !launchphases.loading) {
+    console.log("Erro: Não tem launch e não está carregando");
+    return (
+      <div className="card">
+        <div className="card-body p-8">
+          <div className="text-center py-8">
+            <KTIcon iconName="exclamation-triangle" className="fs-4x text-warning mb-4" />
+            <h4 className="text-warning mb-2">Erro ao carregar lançamento</h4>
+            <p className="text-muted fs-6 mb-4">
+              Não foi possível carregar as informações do lançamento. Verifique se o ID está correto.
+            </p>
+            <p className="text-muted fs-8">
+              LaunchId: {launchId} | Loading: {launchphases.loading ? 'Sim' : 'Não'}
             </p>
           </div>
         </div>
@@ -465,28 +555,50 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
       <div className={`card ${className}`}>
         <div className="card-header border-0 pt-5">
-          <h3 className="card-title align-items-start flex-column">
-            <span className="card-label fw-bolder fs-3 mb-1">
-              <KTIcon iconName="rocket" className="fs-2 text-primary me-2" />
-              {launch ? `${launch.name} - Gerenciador de Fases` : "Carregando..."}
-              {/* {activeTab === "resumo" && "Resumo" } */}
-              {/* {activeTab === "resumo" ? "Resumo" : launchphases.myLaunchPhases.find(p => p.id?.toString() === activeTab)?.name}  */}
-            </span>
-            <span className="text-muted mt-1 fw-bold fs-7">
-              Gerencie todas as fases do seu lançamento
-            </span>
-          </h3>
-          {/* <div className="card-toolbar">
-            {launch && !launchphases.loading && (
-              <Button
-                className="btn btn-primary btn-lg px-6"
-                onClick={() => createComponent()}
-              >
-                <KTIcon iconName="plus" className="fs-2 me-2" />
-                Nova Fase
-              </Button>
+          <div className="d-flex align-items-center">
+            {/* Offer Image */}
+            {launch?.launchhasoffers && launch.launchhasoffers.length > 0 && launch.launchhasoffers[0].offer?.image && (
+              <div className="me-4 flex-shrink-0 d-flex align-items-center">
+                <img
+                  className="rounded-3"
+                  style={{
+                    width: "60px",
+                    //height: "60px",
+                    objectFit: "cover",
+                    border: "2px solid #e9ecef"
+                  }}
+                  src={
+                    launch.launchhasoffers[0].offer.image.includes("https://")
+                      ? launch.launchhasoffers[0].offer.image
+                      : "https://app.insiderhof.com.br/files/" + launch.launchhasoffers[0].offer.image
+                  }
+                  onError={({ currentTarget }) => {
+                    currentTarget.onerror = null;
+                    currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                  }}
+                  alt={launch.launchhasoffers[0].offer.name || "Oferta"}
+                />
+              </div>
             )}
-          </div> */}
+            
+            {/* Title and Description */}
+            <div className="flex-grow-1">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bolder fs-3 mb-1">
+                  <KTIcon iconName="rocket" className="fs-2 text-primary me-2" />
+                  {launch ? `${launch.name} - Gerenciador de Fases` : "Carregando..."}
+                </span>
+                <span className="text-muted mt-1 fw-bold fs-7">
+                  Gerencie todas as fases do seu lançamento
+                </span>
+                {/* {launch?.launchhasoffers && launch.launchhasoffers.length > 0 && launch.launchhasoffers[0].offer?.name && (
+                  <span className="text-primary mt-1 fw-semibold fs-7">
+                    Oferta: {launch.launchhasoffers[0].offer.name}
+                  </span>
+                )} */}
+              </h3>
+            </div>
+          </div>
         </div>
 
         <div className="card-body p-0">
@@ -503,34 +615,94 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
               </Nav.Link>
             </Nav.Item>
             {launchphases.myLaunchPhases && launchphases.myLaunchPhases.length > 0 ? (
-              launchphases.myLaunchPhases.map(
-                (phase: LaunchPhases, index: number) => (
-                  <Nav.Item key={phase.id}>
-                    <Nav.Link
-                      active={activeTab === phase.id?.toString()}
-                      onClick={() => handleTabClick(phase.id?.toString() || "")}
-                      className="d-flex align-items-center"
-                    >
-                      <KTIcon
-                        iconName={
-                          phase.name === "Captação"
-                            ? "user-plus"
-                            : phase.name === "Evento"
-                            ? "calendar"
-                            : phase.name === "Vendas"
-                            ? "shopping-cart"
-                            : "gear"
-                        }
-                        className="fs-6 me-2"
-                      />
-                      {phase.name}
-                      {/* <Badge bg="success" className="ms-2 fs-8">
-                      #{index + 1}
-                    </Badge> */}
-                    </Nav.Link>
-                  </Nav.Item>
-                )
-              )
+              (() => {
+                console.log("Renderizando abas, fases disponíveis:", launchphases.myLaunchPhases.map(p => ({ id: p.id, name: p.name })));
+                return launchphases.myLaunchPhases.map(
+                  (phase: LaunchPhases, index: number) => (
+                    <React.Fragment key={phase.id}>
+                      <Nav.Item>
+                        <Nav.Link
+                          active={activeTab === phase.id?.toString()}
+                          onClick={() => handleTabClick(phase.id?.toString() || "")}
+                          className="d-flex align-items-center"
+                        >
+                          <KTIcon
+                            iconName={
+                              phase.name === "Captação"
+                                ? "user"
+                                : phase.name === "Evento"
+                                ? "calendar"
+                                : phase.name === "Vendas"
+                                ? "purchase"
+                                : phase.name === "Aquecimento"
+                                ? "purchase"
+                                : phase.name === "Debriefing"
+                                ? "chart-simple-3"
+                                : "gear"
+                            }
+                            className="fs-6 me-2"
+                          />
+                          {phase.name}
+                          <button
+                            type="button"
+                            className="btn btn-icon btn-sm btn-light ms-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateComponent(phase);
+                            }}
+                            title={`Editar fase ${phase.name}`}
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              padding: "0",
+                              border: "none",
+                              background: "transparent"
+                            }}
+                          >
+                            <KTIcon iconName="pencil" className="fs-8 text-muted" />
+                          </button>
+                          {/* <Badge bg="success" className="ms-2 fs-8">
+                          #{index + 1}
+                        </Badge> */}
+                        </Nav.Link>
+                      </Nav.Item>
+                      
+                      {/* Landing Page Tab - aparece ao lado da fase correspondente */}
+                      {(() => {
+                        console.log(`Verificando fase "${phase.name}" para landing page Captação:`, phase.name === "Captação");
+                        return phase.name === "Captação" && (
+                          <Nav.Item>
+                            <Nav.Link
+                              active={activeTab === "landing-page-captacao"}
+                              onClick={() => handleTabClick("landing-page-captacao")}
+                              className="d-flex align-items-center"
+                            >
+                              <KTIcon iconName="rocket" className="fs-6 me-2" />
+                              Landing Page Captação
+                            </Nav.Link>
+                          </Nav.Item>
+                        );
+                      })()}
+                      
+                      {(() => {
+                        console.log(`Verificando fase "${phase.name}" para landing page Vendas:`, phase.name === "Vendas");
+                        return phase.name === "Vendas" && (
+                          <Nav.Item>
+                            <Nav.Link
+                              active={activeTab === "landing-page-vendas"}
+                              onClick={() => handleTabClick("landing-page-vendas")}
+                              className="d-flex align-items-center"
+                            >
+                              <KTIcon iconName="rocket" className="fs-6 me-2" />
+                              Landing Page Vendas
+                            </Nav.Link>
+                          </Nav.Item>
+                        );
+                      })()}
+                    </React.Fragment>
+                  )
+                );
+              })()
             ) : (
               // Mostra loading nas abas se ainda não carregou
               launchphases.loading && (
@@ -555,4 +727,4 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   );
 };
 
-export { ManageLaunchPhaseWidget };
+export { ManageLaunchPhaseWidget }; 

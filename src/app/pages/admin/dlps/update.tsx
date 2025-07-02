@@ -149,12 +149,24 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             <Form.Group controlId="formLayout">
               <Form.Label className="fw-bold fs-6 mb-5">Layout</Form.Label>
               <Form.Control
-                className="form-control form-control-lg form-control-solid"
-                placeholder="Digite o slug da landing page"
+                as="select"
                 value={layout}
                 onChange={(e: any) => setLayout(e.target.value)}
-                
-              />
+                className="form-control form-control-lg form-control-solid"
+              >
+                <option value="">Selecione um layout</option>
+                <option value="halo">Halo (padrão)</option>
+                <option value="halo-amber">Halo Amber</option>
+                <option value="halo-green">Halo Green</option>
+                <option value="halo-orange">Halo Orange</option>
+                <option value="halo-rose">Halo Rose</option>
+                <option value="halo-sky">Halo Sky</option>
+                <option value="halo-slate">Halo Slate</option>
+                <option value="clean">Clean</option>
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                Por favor selecione um layout
+              </Form.Control.Feedback>
             </Form.Group>
             <br />
           </div>

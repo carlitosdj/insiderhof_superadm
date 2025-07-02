@@ -16,7 +16,12 @@ import {
   reorderModulesRequest,
   updateModuleRequest,
 } from "../../../../store/ducks/dmodule/actions";
-import { AnimatePresence, Reorder, useDragControls, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  Reorder,
+  useDragControls,
+  motion,
+} from "framer-motion";
 import ManageAvailable from "./ManageAvailable";
 
 const MOMENT = require("moment");
@@ -35,7 +40,14 @@ const ModuleItem: React.FC<{
   deleteComponent: (module: Module) => void;
   manageAvailable: (child: Module) => void;
   productId: string | undefined;
-}> = ({ child, index, updateComponent, deleteComponent, manageAvailable, productId }) => {
+}> = ({
+  child,
+  index,
+  updateComponent,
+  deleteComponent,
+  manageAvailable,
+  productId,
+}) => {
   const dragControls = useDragControls();
   const { image } = child;
 
@@ -65,7 +77,7 @@ const ModuleItem: React.FC<{
       key={child.id}
       value={child}
       as="div"
-      dragListener={false}      // Desabilita o drag automático
+      dragListener={false} // Desabilita o drag automático
       dragControls={dragControls} // Usa o controle manual
       style={{ touchAction: "pan-y" }} // Permite scroll no item
       onDragEnd={handleDragEnd} // Limpa os estilos quando o arraste termina
@@ -99,7 +111,7 @@ const ModuleItem: React.FC<{
         // Previne drag em todo o card exceto no handle
         onPointerDownCapture={(e) => {
           // Verifica se o clique foi no drag handle ou em seus filhos
-          const dragHandle = e.currentTarget.querySelector('.drag-handle');
+          const dragHandle = e.currentTarget.querySelector(".drag-handle");
           if (dragHandle && !dragHandle.contains(e.target as Node)) {
             e.stopPropagation();
           }
@@ -107,69 +119,70 @@ const ModuleItem: React.FC<{
       >
         <div className="card-body p-3 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-            <div className="d-flex align-items-center flex-grow-1 w-100">
-              {image && (
-                <div className="me-3 me-md-4 flex-shrink-0">
-                  <img
-                    className="rounded-3"
-                    style={{
-                      objectFit: "cover",
-                      width: "90px",
-                      //height: "90px",
-                    }}
-                    src={
-                      image?.includes("https://")
-                        ? image
-                        : "https://app.insiderhof.com.br/files/" + image
-                    }
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null;
-                      currentTarget.src =
-                        "https://app.insiderhof.com.br/files/notfound.jpg";
-                    }}
-                  />
-                </div>
-              )}
+            <Link
+              to={"/classes/" + productId + "/" + child.id}
+              className="text-decoration-none w-100"
+            >
+              <div className="d-flex align-items-center flex-grow-1 w-100">
+                {image && (
+                  <div className="me-3 me-md-4 flex-shrink-0">
+                    <img
+                      className="rounded-3"
+                      style={{
+                        objectFit: "cover",
+                        width: "90px",
+                        //height: "90px",
+                      }}
+                      src={
+                        image?.includes("https://")
+                          ? image
+                          : "https://app.insiderhof.com.br/files/" + image
+                      }
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null;
+                        currentTarget.src =
+                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                      }}
+                    />
+                  </div>
+                )}
 
-              <div className="flex-grow-1 min-w-0 me-3 me-md-4">
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
-                  <Link
-                    to={"/classes/" + productId + "/" + child.id}
-                    className="text-decoration-none"
-                  >
+                <div className="flex-grow-1 min-w-0 me-3 me-md-4">
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2">
                     <h5 className="fw-bold text-dark mb-0 fs-6 fs-md-5">
                       {child.name}
                     </h5>
-                  </Link>
-                  <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
-                    Módulo
-                  </span>
-                </div>
 
-                <p
-                  className="text-muted fs-8 fs-md-7 mb-2"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {child.description?.length! > 80
-                    ? child.description?.substring(0, 80) + "..."
-                    : child.description}
-                </p>
-
-                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
-                  <div className="d-flex align-items-center gap-1">
-                    <KTIcon iconName="check" className="fs-6 text-muted" />
-                    <span className="text-muted fs-8 fs-md-7">
-                      {child.availableModule?.length || 0} aulas disponíveis
+                    <span className="badge bg-light-primary text-primary fs-8 fs-md-7 fw-semibold">
+                      Módulo
                     </span>
+                  </div>
+
+                  <p
+                    className="text-muted fs-8 fs-md-7 mb-2"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {child.description?.length! > 80
+                      ? child.description?.substring(0, 80) + "..."
+                      : child.description}
+                  </p>
+
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                    <div className="d-flex align-items-center gap-1">
+                      <KTIcon iconName="check" className="fs-6 text-muted" />
+                      <span className="text-muted fs-8 fs-md-7">
+                        {child.availableModule?.length || 0} aulas disponíveis
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
 
             <div className="d-flex flex-wrap align-items-center gap-2 flex-shrink-0 w-100 w-md-auto justify-content-between">
               <button
@@ -398,8 +411,8 @@ const ManageModuleWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       Nenhum módulo encontrado
                     </h4>
                     <p className="text-muted mb-4 fs-7 fs-md-6">
-                      Comece adicionando seu primeiro módulo para organizar
-                      as aulas do curso
+                      Comece adicionando seu primeiro módulo para organizar as
+                      aulas do curso
                     </p>
                     <button
                       className="btn btn-dark px-3 px-md-4 py-2 rounded-1 w-100 w-md-auto"

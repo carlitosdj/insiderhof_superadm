@@ -84,21 +84,17 @@ const widgetStyles = `
 type Props = {
   className: string;
   lps: LPState;
-  //handleBackToItems?: () => void;
+  handleBackToItems?: () => void;
   lpsessions?: LPSessionState;
   lpfeatures?: LPFeatureState;
-  launchPhaseId?: number;
-  resetToListFlag?: number;
 };
 
 const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   lps,
-  //handleBackToItems,
+  handleBackToItems,
   lpsessions,
   lpfeatures,
-  launchPhaseId: propLaunchPhaseId,
-  resetToListFlag,
 }) => {
   // Obtém o estado atualizado do Redux
   const currentLPSessions = useSelector((state: ApplicationState) => state.lpsessions);
@@ -110,8 +106,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [showLPSessions, setShowLPSessions] = useState<boolean>(false);
   const [selectedLP, setSelectedLP] = useState<LP>({});
 
-  const { launchPhaseId: urlLaunchPhaseId } = useParams();
-  const launchPhaseId = propLaunchPhaseId || urlLaunchPhaseId;
+  const { launchPhaseId } = useParams();
 
   // Get launch data from Redux state to display in header
   const { launchId } = useParams();
@@ -123,12 +118,6 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
       (lp) => lp.id === Number(launchPhaseId)
     )
   );
-
-  // Log para debug
-  console.log("ManageLPWidget - launchPhaseId:", launchPhaseId);
-  console.log("ManageLPWidget - launchPhase:", launchPhase);
-  console.log("ManageLPWidget - lps.myLPs:", lps.myLPs);
-  console.log("ManageLPWidget - lps.loading:", lps.loading);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -373,13 +362,6 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setSelectedLP({});
   };
 
-  useEffect(() => {
-    if (resetToListFlag !== undefined) {
-      setShowLPSessions(false);
-      setSelectedLP({});
-    }
-  }, [resetToListFlag]);
-
   // Se estiver mostrando LPSessions, renderiza o ManageLPSessionWidget
   if (showLPSessions && selectedLP.id) {
     return (
@@ -389,7 +371,6 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
         handleBackToLandingPages={handleBackToLandingPages}
         selectedLP={selectedLP}
         lpfeatures={currentLPFeatures}
-        launchPhaseId={propLaunchPhaseId}
       />
     );
   }
@@ -458,7 +439,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <div className="d-flex justify-content-between align-items-start">
             <div>
               <h2>
-                {launch?.name || "Lançamento"} - Landing Page {launchPhase?.name}
+                {launch?.name || "Lançamento"} - {launchPhase?.name}
               </h2>
               <div className="subtitle">
                 Gerenciamento de Landing Pages •{" "}
@@ -684,14 +665,14 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
             </div>
             
             {/* Action Buttons */}
-            {/* {handleBackToItems && (
+            {handleBackToItems && (
               <div className="action-buttons">
                 <Button variant="secondary" size="lg" onClick={handleBackToItems}>
                   <KTIcon iconName="arrow-left" className="fs-5 me-2" />
                   Voltar aos Itens
                 </Button>
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </div>

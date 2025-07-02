@@ -62,7 +62,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
           <div className="col-lg-12 py-lg-2 px-lg-6">
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                Nome da launch
+                Nome da fase
               </Form.Label>
               <Form.Control
                 placeholder=""
@@ -71,6 +71,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                 onChange={(e: any) => setName(e.target.value)}
                 name="name"
                 className="form-control form-control-lg form-control-solid"
+                disabled
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o nome do produto

@@ -39,6 +39,43 @@ const Step2CreateEvent: React.FC<Step2CreateEventProps> = ({ onNext, onPrevious,
     if (step2Data) {
       return step2Data;
     }
+    
+    // Calculate initial dates based on step1Data if available
+    let initialLeadSignUpStartDate = new Date();
+    let initialLeadSignUpEndDate = new Date();
+    let initialEventStartDate = new Date();
+    let initialEventEndDate = new Date();
+    
+    if (step1Data?.cartOpenDate) {
+      const cartOpenDate = new Date(step1Data.cartOpenDate);
+      
+      // Calculate event dates
+      const eventStartDate = new Date(cartOpenDate);
+      eventStartDate.setDate(cartOpenDate.getDate() - 7);
+      const dayOfWeek = eventStartDate.getDay();
+      const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      eventStartDate.setDate(eventStartDate.getDate() - daysToMonday);
+      eventStartDate.setHours(20, 0, 0, 0);
+      
+      const eventEndDate = new Date(eventStartDate);
+      eventEndDate.setDate(eventStartDate.getDate() + 3);
+      eventEndDate.setHours(23, 59, 0, 0);
+      
+      // Calculate lead dates
+      const startSubscribeDate = new Date(eventStartDate);
+      startSubscribeDate.setMonth(startSubscribeDate.getMonth() - 1);
+      startSubscribeDate.setHours(0, 0, 0, 0);
+      
+      const endSubscribeDate = new Date(cartOpenDate);
+      endSubscribeDate.setDate(cartOpenDate.getDate() - 1);
+      endSubscribeDate.setHours(23, 59, 0, 0);
+      
+      initialLeadSignUpStartDate = startSubscribeDate;
+      initialLeadSignUpEndDate = endSubscribeDate;
+      initialEventStartDate = eventStartDate;
+      initialEventEndDate = eventEndDate;
+    }
+    
     return {
       eventName: "Semana InsiderHOF 2025",
       leadForm: "https://forms.gle/pa8KqCmTAyNEdYDb6",
@@ -47,10 +84,10 @@ const Step2CreateEvent: React.FC<Step2CreateEventProps> = ({ onNext, onPrevious,
       productName: "Treinamento InsiderHOF Online 2025",
       productWaitLink: "https://insiderhof.com.br/viawhats/espera",
       paidGroup: "https://chat.whatsapp.com/DA5umaAQoLqL7YiZjH1I3Q",
-      leadSignUpStartDate: new Date(),
-      leadSignUpEndDate: new Date(),
-      eventStartDate: new Date(),
-      eventEndDate: new Date()
+      leadSignUpStartDate: initialLeadSignUpStartDate,
+      leadSignUpEndDate: initialLeadSignUpEndDate,
+      eventStartDate: initialEventStartDate,
+      eventEndDate: initialEventEndDate
     };
   });
 
@@ -84,11 +121,16 @@ const Step2CreateEvent: React.FC<Step2CreateEventProps> = ({ onNext, onPrevious,
       endSubscribeDate.setDate(cartOpenDate.getDate() - 1);
       endSubscribeDate.setHours(23, 59, 0, 0); // 23:59
       
-      setFormData(prev => ({
-        ...prev,
+      const newFormData = {
+        ...formData,
         leadSignUpStartDate: startSubscribeDate,
         leadSignUpEndDate: endSubscribeDate
-      }));
+      };
+      
+      setFormData(newFormData);
+      updateStep2Data(newFormData); // Update context immediately
+      
+
     }
   };
 
@@ -102,24 +144,31 @@ const Step2CreateEvent: React.FC<Step2CreateEventProps> = ({ onNext, onPrevious,
       const dayOfWeek = eventStartDate.getDay(); // 0 = domingo, 1 = segunda, etc.
       const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Dias para chegar na segunda-feira
       eventStartDate.setDate(eventStartDate.getDate() - daysToMonday);
-      eventStartDate.setHours(20, 0, 0, 0); // 9h da manhã
+      eventStartDate.setHours(20, 0, 0, 0); // 20h
       
       // Encontrar a quinta-feira da semana anterior à abertura do carrinho
       const eventEndDate = new Date(eventStartDate);
       eventEndDate.setDate(eventStartDate.getDate() + 3); // Segunda + 3 dias = quinta-feira
-      eventEndDate.setHours(23, 59, 0, 0); // 18h da tarde
+      eventEndDate.setHours(23, 59, 0, 0); // 23:59
       
-      setFormData(prev => ({
-        ...prev,
+      const newFormData = {
+        ...formData,
         eventStartDate,
         eventEndDate
-      }));
+      };
+      
+      setFormData(newFormData);
+      updateStep2Data(newFormData); // Update context immediately
+      
+
     }
   };
 
   React.useEffect(() => {
-    calculateLeadDates();
-    calculateEventDates();
+    if (step1Data?.cartOpenDate) {
+      calculateLeadDates();
+      calculateEventDates();
+    }
   }, [step1Data?.cartOpenDate]);
 
   // Salvar dados default no contexto quando o componente monta
@@ -128,6 +177,15 @@ const Step2CreateEvent: React.FC<Step2CreateEventProps> = ({ onNext, onPrevious,
       updateStep2Data(formData);
     }
   }, []);
+
+  // Recalculate dates when step1Data becomes available
+  React.useEffect(() => {
+    if (step1Data?.cartOpenDate && !step2Data) {
+
+      calculateLeadDates();
+      calculateEventDates();
+    }
+  }, [step1Data]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;

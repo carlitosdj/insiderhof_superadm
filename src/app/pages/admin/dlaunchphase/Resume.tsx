@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Badge, ProgressBar, Button, Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { ApplicationState } from "../../../../store";
 import Manage from "../dlaunchhasoffers/Manage";
@@ -272,6 +272,7 @@ const resumeStyles = `
 
 const Resume = ({ onEdit }: { onEdit?: () => void }) => {
   const { launchId } = useParams();
+  const navigate = useNavigate();
   
   // Get launch data from Redux state
   const launch = useSelector((state: ApplicationState) => 
@@ -319,6 +320,15 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
   const [showOffersModal, setShowOffersModal] = useState(false);
   const handleOpenOffersModal = () => setShowOffersModal(true);
   const handleCloseOffersModal = () => setShowOffersModal(false);
+
+  // Function to handle landing page edit
+  const handleEditLandingPage = (phaseType: 'captacao' | 'vendas') => {
+    // Navigate to the specific landing page management
+    const targetUrl = `/launch/${launchId}/${phaseType === 'captacao' ? 'landing-page-captacao' : 'landing-page-vendas'}`;
+    navigate(targetUrl);
+    // Scroll to top after navigation
+    window.scrollTo(0, 0);
+  };
 
   if (!launch) {
     return (
@@ -591,15 +601,25 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
                           </div>
                         </span>
                         <span className="info-value">
-                          <a
-                            href={`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className=""
-                          >
-                            {/* <KTIcon iconName="external-link" className="fs-6 me-1" /> */}
-                            {`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
-                          </a>
+                          <div className="d-flex align-items-center gap-2">
+                            <a
+                              href={`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-decoration-none"
+                            >
+                              {`https://insiderhof.com.br/subscribe/${captacaoPhase.slug || captacaoPhase.id}`}
+                            </a>
+                            <Button 
+                              variant="outline-primary" 
+                              size="sm" 
+                              onClick={() => handleEditLandingPage('captacao')}
+                              title="Editar Landing Page de Captação"
+                              className="btn-sm"
+                            >
+                              <KTIcon iconName="pencil" className="fs-6" />
+                            </Button>
+                          </div>
                         </span>
                       </div>
                     ) : null;
@@ -622,15 +642,25 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
                           </div>
                         </span>
                         <span className="info-value">
-                          <a
-                            href={`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className=""
-                          >
-                            {/* <KTIcon iconName="external-link" className="fs-6 me-1" /> */}
-                            {`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
-                          </a>
+                          <div className="d-flex align-items-center gap-2">
+                            <a
+                              href={`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-decoration-none"
+                            >
+                              {`https://insiderhof.com.br/join/${vendasPhase.slug || vendasPhase.id}`}
+                            </a>
+                            <Button 
+                              variant="outline-success" 
+                              size="sm" 
+                              onClick={() => handleEditLandingPage('vendas')}
+                              title="Editar Landing Page de Vendas"
+                              className="btn-sm"
+                            >
+                              <KTIcon iconName="pencil" className="fs-6" />
+                            </Button>
+                          </div>
                         </span>
                       </div>
                     ) : null;
