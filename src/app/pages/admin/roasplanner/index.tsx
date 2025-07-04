@@ -7,11 +7,14 @@ import { Content } from "../../../../_metronic/layout/components/content";
 import { ToolbarWrapper } from "../../../../_metronic/layout/components/toolbar";
 
 // =================================================================================
-// VERSÃO FINAL: ROAS PLANNER COM LÓGICA DE TRAVAS IMPLÍCITAS EM CASCATA - CORREÇÃO DE UNLOCK
+// VERSÃO FINAL: ROAS PLANNER COM LÓGICA COMPLETA E CORREÇÕES FINAIS
 // =================================================================================
 
 type MetricKey =
-  | "investment"
+  | "totalInvestment"
+  | "acquisitionPercentage"
+  | "acquisitionInvestment"
+  | "remarketingInvestment"
   | "cpl"
   | "leads"
   | "conversionRate"
@@ -35,7 +38,7 @@ const MetricCard: FC<{
   metric: Metric;
   metricKey: MetricKey;
   title: string;
-  onValueChange: (key: MetricKey, value: number) => void;
+  onValueChange?: (key: MetricKey, value: number) => void;
   onLockToggle: (key: MetricKey) => void;
   prefix?: string;
   suffix?: string;
@@ -59,7 +62,7 @@ const MetricCard: FC<{
           style: "currency",
           currency: "BRL",
         });
-      if (suffix === "%") return `${val.toFixed(2).replace(".", ",")}%`;
+      if (suffix === "%") return `${val.toFixed(1).replace(".", ",")}%`;
       if (suffix === "x") return `${val.toFixed(2).replace(".", ",")}x`;
       return val.toLocaleString("pt-BR", {
         minimumFractionDigits: 0,
@@ -78,6 +81,7 @@ const MetricCard: FC<{
   }, [metric.value, formatDisplayValue]);
 
   const handleBlur = () => {
+    if (!onValueChange) return;
     const cleanedValue = inputValue
       .replace("R$", "")
       .replace(/\./g, "")
@@ -101,7 +105,7 @@ const MetricCard: FC<{
   const lockTitle = metric.isLocked
     ? "Destravar"
     : metric.isImplicitlyLocked
-    ? "Travado por consequência de outras travas"
+    ? "Travado por consequência"
     : "Travar";
 
   return (
@@ -139,7 +143,7 @@ const MetricCard: FC<{
             onChange={(e) => setInputValue(e.target.value)}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            disabled={isFullyLocked}
+            disabled={!onValueChange || isFullyLocked}
           />
         </div>
       </div>
@@ -148,67 +152,145 @@ const MetricCard: FC<{
 };
 
 const RoasplannerPage: React.FC = () => {
-  const initialMetrics: Metrics = useMemo(
-    () => ({
-      investment: { value: 1000, isLocked: false, isImplicitlyLocked: false },
-      cpl: { value: 2.5, isLocked: false, isImplicitlyLocked: false },
-      leads: { value: 400, isLocked: false, isImplicitlyLocked: false },
-      conversionRate: { value: 1, isLocked: false, isImplicitlyLocked: false },
-      sales: { value: 4, isLocked: false, isImplicitlyLocked: false },
-      cpa: { value: 250, isLocked: false, isImplicitlyLocked: false },
-      avgTicket: { value: 997, isLocked: false, isImplicitlyLocked: false },
-      grossRevenue: { value: 3988, isLocked: false, isImplicitlyLocked: false },
-      roas: { value: 3.99, isLocked: false, isImplicitlyLocked: false },
-      profitMargin: { value: 80, isLocked: false, isImplicitlyLocked: false },
-      netRevenue: { value: 3190.4, isLocked: false, isImplicitlyLocked: false },
-    }),
-    []
-  );
+  const setupInitialScenario = (): Metrics => {
+    const initialValues = {
+      totalInvestment: 1000,
+      acquisitionPercentage: 80,
+      cpl: 3,
+      conversionRate: 1,
+      avgTicket: 997,
+      profitMargin: 80,
+    };
 
-  const [metrics, setMetrics] = useState<Metrics>(initialMetrics);
+    const acqInv =
+      initialValues.totalInvestment *
+      (initialValues.acquisitionPercentage / 100);
+    const remarketingInv = initialValues.totalInvestment - acqInv;
+    const leads = acqInv / initialValues.cpl;
+    const sales = leads * (initialValues.conversionRate / 100);
+    const cpa = sales > 0 ? acqInv / sales : 0;
+    const grossRevenue = sales * initialValues.avgTicket;
+    const roas =
+      initialValues.totalInvestment > 0
+        ? grossRevenue / initialValues.totalInvestment
+        : 0;
+    const netRevenue = grossRevenue * (initialValues.profitMargin / 100);
+
+    return {
+      totalInvestment: {
+        value: initialValues.totalInvestment,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      acquisitionPercentage: {
+        value: initialValues.acquisitionPercentage,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      acquisitionInvestment: {
+        value: acqInv,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      remarketingInvestment: {
+        value: remarketingInv,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      cpl: {
+        value: initialValues.cpl,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      leads: { value: leads, isLocked: false, isImplicitlyLocked: false },
+      conversionRate: {
+        value: initialValues.conversionRate,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      sales: { value: sales, isLocked: false, isImplicitlyLocked: false },
+      cpa: { value: cpa, isLocked: false, isImplicitlyLocked: false },
+      avgTicket: {
+        value: initialValues.avgTicket,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      grossRevenue: {
+        value: grossRevenue,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      roas: { value: roas, isLocked: false, isImplicitlyLocked: false },
+      profitMargin: {
+        value: initialValues.profitMargin,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+      netRevenue: {
+        value: netRevenue,
+        isLocked: false,
+        isImplicitlyLocked: false,
+      },
+    };
+  };
+
+  const [metrics, setMetrics] = useState<Metrics>(setupInitialScenario());
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [recalculatedKeys, setRecalculatedKeys] = useState<Set<MetricKey>>(
     new Set()
   );
 
+  // Relações completas, incluindo a dupla relação do orçamento
   const relations: MetricKey[][] = useMemo(
     () => [
-      ["investment", "cpl", "leads"],
+      ["totalInvestment", "acquisitionInvestment", "remarketingInvestment"],
+      ["totalInvestment", "acquisitionPercentage", "acquisitionInvestment"],
+      ["acquisitionInvestment", "cpl", "leads"],
       ["leads", "conversionRate", "sales"],
-      ["investment", "sales", "cpa"],
+      ["acquisitionInvestment", "sales", "cpa"],
       ["sales", "avgTicket", "grossRevenue"],
-      ["grossRevenue", "investment", "roas"],
+      ["grossRevenue", "totalInvestment", "roas"],
       ["grossRevenue", "profitMargin", "netRevenue"],
     ],
     []
   );
 
-  const solvers = useMemo<Record<MetricKey, Array<(m: Metrics) => number>>>(
+  const solvers = useMemo<Record<string, Array<(m: Metrics) => number>>>(
     () => ({
-      investment: [
-        (m) => m.leads.value * m.cpl.value,
-        (m) => m.sales.value * m.cpa.value,
-        (m) => m.grossRevenue.value / m.roas.value,
+      totalInvestment: [
+        (m) => m.acquisitionInvestment.value + m.remarketingInvestment.value,
+        (m) =>
+          m.acquisitionInvestment.value / (m.acquisitionPercentage.value / 100),
       ],
-      cpl: [(m) => m.investment.value / m.leads.value],
+      acquisitionInvestment: [
+        (m) => m.totalInvestment.value - m.remarketingInvestment.value,
+        (m) => m.totalInvestment.value * (m.acquisitionPercentage.value / 100),
+      ],
+      remarketingInvestment: [
+        (m) => m.totalInvestment.value - m.acquisitionInvestment.value,
+      ],
+      acquisitionPercentage: [
+        (m) => (m.acquisitionInvestment.value / m.totalInvestment.value) * 100,
+      ],
+      cpl: [(m) => m.acquisitionInvestment.value / m.leads.value],
       leads: [
-        (m) => m.investment.value / m.cpl.value,
+        (m) => m.acquisitionInvestment.value / m.cpl.value,
         (m) => m.sales.value / (m.conversionRate.value / 100),
       ],
       conversionRate: [(m) => (m.sales.value / m.leads.value) * 100],
       sales: [
         (m) => m.leads.value * (m.conversionRate.value / 100),
-        (m) => m.investment.value / m.cpa.value,
+        (m) => m.acquisitionInvestment.value / m.cpa.value,
         (m) => m.grossRevenue.value / m.avgTicket.value,
       ],
-      cpa: [(m) => m.investment.value / m.sales.value],
+      cpa: [(m) => m.acquisitionInvestment.value / m.sales.value],
       avgTicket: [(m) => m.grossRevenue.value / m.sales.value],
       grossRevenue: [
         (m) => m.sales.value * m.avgTicket.value,
-        (m) => m.investment.value * m.roas.value,
+        (m) => m.totalInvestment.value * m.roas.value,
         (m) => m.netRevenue.value / (m.profitMargin.value / 100),
       ],
-      roas: [(m) => m.grossRevenue.value / m.investment.value],
+      roas: [(m) => m.grossRevenue.value / m.totalInvestment.value],
       profitMargin: [(m) => (m.netRevenue.value / m.grossRevenue.value) * 100],
       netRevenue: [(m) => m.grossRevenue.value * (m.profitMargin.value / 100)],
     }),
@@ -217,13 +299,16 @@ const RoasplannerPage: React.FC = () => {
 
   const hierarchy: MetricKey[] = useMemo(
     () => [
+      "remarketingInvestment",
+      "acquisitionInvestment",
       "leads",
       "sales",
-      "investment",
+      "cpa",
+      "acquisitionPercentage",
+      "totalInvestment",
       "grossRevenue",
       "netRevenue",
       "avgTicket",
-      "cpa",
       "cpl",
       "roas",
       "conversionRate",
@@ -235,11 +320,9 @@ const RoasplannerPage: React.FC = () => {
   const calculateImplicitLocks = useCallback(
     (currentMetrics: Metrics): Metrics => {
       const newMetrics = JSON.parse(JSON.stringify(currentMetrics));
-      // Limpa travas implícitas antigas para reavaliar do zero
       Object.keys(newMetrics).forEach((k) => {
         newMetrics[k as MetricKey].isImplicitlyLocked = false;
       });
-
       let safetyNet = 0;
       while (safetyNet < relations.length) {
         let foundNewLockThisIteration = false;
@@ -276,16 +359,18 @@ const RoasplannerPage: React.FC = () => {
   ): { finalMetrics: Metrics; updatedKeys: Set<MetricKey> } => {
     let newMetrics = JSON.parse(JSON.stringify(currentMetrics));
     const updatedKeys = new Set<MetricKey>();
-    const unsolved = new Set<MetricKey>(
-      hierarchy.filter(
-        (k) =>
-          !newMetrics[k].isLocked &&
-          !newMetrics[k].isImplicitlyLocked &&
-          k !== changedKey
-      )
-    );
-    for (let i = 0; i < hierarchy.length && unsolved.size > 0; i++) {
-      let changedInIteration = false;
+    let safetyNet = 0;
+    while (safetyNet < hierarchy.length) {
+      let changedInLoop = false;
+      const unsolved = new Set<MetricKey>(
+        hierarchy.filter(
+          (k) =>
+            !newMetrics[k].isLocked &&
+            !newMetrics[k].isImplicitlyLocked &&
+            k !== changedKey
+        )
+      );
+      if (unsolved.size === 0) break;
       for (const keyToSolve of hierarchy) {
         if (unsolved.has(keyToSolve)) {
           for (const solve of solvers[keyToSolve]) {
@@ -297,16 +382,16 @@ const RoasplannerPage: React.FC = () => {
                 Math.abs(newMetrics[keyToSolve].value - result) > 0.001
               ) {
                 newMetrics[keyToSolve].value = result;
-                unsolved.delete(keyToSolve);
                 updatedKeys.add(keyToSolve);
-                changedInIteration = true;
+                changedInLoop = true;
                 break;
               }
             } catch (e) {}
           }
         }
       }
-      if (!changedInIteration) break;
+      if (!changedInLoop) break;
+      safetyNet++;
     }
     return { finalMetrics: newMetrics, updatedKeys };
   };
@@ -333,13 +418,9 @@ const RoasplannerPage: React.FC = () => {
     [metrics, processStateUpdate]
   );
 
-  // LÓGICA DE TRAVA CORRIGIDA
   const handleLockToggle = useCallback(
     (key: MetricKey) => {
       const isCurrentlyLocked = metrics[key].isLocked;
-
-      // --- Caminho de DESTRAVAR ---
-      // Ação de destravar é sempre permitida e não precisa de verificação de conflito.
       if (isCurrentlyLocked) {
         const newMetrics = {
           ...metrics,
@@ -348,13 +429,9 @@ const RoasplannerPage: React.FC = () => {
         processStateUpdate(key, newMetrics);
         return;
       }
-
-      // --- Caminho de TRAVAR ---
-      // Apenas ao tentar travar, verificamos por conflitos.
       setConflictError(null);
       const conflictRelation = relations.find((rel) => {
         if (!rel.includes(key)) return false;
-        // Verifica se os OUTROS 2 itens no triângulo já estão travados
         const otherItems = rel.filter((k) => k !== key);
         const otherItemsLockedCount = otherItems.filter(
           (k) =>
@@ -363,7 +440,6 @@ const RoasplannerPage: React.FC = () => {
         ).length;
         return otherItemsLockedCount === 2;
       });
-
       if (conflictRelation) {
         const others = conflictRelation
           .filter((k) => k !== key)
@@ -375,8 +451,6 @@ const RoasplannerPage: React.FC = () => {
         setTimeout(() => setConflictError(null), 5000);
         return;
       }
-
-      // Se não houver conflito, trava o item e processa o novo estado.
       const newMetrics = {
         ...metrics,
         [key]: { ...metrics[key], isLocked: true },
@@ -400,31 +474,81 @@ const RoasplannerPage: React.FC = () => {
           </Alert>
         )}
         {/* <div className="mb-10 text-center">
-            <h1 className="text-dark">Planejador de ROAS Interativo</h1>
-            <p className="text-muted fs-5 fw-normal">Ajuste qualquer valor e veja a mágica acontecer. A trava cinza significa que o valor é uma consequência de outras travas.</p>
+          <h1 className="text-dark">Planejador de ROAS Interativo</h1>
+          <p className="text-muted fs-5 fw-normal">
+            Simule cenários de marketing com uma divisão de orçamento realista.
+            A trava cinza indica um valor travado por consequência.
+          </p>
         </div> */}
+
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
             <div className="card-label fw-bolder fs-3 mb-1">
-              Alavancas e Eficiência
+              Orçamento de Marketing
             </div>
             <div className="text-muted mt-1 fw-bold fs-7">
-              Métricas que você controla diretamente
+              Defina seu orçamento total e como ele será dividido
             </div>
           </h3>
         </div>
         <div className="row g-5 gx-xxl-8 mb-10">
           <div className="col-md-6 col-lg-3">
             <MetricCard
-              metric={metrics.investment}
-              metricKey="investment"
-              title="Investimento"
+              metric={metrics.totalInvestment}
+              metricKey="totalInvestment"
+              title="Investimento Total"
               onValueChange={handleValueChange}
               onLockToggle={handleLockToggle}
               prefix="R$"
-              isRecalculated={recalculatedKeys.has("investment")}
+              isRecalculated={recalculatedKeys.has("totalInvestment")}
             />
           </div>
+          <div className="col-md-6 col-lg-3">
+            <MetricCard
+              metric={metrics.acquisitionPercentage}
+              metricKey="acquisitionPercentage"
+              title="% na Captação"
+              onValueChange={handleValueChange}
+              onLockToggle={handleLockToggle}
+              suffix="%"
+              isRecalculated={recalculatedKeys.has("acquisitionPercentage")}
+            />
+          </div>
+          <div className="col-md-6 col-lg-3">
+            <MetricCard
+              metric={metrics.acquisitionInvestment}
+              metricKey="acquisitionInvestment"
+              title="Inv. em Captação"
+              onValueChange={handleValueChange}
+              onLockToggle={handleLockToggle}
+              prefix="R$"
+              isRecalculated={recalculatedKeys.has("acquisitionInvestment")}
+            />
+          </div>
+          <div className="col-md-6 col-lg-3">
+            <MetricCard
+              metric={metrics.remarketingInvestment}
+              metricKey="remarketingInvestment"
+              title="Inv. em Remarketing"
+              onValueChange={handleValueChange}
+              onLockToggle={handleLockToggle}
+              prefix="R$"
+              isRecalculated={recalculatedKeys.has("remarketingInvestment")}
+            />
+          </div>
+        </div>
+
+        <div className="card-header border-0 pt-5">
+          <h3 className="card-title align-items-start flex-column">
+            <div className="card-label fw-bolder fs-3 mb-1">
+              Funil de Aquisição
+            </div>
+            <div className="text-muted mt-1 fw-bold fs-7">
+              Métricas baseadas no seu investimento de Captação
+            </div>
+          </h3>
+        </div>
+        <div className="row g-5 gx-xxl-8 mb-10">
           <div className="col-md-6 col-lg-3">
             <MetricCard
               metric={metrics.cpl}
@@ -434,6 +558,16 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("cpl")}
+            />
+          </div>
+          <div className="col-md-6 col-lg-3">
+            <MetricCard
+              metric={metrics.leads}
+              metricKey="leads"
+              title="Leads Gerados"
+              onValueChange={handleValueChange}
+              onLockToggle={handleLockToggle}
+              isRecalculated={recalculatedKeys.has("leads")}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -449,39 +583,6 @@ const RoasplannerPage: React.FC = () => {
           </div>
           <div className="col-md-6 col-lg-3">
             <MetricCard
-              metric={metrics.avgTicket}
-              metricKey="avgTicket"
-              title="Ticket Médio"
-              onValueChange={handleValueChange}
-              onLockToggle={handleLockToggle}
-              prefix="R$"
-              isRecalculated={recalculatedKeys.has("avgTicket")}
-            />
-          </div>
-        </div>
-        <div className="card-header border-0 pt-5">
-          <h3 className="card-title align-items-start flex-column">
-            <div className="card-label fw-bolder fs-3 mb-1">
-              Resultados de Performance
-            </div>
-            <div className="text-muted mt-1 fw-bold fs-7">
-              Consequências diretas das suas alavancas
-            </div>
-          </h3>
-        </div>
-        <div className="row g-5 gx-xxl-8 mb-10">
-          <div className="col-md-6 col-lg-3">
-            <MetricCard
-              metric={metrics.leads}
-              metricKey="leads"
-              title="Leads Gerados"
-              onValueChange={handleValueChange}
-              onLockToggle={handleLockToggle}
-              isRecalculated={recalculatedKeys.has("leads")}
-            />
-          </div>
-          <div className="col-md-6 col-lg-3">
-            <MetricCard
               metric={metrics.sales}
               metricKey="sales"
               title="Número de Vendas"
@@ -490,7 +591,20 @@ const RoasplannerPage: React.FC = () => {
               isRecalculated={recalculatedKeys.has("sales")}
             />
           </div>
-          <div className="col-md-6 col-lg-3">
+        </div>
+
+        <div className="card-header border-0 pt-5">
+          <h3 className="card-title align-items-start flex-column">
+            <div className="card-label fw-bolder fs-3 mb-1">
+              Resultados Financeiros
+            </div>
+            <div className="text-muted mt-1 fw-bold fs-7">
+              O impacto final da sua estratégia completa
+            </div>
+          </h3>
+        </div>
+        <div className="row g-5 gx-xxl-8 mb-10">
+          <div className="col-md-6 col-lg-6">
             <MetricCard
               metric={metrics.cpa}
               metricKey="cpa"
@@ -501,30 +615,31 @@ const RoasplannerPage: React.FC = () => {
               isRecalculated={recalculatedKeys.has("cpa")}
             />
           </div>
-          <div className="col-md-6 col-lg-3">
+          <div className="col-md-6 col-lg-6">
             <MetricCard
-              metric={metrics.roas}
-              metricKey="roas"
-              title="ROAS"
+              metric={metrics.avgTicket}
+              metricKey="avgTicket"
+              title="Ticket Médio"
               onValueChange={handleValueChange}
               onLockToggle={handleLockToggle}
-              suffix="x"
-              isRecalculated={recalculatedKeys.has("roas")}
+              prefix="R$"
+              isRecalculated={recalculatedKeys.has("avgTicket")}
             />
           </div>
         </div>
+
         <div className="card-header border-0 pt-5">
           <h3 className="card-title align-items-start flex-column">
             <div className="card-label fw-bolder fs-3 mb-1">
               Resultados Financeiros
             </div>
             <div className="text-muted mt-1 fw-bold fs-7">
-              O impacto final no negócio
+              O impacto final da sua estratégia completa
             </div>
           </h3>
         </div>
         <div className="row g-5 gx-xxl-8">
-          <div className="col-md-6 col-lg-4">
+          <div className="col-md-6 col-lg-3">
             <MetricCard
               metric={metrics.grossRevenue}
               metricKey="grossRevenue"
@@ -535,7 +650,18 @@ const RoasplannerPage: React.FC = () => {
               isRecalculated={recalculatedKeys.has("grossRevenue")}
             />
           </div>
-          <div className="col-md-6 col-lg-4">
+          <div className="col-md-6 col-lg-3">
+            <MetricCard
+              metric={metrics.roas}
+              metricKey="roas"
+              title="ROAS (Total)"
+              onValueChange={handleValueChange}
+              onLockToggle={handleLockToggle}
+              suffix="x"
+              isRecalculated={recalculatedKeys.has("roas")}
+            />
+          </div>
+          <div className="col-md-6 col-lg-3">
             <MetricCard
               metric={metrics.profitMargin}
               metricKey="profitMargin"
@@ -546,7 +672,7 @@ const RoasplannerPage: React.FC = () => {
               isRecalculated={recalculatedKeys.has("profitMargin")}
             />
           </div>
-          <div className="col-md-6 col-lg-4">
+          <div className="col-md-6 col-lg-3">
             <MetricCard
               metric={metrics.netRevenue}
               metricKey="netRevenue"
@@ -568,9 +694,7 @@ const Roasplanner: FC<React.PropsWithChildren<unknown>> = () => {
   const me = useSelector((state: ApplicationState) => state.me);
   const ideaction = useSelector((state: ApplicationState) => state.ideaction);
 
-  useEffect(() => {
-    // Sua lógica de useEffect permanece aqui
-  }, [dispatch, me.me?.id]);
+  useEffect(() => {}, [dispatch, me.me?.id]);
 
   return (
     <>
@@ -586,7 +710,7 @@ const Roasplanner: FC<React.PropsWithChildren<unknown>> = () => {
       />
       {ideaction.error && (
         <Alert variant="danger">
-          <h5>Erro ao carregar ideações:</h5>
+          <h5>Erro:</h5>
           <pre>{JSON.stringify(ideaction.error, null, 2)}</pre>
         </Alert>
       )}
