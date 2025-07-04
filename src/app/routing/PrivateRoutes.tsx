@@ -12,6 +12,7 @@ import Modules from "../pages/admin/dmodules/Manage";
 import Classes from "../pages/admin/dclass/Manage";
 import ClassExtras from "../pages/admin/dclassextra/Manage";
 
+
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import("../modules/profile/ProfilePage"));
   const WizardsPage = lazy(() => import("../modules/wizards/WizardsPage"));
@@ -118,6 +119,13 @@ const PrivateRoutes = () => {
     () => lazy(() => import("../pages/admin/dlaunch/CreateLaunch")),
     []
   );
+
+  const Roasplanner = useMemo(
+    () => lazy(() => import("../pages/admin/roasplanner")),
+    []
+  );
+
+
 
   return (
     <Routes>
@@ -393,6 +401,16 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
+
+        <Route
+          path="roasplanner"
+          element={
+            <SuspensedView>
+              <Roasplanner />
+            </SuspensedView>
+          }
+        />
+
 
         {/* Lazy Modules */}
         <Route

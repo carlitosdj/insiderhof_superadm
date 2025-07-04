@@ -1,0 +1,15 @@
+@keyframes card-flash {
+    0% {
+      background-color: transparent;
+    }
+    25% {
+      background-color: rgba(22, 181, 142, 0.15); /* Cor verde clara e sutil */
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  
+  .card-flashing .card-body {
+    animation: card-flash 0.7s ease-out;
+  }

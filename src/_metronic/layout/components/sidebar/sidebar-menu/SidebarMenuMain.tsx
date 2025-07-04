@@ -20,6 +20,13 @@ const SidebarMenuMain = () => {
         title="Ideação"
         fontIcon="bi-app-indicator"
       />
+      <SidebarMenuItem
+        to="/roasplanner"
+        icon="sun"
+        title="ROAS planner"
+        fontIcon="bi-app-indicator"
+      />
+      
       {/* <SidebarMenuItem
         to="/builder"
         icon="switch"
@@ -69,11 +76,10 @@ const SidebarMenuMain = () => {
         //title={intl.formatMessage({ id: "MENU.PRODUCTS" })}
         title={"Oferta"}
       /> */}
-
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-            LANÇAMENTOS
+            INFOPRODUTOS
           </span>
         </div>
       </div>
@@ -90,13 +96,22 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.OFFERS" })}
       />
+
+      <div className="menu-item">
+        <div className="menu-content pt-8 pb-2">
+          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+            LANÇAMENTOS
+          </span>
+        </div>
+      </div>
+
       <SidebarMenuItem
         to="/launch"
         icon="rocket"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.LAUNCHES" })}
       />
-      
+
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">

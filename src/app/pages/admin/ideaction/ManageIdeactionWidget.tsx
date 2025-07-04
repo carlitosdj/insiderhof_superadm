@@ -51,34 +51,34 @@ const IdeactionItem: React.FC<{
       return {
         value: scoreValue,
         category: "Excepcional 🚀",
-        variant: "primary",
+        variant: "light-primary",
       };
     }
     if (scoreValue >= 70) {
       return {
         value: scoreValue,
         category: "Prioridade Alta",
-        variant: "success",
+        variant: "light-success",
       };
     }
     if (scoreValue >= 30) {
       return {
         value: scoreValue,
         category: "Potencial a Discutir",
-        variant: "warning",
+        variant: "light-warning",
       };
     }
     if (scoreValue >= 10) {
         return {
           value: scoreValue,
           category: "Análise Crítica",
-          variant: "info",
+          variant: "light-info",
         };
     }
     return {
       value: scoreValue,
       category: "Repensar ou Descartar",
-      variant: "danger",
+      variant: "light-danger",
     };
   }, [ideaction]);
 
