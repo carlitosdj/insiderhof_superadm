@@ -43,7 +43,6 @@ const MetricCard: FC<{
   prefix?: string;
   suffix?: string;
   isRecalculated?: boolean;
-  metrics: Metrics;
 }> = ({
   metric,
   metricKey,
@@ -53,7 +52,6 @@ const MetricCard: FC<{
   prefix = "",
   suffix = "",
   isRecalculated,
-  metrics,
 }) => {
   const formatDisplayValue = useCallback(
     (val: number) => {
@@ -110,64 +108,8 @@ const MetricCard: FC<{
     ? "Travado por consequência"
     : "Travar";
 
-  const getMetricAlert = (metricKey: MetricKey, value: number, metrics: Metrics) => {
-    switch (metricKey) {
-      case "totalInvestment":
-        if (value < 1000) return { text: "Investimento muito baixo.", color: "bg-warning-subtle" };
-        break;
-      case "cpl":
-        if (value < 1) return { text: "É MUITO IRREAL ISSO, TOME CUIDADO DEMAIS!", color: "bg-danger-subtle" };
-        if (value < 2) return { text: "VOCÊ TÁ NUMA ZONA DE PERIGO, PODE SER IRREAL ISSO AQUI", color: "bg-warning-subtle" };
-        if (value > 8) return { text: "Há algo de errado, reveja as métricas.", color: "bg-danger-subtle" };
-        break;
-      case "leads":
-        if (value < 200) return { text: "O evento tende a não ter muitas pessoas. Cuidado.", color: "bg-warning-subtle" };
-        break;
-      case "conversionRate":
-        if (value < 0.6) return { text: "Risco grande!", color: "bg-danger-subtle" };
-        if (value < 1) return { text: "Atenção, pode ser perigoso aqui", color: "bg-warning-subtle" };
-        if (value < 1.5) return { text: "Uma boa taxa de conversão", color: "bg-info-subtle" };
-        if (value < 2) return { text: "Ótima taxa!", color: "bg-success-subtle" };
-        if (value < 3) return { text: "Excelente, estamos voando", color: "bg-success-subtle" };
-        if (value < 5) return { text: "Cuidado: É um valor surreal!", color: "bg-warning-subtle" };
-        if (value >= 5) return { text: "ATENÇÃO! Pode ser irreal, mas maravilhoso se estamos aqui!", color: "bg-info-subtle" };
-        break;
-      case "cpa":
-        if (value < 100) return { text: "Isso aqui não tá sendo real.", color: "bg-danger-subtle" };
-        if (value < 200) return { text: "Tome cuidado, custo por venda muito baixo.", color: "bg-warning-subtle" };
-        if (value > 1000) return { text: "Você vai pagar muito caro na venda, muita atenção.", color: "bg-warning-subtle" };
-        break;
-      case "avgTicket":
-        if (value < 496) return { text: "Não compensa vender algo barato por esse esforço todo.", color: "bg-warning-subtle" };
-        if (value > 5000) return { text: "Estamos trabalhando com high ticket, cuidado com as métricas aqui.", color: "bg-info-subtle" };
-        break;
-      case "grossRevenue":
-        if (value < metrics.totalInvestment.value) return { text: "Estamos no prejuízo!", color: "bg-danger-subtle" };
-        break;
-      case "netRevenue":
-        if (value < metrics.totalInvestment.value) return { text: "ALERTA! Estamos perdendo muito dinheiro.", color: "bg-danger-subtle" };
-        break;
-      case "profitMargin":
-        if (value < 70) return { text: "Atenção: com taxa de maquininha, cartão de crédito, imposto, reveja sua margem.", color: "bg-warning-subtle" };
-        break;
-      case "roas":
-        if (value < 1.26) return { text: "Estamos perdendo dinheiro! Revise sua estratégia.", color: "bg-danger-subtle" };
-        if (value < 2) return { text: "Dá pra melhorar! Vamos otimizar essa campanha!", color: "bg-warning-subtle" };
-        if (value < 2.3) return { text: "É um bom resultado, mas ainda podemos melhorar!", color: "bg-info-subtle" };
-        if (value < 2.5) return { text: "Muito bem! Estamos no caminho certo! 🚀", color: "bg-success-subtle" };
-        if (value < 3) return { text: "Sensacional! Vamos multiplicar bem o capital! 💰", color: "bg-success-subtle" };
-        if (value >= 3) return { text: "Estamos voando bebê! Bora quebrar tudo! 🔥", color: "bg-info-subtle" };
-        break;
-      default:
-        return null;
-    }
-    return null;
-  };
-
-  const alertInfo = getMetricAlert(metricKey, metric.value, metrics);
-
   return (
-    <div className={`card h-100 ${isRecalculated ? "card-flashing" : ""} ${alertInfo ? alertInfo.color : ""}`}>
+    <div className={`card h-100 ${isRecalculated ? "card-flashing" : ""}`}>
       <div className="card-body d-flex flex-column p-6">
         <div className="d-flex flex-stack mb-4">
           <h6 className="fw-bolder text-gray-800 mb-0">{title}</h6>
@@ -193,7 +135,7 @@ const MetricCard: FC<{
             ></i>
           </div>
         </div>
-        <div className={`mt-auto ${isFullyLocked ? "bg-transparent rounded" : ""}`}>
+        <div className={`mt-auto ${isFullyLocked ? "bg-light rounded" : ""}`}>
           <input
             type="text"
             className="form-control form-control-flush border-0 fs-2hx fw-bolder text-dark p-2"
@@ -203,11 +145,6 @@ const MetricCard: FC<{
             onKeyDown={handleKeyDown}
             disabled={!onValueChange || isFullyLocked}
           />
-          {alertInfo && (
-            <div className="small mt-2" style={{ minHeight: 18, color: alertInfo.color?.includes('danger') ? '#b91c1c' : alertInfo.color?.includes('warning') ? '#b45309' : alertInfo.color?.includes('success') ? '#15803d' : '#0e7490' }}>
-              {alertInfo.text}
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -221,7 +158,7 @@ const RoasplannerPage: React.FC = () => {
       acquisitionPercentage: 80,
       cpl: 3,
       conversionRate: 1,
-      avgTicket: 1497,
+      avgTicket: 997,
       profitMargin: 80,
     };
     const acqInv =
@@ -693,7 +630,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("totalInvestment")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -705,7 +641,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               suffix="%"
               isRecalculated={recalculatedKeys.has("acquisitionPercentage")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -717,7 +652,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("acquisitionInvestment")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -729,7 +663,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("remarketingInvestment")}
-              metrics={metrics}
             />
           </div>
         </div>
@@ -753,7 +686,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("cpl")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -764,7 +696,6 @@ const RoasplannerPage: React.FC = () => {
               onValueChange={handleValueChange}
               onLockToggle={handleLockToggle}
               isRecalculated={recalculatedKeys.has("leads")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -776,7 +707,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               suffix="%"
               isRecalculated={recalculatedKeys.has("conversionRate")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -787,7 +717,6 @@ const RoasplannerPage: React.FC = () => {
               onValueChange={handleValueChange}
               onLockToggle={handleLockToggle}
               isRecalculated={recalculatedKeys.has("sales")}
-              metrics={metrics}
             />
           </div>
         </div>
@@ -811,7 +740,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("cpa")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-6">
@@ -823,7 +751,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("avgTicket")}
-              metrics={metrics}
             />
           </div>
           
@@ -850,7 +777,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("grossRevenue")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -862,7 +788,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               suffix="x"
               isRecalculated={recalculatedKeys.has("roas")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -874,7 +799,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               suffix="%"
               isRecalculated={recalculatedKeys.has("profitMargin")}
-              metrics={metrics}
             />
           </div>
           <div className="col-md-6 col-lg-3">
@@ -886,7 +810,6 @@ const RoasplannerPage: React.FC = () => {
               onLockToggle={handleLockToggle}
               prefix="R$"
               isRecalculated={recalculatedKeys.has("netRevenue")}
-              metrics={metrics}
             />
           </div>
         </div>
