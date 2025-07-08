@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
 
 import momentDurationFormatSetup from "moment-duration-format";
-import { AnimatePresence, Reorder } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 // import { Launch, LaunchsState } from "../../../../store/ducks/dlaunch/types";
 import { Cart, CartsState } from "../../../../store/ducks/carts/types";
 import { Modal } from "react-bootstrap";
@@ -31,6 +31,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [show, setShow] = useState<boolean>(false);
   const [action, setAction] = useState<string>("");
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+  const [hasFilteredOnce, setHasFilteredOnce] = useState<boolean>(false);
 
   let precobasetotal = 0;
   let precopagototal = 0;
@@ -44,6 +45,17 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(true);
   };
 
+  const resetFilter = () => {
+    // Limpa todas as seleções
+    carts.selectedCarts.map((child) => {
+      dispatch(selectCartsRemoveRequest(child));
+    });
+    setHasFilteredOnce(false);
+    
+    // Navega para a página sem filtros
+    navigate('/sells');
+  };
+
   const exportSells = () => {
     setAction("showExport");
     setShow(true);
@@ -52,15 +64,43 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setShow(false);
   };
 
+  // Efeito para selecionar todos os itens automaticamente após filtrar
+  useEffect(() => {
+    // Verifica se estamos em uma página com filtros (path contém parâmetros)
+    const currentPath = window.location.pathname;
+    const isFiltered = currentPath.includes('/sells/') && currentPath.split('/').length > 2;
+    
+    if (isFiltered && carts.data.length > 0 && !hasFilteredOnce) {
+      console.log("Selecionando todos os itens automaticamente após filtrar");
+      setHasFilteredOnce(true);
+      
+      // Seleciona todos os itens
+      carts.data.map((child) => {
+        dispatch(selectCartsRemoveRequest(child)); // Remove antes para evitar duplicação
+        dispatch(selectCartsAddRequest(child));
+      });
+    }
+  }, [carts.data, hasFilteredOnce, dispatch]);
+
+  // Efeito para sincronizar o estado do checkbox "Selecionar Todos" 
+  useEffect(() => {
+    if (carts.data.length > 0) {
+      const allSelected = carts.data.every(item => 
+        carts.selectedCarts.some(selected => selected.id === item.id)
+      );
+      setIsAllChecked(allSelected);
+    } else {
+      setIsAllChecked(false);
+    }
+  }, [carts.selectedCarts, carts.data]);
+
   const selectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setIsAllChecked(true);
       carts.data.map((child) => {
         dispatch(selectCartsRemoveRequest(child)); //Remove antes, pra nao dar duplicação
         dispatch(selectCartsAddRequest(child));
       });
     } else {
-      setIsAllChecked(false);
       carts.data.map((child) => {
         dispatch(selectCartsRemoveRequest(child));
       });
@@ -77,7 +117,6 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
       dispatch(selectCartsAddRequest(child));
       //e.target.checked = false
     } else {
-      setIsAllChecked(false);
       dispatch(selectCartsRemoveRequest(child));
       //e.target.checked = true
     }
@@ -141,6 +180,18 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
               className="d-flex justify-content-end"
               data-kt-user-table-toolbar="base"
             >
+              {/* begin::Reset Filter */}
+              <button
+                type="button"
+                className="btn btn-light-secondary me-3"
+                onClick={() => resetFilter()}
+                title="Resetar filtros e desmarcar todas as seleções"
+              >
+                <KTIcon iconName="arrows-circle" className="fs-2" />
+                Resetar Filtro
+              </button>
+              {/* end::Reset Filter */}
+              
               <button
                 type="button"
                 className="btn btn-light-primary me-3"
@@ -149,6 +200,8 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 <KTIcon iconName="filter" className="fs-2" />
                 Filtro
               </button>
+
+              
 
               {/* begin::Export */}
               <button
@@ -177,7 +230,8 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         className="form-check-input"
                         type="checkbox"
                         id="kt_settings_notification_email"
-                        onChange={(e: any) => selectAll(e)}
+                        checked={isAllChecked}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => selectAll(e)}
                       />
                     </div>
                   </th>
@@ -225,10 +279,10 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       taxamaquinatotal += Number(child.mercadopago_fee);
                       taxaparcelamentototal += Number(child.financing_fee);
 
-                      let check = carts.selectedCarts?.filter(
+                      const check = carts.selectedCarts?.filter(
                         (item) => item.id === child.id
                       );
-                      let defaultChecked =
+                      const defaultChecked =
                         check.length || isAllChecked ? true : false;
 
                       return (
@@ -243,7 +297,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                   id="selectusers"
                                   //defaultChecked={defaultChecked}
                                   checked={defaultChecked}
-                                  onChange={(e: any) => setSelected(e, child)}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelected(e, child)}
                                 />
                               </div>
                             </div>

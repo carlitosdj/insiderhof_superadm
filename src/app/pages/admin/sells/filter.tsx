@@ -22,6 +22,10 @@ import {
   loadLaunchRequest,
   loadMyLaunchsRequest,
 } from "../../../../store/ducks/dlaunch/actions";
+import {
+  selectCartsAddRequest,
+  selectCartsRemoveRequest,
+} from "../../../../store/ducks/carts/actions";
 
 // registerLocale('ptBR', ptBR)
 const MOMENT = require("moment");
@@ -68,11 +72,22 @@ const Filter = ({ handleClose }: handleCloseProps) => {
       dispatch(selectUsersRemoveRequest(child));
     });
     
+    // Remove seleções anteriores de carrinho
+    carts.selectedCarts.map((child) => {
+      dispatch(selectCartsRemoveRequest(child));
+    });
 
     //redireciona:
     navigate(`/sells/${startDateInt}/${endDateInt}/${lid}`);
 
     handleClose();
+    
+    // Aguarda um pouco para que a navegação e os dados sejam carregados
+    // Em seguida, seleciona todos os carrinhos filtrados
+    setTimeout(() => {
+      // Aqui precisamos acessar os dados atualizados após o filtro
+      // Como o componente será remontado após a navegação, esta lógica será movida para o ManageCartsWidget
+    }, 100);
   };
   const setStartDateFunc = (data: any) => {
     console.log("dataStart", data);
@@ -121,6 +136,7 @@ const Filter = ({ handleClose }: handleCloseProps) => {
   const me = useSelector((state: ApplicationState) => state.me);
   const users = useSelector((state: ApplicationState) => state.users);
   const launch = useSelector((state: ApplicationState) => state.launch);
+  const carts = useSelector((state: ApplicationState) => state.carts);
   // console.log("user", users);
   // console.log("launch", launch);
 
