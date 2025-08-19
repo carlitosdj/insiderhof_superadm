@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Card, Row, Col, Badge, ProgressBar, Button, Modal } from "react-bootstrap";
+import { Card, Row, Col, Badge, ProgressBar, Button, Modal, Alert } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { ApplicationState } from "../../../../store";
 import Manage from "../dlaunchhasoffers/Manage";
+import SurveyManagement from "./SurveyManagement";
 
 // Estilos CSS customizados inspirados no Resume copy.tsx
 const resumeStyles = `
@@ -320,6 +321,10 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
   const [showOffersModal, setShowOffersModal] = useState(false);
   const handleOpenOffersModal = () => setShowOffersModal(true);
   const handleCloseOffersModal = () => setShowOffersModal(false);
+
+  const [showSurveyModal, setShowSurveyModal] = useState(false);
+  const handleOpenSurveyModal = () => setShowSurveyModal(true);
+  const handleCloseSurveyModal = () => setShowSurveyModal(false);
 
   // Function to handle landing page edit
   const handleEditLandingPage = (phaseType: 'captacao' | 'vendas') => {
@@ -700,6 +705,83 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
           )}
         </Row>
 
+        {/* Survey Management Section */}
+        {(() => {
+          const captacaoPhase = useSelector((state: ApplicationState) => 
+            state.launchphase.myLaunchPhases.find(
+              (phase: any) => phase.launchId === Number(launchId) && 
+              (phase.name?.toLowerCase().includes('captação') || phase.name?.toLowerCase().includes('captacao'))
+            )
+          );
+          
+          return captacaoPhase ? (
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Card className="shadow-sm">
+                  <Card.Header className="bg-light-info">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="d-flex align-items-center">
+                        <KTIcon iconName="questionnaire-tablet" className="fs-2 text-info me-3" />
+                        <div>
+                          <h5 className="mb-1 text-dark">Sistema de Pesquisas e Lead Scoring</h5>
+                          <p className="text-muted mb-0">
+                            Gerencie as pesquisas da fase de captação para calcular o score dos leads
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="primary"
+                        onClick={handleOpenSurveyModal}
+                        className="d-flex align-items-center"
+                      >
+                        <KTIcon iconName="setting" className="fs-6 me-1" />
+                        Gerenciar Pesquisas
+                      </Button>
+                    </div>
+                  </Card.Header>
+                  <Card.Body>
+                    <Row>
+                      <Col md={6}>
+                        <div className="d-flex align-items-center mb-3">
+                          <div className="symbol symbol-40px me-3">
+                            <div className="symbol-label bg-light-primary">
+                              <KTIcon iconName="user-plus" className="fs-6 text-primary" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="fw-semibold text-dark">Fase de Captação</div>
+                            <div className="text-muted fs-7">{captacaoPhase.name}</div>
+                          </div>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="d-flex align-items-center mb-3">
+                          <div className="symbol symbol-40px me-3">
+                            <div className="symbol-label bg-light-success">
+                              <KTIcon iconName="chart-line-up" className="fs-6 text-success" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="fw-semibold text-dark">Lead Scoring</div>
+                            <div className="text-muted fs-7">Sistema ativo para qualificação</div>
+                          </div>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Alert variant="info" className="d-flex align-items-center mb-0">
+                      <KTIcon iconName="information-2" className="fs-3 me-3" />
+                      <div>
+                        <strong>Como funciona:</strong> As pesquisas criadas aqui serão exibidas na página de captação. 
+                        Com base nas respostas dos leads, o sistema calculará automaticamente um score de interesse, 
+                        permitindo priorizar os contatos mais qualificados.
+                      </div>
+                    </Alert>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          ) : null;
+        })()}
 
         {/* Action Buttons */}
         {onEdit && (
@@ -720,6 +802,30 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
           <Manage handleClose={handleCloseOffersModal} child={launch} />
         </Modal.Body>
       </Modal>
+
+      {/* Survey Management Modal */}
+      {(() => {
+        const captacaoPhase = useSelector((state: ApplicationState) => 
+          state.launchphase.myLaunchPhases.find(
+            (phase: any) => phase.launchId === Number(launchId) && 
+            (phase.name?.toLowerCase().includes('captação') || phase.name?.toLowerCase().includes('captacao'))
+          )
+        );
+        
+        return captacaoPhase && showSurveyModal ? (
+          <Modal show={showSurveyModal} onHide={handleCloseSurveyModal} size="xl" className="modal-fullscreen-lg-down">
+            <Modal.Header closeButton>
+              <Modal.Title>Gerenciar Pesquisas - {captacaoPhase.name}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+              <SurveyManagement 
+                launchPhaseId={captacaoPhase.id!} 
+                onClose={handleCloseSurveyModal}
+              />
+            </Modal.Body>
+          </Modal>
+        ) : null;
+      })()}
     </>
   );
 };

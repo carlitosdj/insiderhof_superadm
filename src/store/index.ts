@@ -39,6 +39,8 @@ import { LPSessionState } from './ducks/dlpsessions/types'
 import { LPFeatureState } from './ducks/dlpfeatures/types'
 import { LPState } from './ducks/dlps/types'
 import { IdeactionState } from './ducks/ideaction/types'
+import { LaunchQuestionState } from './ducks/dlaunchquestion/types'
+import { LaunchQuestionOptionState } from './ducks/dlaunchquestionoption/types'
 
 
 export interface ApplicationState {
@@ -83,6 +85,9 @@ export interface ApplicationState {
   lpsessions: LPSessionState
   lpfeatures: LPFeatureState
   ideaction: IdeactionState
+  
+  launchquestion: LaunchQuestionState
+  launchquestionoption: LaunchQuestionOptionState
 }
 
 const sagaMiddleware = createSagaMiddleware()

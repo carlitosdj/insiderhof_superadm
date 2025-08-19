@@ -99,6 +99,10 @@ import { loadMyLPs, loadLP, createLP, updateLP, deleteLP, importLP, duplicateLP 
 import { exportLP } from './dlps/sagas'
 import { IdeactionTypes } from './ideaction/types'
 import { loadMyIdeactions, loadIdeaction, createIdeaction, updateIdeaction, deleteIdeaction, } from './ideaction/sagas'
+import { LaunchQuestionTypes } from './dlaunchquestion/types'
+import { loadLaunchQuestions, loadLaunchQuestion, createLaunchQuestion, updateLaunchQuestion, deleteLaunchQuestion, reorderLaunchQuestions } from './dlaunchquestion/sagas'
+import { LaunchQuestionOptionTypes } from './dlaunchquestionoption/types'
+import { loadLaunchQuestionOptions, loadLaunchQuestionOption, createLaunchQuestionOption, updateLaunchQuestionOption, deleteLaunchQuestionOption, reorderLaunchQuestionOptions } from './dlaunchquestionoption/sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -299,10 +303,21 @@ export default function* rootSaga() {
     takeLatest(IdeactionTypes.UPDATE_IDEACTION_REQUEST, updateIdeaction),
     takeLatest(IdeactionTypes.DELETE_IDEACTION_REQUEST, deleteIdeaction),
 
+    //LaunchQuestion
+    takeLatest(LaunchQuestionTypes.LOAD_LAUNCHQUESTIONS_REQUEST, loadLaunchQuestions),
+    takeLatest(LaunchQuestionTypes.LOAD_LAUNCHQUESTION_REQUEST, loadLaunchQuestion),
+    takeLatest(LaunchQuestionTypes.CREATE_LAUNCHQUESTION_REQUEST, createLaunchQuestion),
+    takeLatest(LaunchQuestionTypes.UPDATE_LAUNCHQUESTION_REQUEST, updateLaunchQuestion),
+    takeLatest(LaunchQuestionTypes.DELETE_LAUNCHQUESTION_REQUEST, deleteLaunchQuestion),
+    takeLatest(LaunchQuestionTypes.REORDER_LAUNCHQUESTIONS_REQUEST, reorderLaunchQuestions),
 
-    
-
-    
+    //LaunchQuestionOption
+    takeLatest(LaunchQuestionOptionTypes.LOAD_LAUNCHQUESTIONOPTIONS_REQUEST, loadLaunchQuestionOptions),
+    takeLatest(LaunchQuestionOptionTypes.LOAD_LAUNCHQUESTIONOPTION_REQUEST, loadLaunchQuestionOption),
+    takeLatest(LaunchQuestionOptionTypes.CREATE_LAUNCHQUESTIONOPTION_REQUEST, createLaunchQuestionOption),
+    takeLatest(LaunchQuestionOptionTypes.UPDATE_LAUNCHQUESTIONOPTION_REQUEST, updateLaunchQuestionOption),
+    takeLatest(LaunchQuestionOptionTypes.DELETE_LAUNCHQUESTIONOPTION_REQUEST, deleteLaunchQuestionOption),
+    takeLatest(LaunchQuestionOptionTypes.REORDER_LAUNCHQUESTIONOPTIONS_REQUEST, reorderLaunchQuestionOptions),
   ])
   // console.log('mounting saga...')  
 }

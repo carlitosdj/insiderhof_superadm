@@ -39,6 +39,8 @@ import lps from './dlps'
 import lpsessions from './dlpsessions'
 import lpfeatures from './dlpfeatures'
 import ideaction from './ideaction'
+import launchquestion from './dlaunchquestion'
+import launchquestionoption from './dlaunchquestionoption'
 
 
 export default combineReducers({
@@ -84,5 +86,8 @@ export default combineReducers({
   lpsessions,
   lpfeatures,
   ideaction,
+
+  launchquestion,
+  launchquestionoption,
   
 })
