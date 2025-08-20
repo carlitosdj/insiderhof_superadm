@@ -26,45 +26,51 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
   }, [launchPhaseState])
 
   useEffect(() => {
+    console.log('SurveyStatistics: phaseId received:', phaseId)
     if (phaseId && dispatch) {
       console.log('SurveyStatistics: Dispatching loadPhaseStatisticsRequest for phaseId:', phaseId)
       dispatch(loadPhaseStatisticsRequest(phaseId))
+    } else {
+      console.log('SurveyStatistics: Not dispatching request. phaseId:', phaseId, 'dispatch:', !!dispatch)
     }
   }, [dispatch, phaseId])
+
+  console.log("launchPhaseState",launchPhaseState)
+  console.log("phaseStatistics", phaseStatistics)
 
   const renderQuestionStatistic = (question: QuestionStatistics) => {
     return (
       <div key={question.questionId} className="card mb-4">
         <div className="card-body">
-          <h6 className="card-title">{question.question}</h6>
+          <h6 className="card-title">{question?.question || 'Pergunta não informada'}</h6>
           <div className="row">
             <div className="col-md-6">
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="text-muted">Tipo:</span>
-                <span className="badge badge-light-primary">{question.type}</span>
+                <span className="badge badge-light-primary">{question?.type || 'N/A'}</span>
               </div>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="text-muted">Total de Respostas:</span>
-                <span className="fw-bold">{question.totalResponses}</span>
+                <span className="fw-bold">{question?.totalResponses || 0}</span>
               </div>
               <div className="d-flex justify-content-between align-items-center mb-2">
                 <span className="text-muted">Score Médio:</span>
-                <span className="fw-bold text-primary">{question.averageScore.toFixed(1)}%</span>
+                <span className="fw-bold text-primary">{(question.averageScore || 0).toFixed(1)}%</span>
               </div>
             </div>
             <div className="col-md-6">
-              <h7 className="text-muted">Distribuição das Respostas:</h7>
-              {question.distribution.map((item, index) => (
+              <h6 className="text-muted">Distribuição das Respostas:</h6>
+              {(question?.distribution || []).map((item, index) => (
                 <div key={index} className="d-flex justify-content-between align-items-center mb-1">
-                  <span className="text-sm">{item.optionText}</span>
+                  <span className="text-sm">{item?.optionText || 'N/A'}</span>
                   <div className="d-flex align-items-center">
                     <div className="progress me-2" style={{ width: '100px', height: '6px' }}>
                       <div 
                         className="progress-bar bg-primary" 
-                        style={{ width: `${item.percentage}%` }}
+                        style={{ width: `${item?.percentage || 0}%` }}
                       ></div>
                     </div>
-                    <span className="text-muted text-sm">{item.count} ({item.percentage}%)</span>
+                    <span className="text-muted text-sm">{item?.count || 0} ({item?.percentage || 0}%)</span>
                   </div>
                 </div>
               ))}
@@ -103,12 +109,12 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
         <div className="card-body">
           <h6 className="card-title">Distribuição de Scores dos Leads</h6>
           <div className="row">
-            {statistics.leadScoreDistribution.scoreRanges.map((range, index) => (
+            {(statistics?.leadScoreDistribution?.scoreRanges || []).map((range, index) => (
               <div key={index} className="col-6 col-md-3 mb-3">
                 <div className="text-center">
-                  <div className="fs-2x fw-bold text-primary">{range.count}</div>
-                  <div className="text-muted">{range.range}</div>
-                  <div className="text-muted text-sm">({range.percentage}%)</div>
+                  <div className="fs-2x fw-bold text-primary">{range?.count || 0}</div>
+                  <div className="text-muted">{range?.range || 'N/A'}</div>
+                  <div className="text-muted text-sm">({range?.percentage || 0}%)</div>
                 </div>
               </div>
             ))}
@@ -128,7 +134,7 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
     )
   }
 
-  if (!phaseStatistics || phaseStatistics.totalResponses === 0) {
+  if (!phaseStatistics || (phaseStatistics.totalResponses || 0) === 0) {
     return (
       <div className="alert alert-info">
         <div className="alert-text">
@@ -145,7 +151,7 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
         <div className="col-md-4">
           <div className="card card-flush">
             <div className="card-body text-center">
-              <div className="fs-2x fw-bold text-primary">{phaseStatistics.totalResponses}</div>
+              <div className="fs-2x fw-bold text-primary">{phaseStatistics?.totalResponses || 0}</div>
               <div className="text-muted">Total de Respostas</div>
             </div>
           </div>
@@ -153,7 +159,7 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
         <div className="col-md-4">
           <div className="card card-flush">
             <div className="card-body text-center">
-              <div className="fs-2x fw-bold text-success">{phaseStatistics.leadScoreAverage.toFixed(1)}%</div>
+              <div className="fs-2x fw-bold text-success">{(phaseStatistics?.leadScoreAverage || 0).toFixed(1)}%</div>
               <div className="text-muted">Lead Score Médio</div>
             </div>
           </div>
@@ -161,7 +167,7 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
         <div className="col-md-4">
           <div className="card card-flush">
             <div className="card-body text-center">
-              <div className="fs-2x fw-bold text-warning">{phaseStatistics.questionStatistics.length}</div>
+              <div className="fs-2x fw-bold text-warning">{phaseStatistics?.questionStatistics?.length || 0}</div>
               <div className="text-muted">Perguntas na Pesquisa</div>
             </div>
           </div>
@@ -176,7 +182,7 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
       {/* Estatísticas por pergunta */}
       <div>
         <h5 className="mb-4">Estatísticas por Pergunta</h5>
-        {phaseStatistics.questionStatistics.map(renderQuestionStatistic)}
+        {(phaseStatistics?.questionStatistics || []).map(renderQuestionStatistic)}
       </div>
     </div>
   )

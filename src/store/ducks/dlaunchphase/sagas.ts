@@ -28,7 +28,7 @@ import {
 
 } from './actions'
 
-import {LaunchPhases, PhaseStatistics} from './types'
+import {LaunchPhases} from './types'
 
 //Load
 export function* loadLaunchPhase(payload: ReturnType<typeof loadLaunchPhasesRequest>) {
@@ -93,12 +93,13 @@ export function* deleteLaunchPhase(payload: ReturnType<typeof deleteLaunchPhases
 }
 
 //Statistics
-export function* loadPhaseStatistics(payload: ReturnType<typeof loadPhaseStatisticsRequest>) {
+export function* loadPhaseStatistics(payload: ReturnType<typeof loadPhaseStatisticsRequest>): Generator {
   try {
-    // Removendo o put desnecessário que estava causando loop infinito
-    const response: PhaseStatistics = yield call(api.get, `launch-answer/statistics/phase/${payload.payload}`)
+    const response: any = yield call(api.get, `launch-answer/statistics/phase/${payload.payload}`)
+    console.log('Saga: Full API response:', response)
     yield put(loadPhaseStatisticsSuccess(response.data))
   } catch (error: any) {
+    console.log('Saga: Error loading statistics:', error)
     yield put(loadPhaseStatisticsFailure(error.response?.data || error.message))
   }
 }
