@@ -9,6 +9,7 @@ import { ApplicationState } from "../../../../store";
 import Create from "./create";
 import Update from "./update";
 import { ManageLPFeatureWidget } from "../dlpfeatures/ManageLPFeatureWidget";
+import { LaunchHeaderCard } from "../dlaunchphase/LaunchHeaderCard";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -29,54 +30,75 @@ import { loadMyLPFeaturesRequest } from "../../../../store/ducks/dlpfeatures/act
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
-// Estilos CSS para o header e botão de ação
+// Estilos CSS padronizados para o novo layout
 const widgetStyles = `
-  .widget-container {
-    padding: 2rem;
-    min-height: 100vh;
-  }
-  
-  .widget-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-  }
-  
-  .widget-header h2 {
-    margin: 0;
-    font-weight: 700;
-  }
-  
-  .widget-header .subtitle {
-    opacity: 0.9;
-    margin-top: 0.5rem;
-  }
-  
-  .action-buttons {
-    background: white;
-    border: none;
-    border-radius: 8px;
+  .lpsession-widget-container {
     padding: 1.5rem;
-    margin-top: 2rem;
+    min-height: 100vh;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    background: #f8f9fa;
+  }
+  
+  .lpsession-content-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    flex: 1;
+  }
+  
+  .lpsession-content-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e4e6ea;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
   }
   
-  .btn-secondary {
-    background: #95a5a6;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 6px;
+  .lpsession-content-header h3 {
+    margin: 0;
+    color: #181c32;
     font-weight: 600;
-    transition: transform 0.2s ease;
+    font-size: 1.2rem;
   }
   
-  .btn-secondary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+  .lpsession-content-header .subtitle {
+    color: #7e8299;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .lpsession-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .lpsession-content-body {
+    padding: 0;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .lpsession-content-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .lpsession-action-buttons {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .lpsession-widget-container {
+      padding: 1rem;
+    }
   }
 `;
 
@@ -227,7 +249,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   const reorder = (children: LPSession[]) => {
     // console.log("children", children);
-    children.map((child) => {
+    children.forEach((child) => {
       let index = children.findIndex((item): any => item.id === child.id);
       if (index !== -1) {
         children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
@@ -239,7 +261,7 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const reorderToSave = (children: LPSession[]) => {
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-      children.map((child) => {
+      children.forEach((child) => {
         dispatch(updateLPSessionRequest({ id: child.id, order: child.order }));
       });
       //seta a lista de old para o novo:
@@ -328,43 +350,53 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
-      <div className="widget-container">
-        {/* Header */}
-        <div className="widget-header">
-          <div className="d-flex justify-content-between align-items-start">
+      <div className="lpsession-widget-container">
+        {/* Header Card Padronizado */}
+        <LaunchHeaderCard phaseName={`${selectedLP?.name || "Landing Page"} - Seções`} />
+        
+        <div className="lpsession-content-wrapper">
+          {/* Content Header */}
+          <div className="lpsession-content-header">
             <div>
-              <h2>
-                {launch?.name || "Lançamento"} - Landing Page {launchPhase?.name || "Fase"} - {selectedLP?.name || "Landing Page"}
-              </h2>
+              <h3>
+                <KTIcon iconName="element-11" className="fs-4 text-primary me-2" />
+                Seções - {selectedLP?.name}
+              </h3>
               <div className="subtitle">
-                Gerenciamento de Seções da Landing Page •{" "}
                 {currentLPSessions.myLPSessions.length} seções cadastradas
               </div>
             </div>
-            <div className="d-flex justify-content-end align-items-center gap-2">
-              <div
-                className="card-toolbar"
+            
+            <div className="lpsession-action-buttons">
+              <button
+                className="btn btn-primary"
+                onClick={() => createComponent()}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-trigger="hover"
-                title="Click to add a session"
+                title="Adicionar nova seção"
               >
-                <a
-                  href="#!"
-                  className="btn btn-primary"
-                  onClick={() => createComponent()}
+                <KTIcon iconName="plus" className="fs-6 me-2" />
+                Nova Seção
+              </button>
+
+              {handleBackToLandingPages && (
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleBackToLandingPages}
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Voltar para Landing Pages"
                 >
-                  <KTIcon iconName="plus" className="fs-2" />
-                  Nova seção
-                </a>
-              </div>
+                  <KTIcon iconName="arrow-left" className="fs-6 me-2" />
+                  Voltar
+                </button>
+              )}
             </div>
           </div>
-        </div>
 
-        <div className={`card ${className}`}>
-          <div className="card-body py-3">
-            <div className="table-responsive">
+          <div className="lpsession-content-body">
+            <div className="card-body py-3">
+              <div className="table-responsive">
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bolder text-muted">
@@ -508,17 +540,8 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   </AnimatePresence>
                 </Reorder.Group>
               </table>
-            </div>
-            
-            {/* Action Buttons */}
-            {handleBackToLandingPages && (
-              <div className="action-buttons">
-                <Button variant="secondary" size="lg" onClick={handleBackToLandingPages}>
-                  <KTIcon iconName="arrow-left" className="fs-5 me-2" />
-                  Voltar às Landing Pages
-                </Button>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

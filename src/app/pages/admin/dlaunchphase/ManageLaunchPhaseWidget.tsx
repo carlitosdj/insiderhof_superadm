@@ -8,6 +8,8 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import Create from "./create";
 import Update from "./update";
 import Configuration from "./Configuration";
+import { LaunchSidebar } from "./LaunchSidebar";
+import { LaunchHeaderCard } from "./LaunchHeaderCard";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -37,117 +39,140 @@ import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
-// Estilos CSS customizados
-const tabStyles = `
-  .nav-tabs {
+// Estilos CSS para o novo layout
+const layoutStyles = `
+  .launch-layout {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: #007bff #f8f9fa;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 4px;
-  }
-  
-  .nav-tabs::-webkit-scrollbar {
-    height: 6px;
-  }
-  
-  .nav-tabs::-webkit-scrollbar-track {
+    min-height: calc(100vh - 200px);
     background: #f8f9fa;
-    border-radius: 3px;
-  }
-  
-  .nav-tabs::-webkit-scrollbar-thumb {
-    background: #007bff;
-    border-radius: 3px;
-  }
-  
-  .nav-tabs::-webkit-scrollbar-thumb:hover {
-    background: #0056b3;
-  }
-  
-  .nav-tabs .nav-item {
-    flex-shrink: 0;
-    margin-right: 4px;
-  }
-  
-  .nav-tabs .nav-link {
-    border: none;
-    border-radius: 8px 8px 0 0;
-    padding: 12px 20px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    min-width: fit-content;
-  }
-  
-  .nav-tabs .nav-link.active {
-    background: #007bff;
-    color: white;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
-  }
-  
-  .nav-tabs .nav-link:hover:not(.active) {
-    background: rgba(0,123,255,0.1);
-    color: #007bff;
-  }
-  
-  .tab-content {
-    background: white;
-    border-radius: 0 8px 8px 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    min-height: 400px;
-  }
-  
-  .tab-pane {
-    height: 100%;
-  }
-  
-  .tab-pane .component-wrapper {
-    padding: 0;
-    height: 100%;
-  }
-  
-  .tab-pane .component-wrapper .card {
-    border: none;
-    box-shadow: none;
-    margin: 0;
-  }
-  
-  .tab-pane .component-wrapper .card-header {
-    background: transparent;
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.5rem;
-  }
-  
-  .tab-pane .component-wrapper .card-body {
+    gap: 1.5rem;
     padding: 1.5rem;
   }
   
-  /* Responsividade para telas muito pequenas */
-  @media (max-width: 576px) {
-    .nav-tabs .nav-link {
-      padding: 10px 16px;
-      font-size: 0.875rem;
+  .launch-main-content {
+    flex: 1;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .launch-content-area {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+  }
+  
+  .content-wrapper {
+    background: white;
+    border-radius: 12px;
+    min-height: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 992px) {
+    .launch-layout {
+      position: relative;
     }
     
-    .nav-tabs .nav-link .fs-6 {
-      font-size: 0.75rem !important;
+    .launch-main-content {
+      width: 100%;
     }
     
-    .tabs-container {
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
+    .mobile-sidebar-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1049;
+      background: #009ef7;
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(0, 158, 247, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-sidebar-toggle:hover {
+      background: #0085d1;
+      transform: scale(1.1);
+    }
+    
+    .mobile-sidebar-toggle:active {
+      transform: scale(0.95);
     }
   }
   
-  /* Responsividade para telas médias */
-  @media (max-width: 768px) {
-    .nav-tabs .nav-link {
-      padding: 10px 14px;
+  /* Sidebar overlay */
+  .launch-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .launch-sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  @media (min-width: 993px) {
+    .mobile-sidebar-toggle {
+      display: none;
     }
+  }
+  
+  /* Loading states */
+  .content-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .content-loading .spinner-border {
+    color: #009ef7;
+  }
+  
+  /* Content styles */
+  .tab-content-wrapper {
+    padding: 0;
+  }
+  
+  .tab-content-wrapper .component-wrapper {
+    padding: 0;
+  }
+  
+  .tab-content-wrapper .component-wrapper .card {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    background: transparent;
+  }
+  
+  .tab-content-wrapper .component-wrapper .card-header {
+    background: transparent;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.5rem;
+  }
+  
+  .tab-content-wrapper .component-wrapper .card-body {
+    padding: 1.5rem;
   }
 `;
 
@@ -165,6 +190,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [selectedLandingPage, setSelectedLandingPage] = useState<string>("");
   const [lpListResetFlag, setLpListResetFlag] = useState(0);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const { launchId, launchPhaseId } = useParams();
 
@@ -194,6 +220,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setAction("updateComponent");
     setChild(phase);
     setShow(true);
+    // Fechar sidebar mobile ao editar
+    setShowMobileSidebar(false);
   };
 
   // useEffect principal para carregar dados apenas uma vez
@@ -296,6 +324,9 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   // Handle tab click to change URL
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
+    
+    // Fechar sidebar mobile ao navegar
+    setShowMobileSidebar(false);
 
     if (tabId === "resumo") {
       setIsEditing(false);
@@ -310,6 +341,11 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       navigate(`/launch/${launchId}/${tabId}`);
     }
   };
+  
+  // Toggle mobile sidebar
+  const toggleMobileSidebar = () => {
+    setShowMobileSidebar(!showMobileSidebar);
+  };
 
   // Handle back to landing pages list
   const handleBackToLandingPages = () => {
@@ -323,23 +359,21 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     if (launchphases.loading || !launch) {
       console.log("renderTabContent - Mostrando loading");
       return (
-        <div className="tab-pane fade show active p-4">
-          <div className="text-center py-8">
-            <div className="spinner-border text-primary mb-4" role="status">
-              <span className="visually-hidden">Carregando...</span>
-            </div>
-            <h4 className="text-muted mb-2">Carregando dados...</h4>
-            <p className="text-muted fs-6 mb-4">
-              Aguarde enquanto carregamos as informações do lançamento.
-            </p>
+        <div className="content-loading">
+          <div className="spinner-border mb-3" role="status">
+            <span className="visually-hidden">Carregando...</span>
           </div>
+          <h5 className="text-muted mb-2">Carregando dados...</h5>
+          <p className="text-muted fs-6 mb-0">
+            Aguarde enquanto carregamos as informações do lançamento.
+          </p>
         </div>
       );
     }
 
     if (activeTab === "resumo") {
       return (
-        <div className="tab-pane fade show active">
+        <div className="tab-content-wrapper">
           <div className="component-wrapper">
             {!isEditing ? (
               <Resume onEdit={() => setIsEditing(true)} />
@@ -353,21 +387,9 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
     if (activeTab === "landing-page-captacao" || activeTab === "landing-page-vendas") {
       return (
-        <div className="tab-pane fade show active">
+        <div className="tab-content-wrapper">
           <div className="component-wrapper">
             <div className="p-0">
-              {/* <div className="card-header border-0 pt-5 pb-3">
-                <div className="d-flex align-items-center">
-                  <h3 className="card-title mb-0">
-                    <KTIcon 
-                      iconName={activeTab === "landing-page-captacao" ? "user-plus" : "shopping-cart"} 
-                      className="fs-2 text-primary me-2" 
-                    />
-                    Landing Page: {activeTab === "landing-page-captacao" ? "Captação" : "Vendas"}
-                  </h3>
-                </div>
-              </div> */}
-              
               <div className="card-body p-0">
                 {(() => {
                   // Encontra a fase correspondente à landing page selecionada
@@ -406,14 +428,12 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
     if (!activeTab) {
       return (
-        <div className="tab-pane fade show active p-4">
-          <div className="text-center py-8">
-            <KTIcon iconName="rocket" className="fs-4x text-muted mb-4" />
-            <h4 className="text-muted mb-2">Nenhuma fase selecionada</h4>
-            <p className="text-muted fs-6 mb-4">
-              Selecione uma fase na aba acima para visualizar seu conteúdo.
-            </p>
-          </div>
+        <div className="content-loading">
+          <KTIcon iconName="rocket" className="fs-4x text-muted mb-4" />
+          <h4 className="text-muted mb-2">Nenhuma fase selecionada</h4>
+          <p className="text-muted fs-6 mb-0">
+            Selecione uma fase no menu lateral para visualizar seu conteúdo.
+          </p>
         </div>
       );
     }
@@ -423,24 +443,22 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     );
     if (!phase) {
       return (
-        <div className="tab-pane fade show active p-4">
-          <div className="text-center py-8">
-            <KTIcon
-              iconName="exclamation-triangle"
-              className="fs-4x text-muted mb-4"
-            />
-            <h4 className="text-muted mb-2">Fase não encontrada</h4>
-            <p className="text-muted fs-6 mb-4">
-              A fase selecionada não foi encontrada.
-            </p>
-          </div>
+        <div className="content-loading">
+          <KTIcon
+            iconName="exclamation-triangle"
+            className="fs-4x text-muted mb-4"
+          />
+          <h4 className="text-muted mb-2">Fase não encontrada</h4>
+          <p className="text-muted fs-6 mb-0">
+            A fase selecionada não foi encontrada.
+          </p>
         </div>
       );
     }
 
     // Retorna o componente ManageLaunchPhaseExtraWidget
     return (
-      <div className="tab-pane fade show active">
+      <div className="tab-content-wrapper">
         <div className="component-wrapper">
           <ManageLaunchPhaseExtraWidget
             launchPhaseId={Number(activeTab)}
@@ -506,7 +524,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   return (
     <>
-      <style>{tabStyles}</style>
+      <style>{layoutStyles}</style>
 
       <Modal
         id="kt_modal_create_app"
@@ -521,17 +539,14 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           <h2>
             {action === "updateComponent" ? "Editar launch" : ""}
             {action === "createComponent" ? "Adicionar launch" : ""}
-            {/* {action === "manageLaunchs" ? "Gerenciar ofertas" : ""} */}
           </h2>
 
-          {/* begin::Close */}
           <div
             className="btn btn-sm btn-icon btn-active-color-primary"
             onClick={handleClose}
           >
             <KTIcon className="fs-1" iconName="cross" />
           </div>
-          {/* end::Close */}
         </div>
 
         <div className="modal-body py-lg-10 px-lg-10">
@@ -545,184 +560,60 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           ) : (
             ""
           )}
-          {/* {action === "manageLaunchs" ? (
-            <Manage handleClose={handleClose} child={child} />
-          ) : (
-            ""
-          )} */}
         </div>
       </Modal>
 
-      <div className={`card ${className}`}>
-        <div className="card-header border-0 pt-5">
-          <div className="d-flex align-items-center">
-            {/* Offer Image */}
-            {launch?.launchhasoffers && launch.launchhasoffers.length > 0 && launch.launchhasoffers[0].offer?.image && (
-              <div className="me-4 flex-shrink-0 d-flex align-items-center">
-                <img
-                  className="rounded-3"
-                  style={{
-                    width: "60px",
-                    //height: "60px",
-                    objectFit: "cover",
-                    border: "2px solid #e9ecef"
-                  }}
-                  src={
-                    launch.launchhasoffers[0].offer.image.includes("https://")
-                      ? launch.launchhasoffers[0].offer.image
-                      : "https://app.insiderhof.com.br/files/" + launch.launchhasoffers[0].offer.image
-                  }
-                  onError={({ currentTarget }) => {
-                    currentTarget.onerror = null;
-                    currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
-                  }}
-                  alt={launch.launchhasoffers[0].offer.name || "Oferta"}
-                />
-              </div>
-            )}
-            
-            {/* Title and Description */}
-            <div className="flex-grow-1">
-              <h3 className="card-title align-items-start flex-column">
-                <span className="card-label fw-bolder fs-3 mb-1">
-                  <KTIcon iconName="rocket" className="fs-2 text-primary me-2" />
-                  {launch ? `${launch.name} - Gerenciador de Fases` : "Carregando..."}
-                </span>
-                <span className="text-muted mt-1 fw-bold fs-7">
-                  Gerencie todas as fases do seu lançamento
-                </span>
-                {/* {launch?.launchhasoffers && launch.launchhasoffers.length > 0 && launch.launchhasoffers[0].offer?.name && (
-                  <span className="text-primary mt-1 fw-semibold fs-7">
-                    Oferta: {launch.launchhasoffers[0].offer.name}
-                  </span>
-                )} */}
-              </h3>
+      {/* Mobile Sidebar Overlay */}
+      {showMobileSidebar && (
+        <div 
+          className="launch-sidebar-overlay show"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      )}
+
+      {/* New Layout Structure */}
+      <div className="launch-layout">
+        {/* Sidebar */}
+        <div className={`launch-sidebar ${showMobileSidebar ? 'show' : ''}`}>
+          <LaunchSidebar
+            activeTab={activeTab}
+            onTabClick={handleTabClick}
+            isEditing={isEditing}
+            onEdit={updateComponent}
+          />
+        </div>
+
+        {/* Main Content Area */}
+        <div className="launch-main-content">
+          {/* Header Card - Não mostrar para abas que têm headers próprias */}
+          {!["resumo", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) && 
+           !activeTab.match(/^\d+$/) && (
+            <div className="launch-content-area" style={{ paddingBottom: 0 }}>
+              <LaunchHeaderCard activeTab={activeTab} />
+            </div>
+          )}
+          
+          {/* Content */}
+          <div className="launch-content-area" style={{ 
+            paddingTop: (["resumo", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) || 
+                        activeTab.match(/^\d+$/)) ? 0 : 0, 
+            flex: 1 
+          }}>
+            <div className="content-wrapper">
+              {renderTabContent()}
             </div>
           </div>
         </div>
-
-        <div className="card-body p-0">
-          {/* Navegação por Abas */}
-          <Nav variant="tabs" className="border-0 px-6 pt-3 tabs-container">
-            <Nav.Item>
-              <Nav.Link
-                active={activeTab === "resumo"}
-                onClick={() => handleTabClick("resumo")}
-                className="d-flex align-items-center"
-              >
-                <KTIcon iconName="chart-line" className="fs-6 me-2" />
-                Resumo
-              </Nav.Link>
-            </Nav.Item>
-            {launchphases.myLaunchPhases && launchphases.myLaunchPhases.length > 0 ? (
-              (() => {
-                console.log("Renderizando abas, fases disponíveis:", launchphases.myLaunchPhases.map(p => ({ id: p.id, name: p.name })));
-                return launchphases.myLaunchPhases.map(
-                  (phase: LaunchPhases, index: number) => (
-                    <React.Fragment key={phase.id}>
-                      <Nav.Item>
-                        <Nav.Link
-                          active={activeTab === phase.id?.toString()}
-                          onClick={() => handleTabClick(phase.id?.toString() || "")}
-                          className="d-flex align-items-center"
-                        >
-                          <KTIcon
-                            iconName={
-                              phase.name === "Captação"
-                                ? "user"
-                                : phase.name === "Evento"
-                                ? "calendar"
-                                : phase.name === "Vendas"
-                                ? "purchase"
-                                : phase.name === "Aquecimento"
-                                ? "purchase"
-                                : phase.name === "Debriefing"
-                                ? "chart-simple-3"
-                                : "gear"
-                            }
-                            className="fs-6 me-2"
-                          />
-                          {phase.name}
-                          <button
-                            type="button"
-                            className="btn btn-icon btn-sm btn-light ms-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateComponent(phase);
-                            }}
-                            title={`Editar fase ${phase.name}`}
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              padding: "0",
-                              border: "none",
-                              background: "transparent"
-                            }}
-                          >
-                            <KTIcon iconName="pencil" className="fs-8 text-muted" />
-                          </button>
-                          {/* <Badge bg="success" className="ms-2 fs-8">
-                          #{index + 1}
-                        </Badge> */}
-                        </Nav.Link>
-                      </Nav.Item>
-                      
-                      {/* Landing Page Tab - aparece ao lado da fase correspondente */}
-                      {(() => {
-                        console.log(`Verificando fase "${phase.name}" para landing page Captação:`, phase.name === "Captação");
-                        return phase.name === "Captação" && (
-                          <Nav.Item>
-                            <Nav.Link
-                              active={activeTab === "landing-page-captacao"}
-                              onClick={() => handleTabClick("landing-page-captacao")}
-                              className="d-flex align-items-center"
-                            >
-                              <KTIcon iconName="rocket" className="fs-6 me-2" />
-                              Landing Page Captação
-                            </Nav.Link>
-                          </Nav.Item>
-                        );
-                      })()}
-                      
-                      {(() => {
-                        console.log(`Verificando fase "${phase.name}" para landing page Vendas:`, phase.name === "Vendas");
-                        return phase.name === "Vendas" && (
-                          <Nav.Item>
-                            <Nav.Link
-                              active={activeTab === "landing-page-vendas"}
-                              onClick={() => handleTabClick("landing-page-vendas")}
-                              className="d-flex align-items-center"
-                            >
-                              <KTIcon iconName="rocket" className="fs-6 me-2" />
-                              Landing Page Vendas
-                            </Nav.Link>
-                          </Nav.Item>
-                        );
-                      })()}
-                    </React.Fragment>
-                  )
-                );
-              })()
-            ) : (
-              // Mostra loading nas abas se ainda não carregou
-              launchphases.loading && (
-                <Nav.Item>
-                  <div className="nav-link d-flex align-items-center">
-                    <div className="spinner-border spinner-border-sm text-primary me-2" role="status">
-                      <span className="visually-hidden">Carregando...</span>
-                    </div>
-                    <span className="text-muted">Carregando fases...</span>
-                  </div>
-                </Nav.Item>
-              )
-            )}
-          </Nav>
-
-          {/* Conteúdo das Abas */}
-          {/* <div className="tab-content">{renderTabContent()}</div> */}
-          <div className="">{renderTabContent()}</div>
-        </div>
       </div>
+
+      {/* Mobile Sidebar Toggle Button */}
+      <button
+        className="mobile-sidebar-toggle"
+        onClick={toggleMobileSidebar}
+        title="Menu de navegação"
+      >
+        <KTIcon iconName="burger-menu-2" />
+      </button>
     </>
   );
 };

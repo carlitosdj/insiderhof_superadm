@@ -73,4 +73,5 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
     </div>
   );
 };
+
 export default Manage;

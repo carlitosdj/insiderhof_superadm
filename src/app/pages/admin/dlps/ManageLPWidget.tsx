@@ -9,6 +9,7 @@ import { ApplicationState } from "../../../../store";
 import Create from "./create";
 import Update from "./update";
 import { ManageLPSessionWidget } from "../dlpsessions/ManageLPSessionWidget";
+import { LaunchHeaderCard } from "../dlaunchphase/LaunchHeaderCard";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -30,54 +31,75 @@ import { loadMyLPSessionsRequest } from "../../../../store/ducks/dlpsessions/act
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
-// Estilos CSS para o header e botão de ação
+// Estilos CSS padronizados para o novo layout
 const widgetStyles = `
-  .widget-container {
-    padding: 2rem;
-    min-height: 100vh;
-  }
-  
-  .widget-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-  }
-  
-  .widget-header h2 {
-    margin: 0;
-    font-weight: 700;
-  }
-  
-  .widget-header .subtitle {
-    opacity: 0.9;
-    margin-top: 0.5rem;
-  }
-  
-  .action-buttons {
-    background: white;
-    border: none;
-    border-radius: 8px;
+  .lp-widget-container {
     padding: 1.5rem;
-    margin-top: 2rem;
+    min-height: 100vh;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    background: #f8f9fa;
+  }
+  
+  .lp-content-wrapper {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    flex: 1;
+  }
+  
+  .lp-content-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e4e6ea;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
   }
   
-  .btn-secondary {
-    background: #95a5a6;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 6px;
+  .lp-content-header h3 {
+    margin: 0;
+    color: #181c32;
     font-weight: 600;
-    transition: transform 0.2s ease;
+    font-size: 1.2rem;
   }
   
-  .btn-secondary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+  .lp-content-header .subtitle {
+    color: #7e8299;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .lp-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .lp-content-body {
+    padding: 0;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .lp-content-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .lp-action-buttons {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    .lp-widget-container {
+      padding: 1rem;
+    }
   }
 `;
 
@@ -353,7 +375,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const reorderToSave = (children: LP[]) => {
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-      children.map((child) => {
+      children.forEach((child) => {
         dispatch(updateLPRequest({ id: child.id, order: child.order }));
       });
       //seta a lista de old para o novo:
@@ -452,61 +474,55 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
-      <div className="widget-container">
-        {/* Header */}
-        <div className="widget-header">
-          <div className="d-flex justify-content-between align-items-start">
+      <div className="lp-widget-container">
+        {/* Header Card Padronizado */}
+        <LaunchHeaderCard activeTab={`landing-page-${launchPhase?.name?.toLowerCase()}`} phaseName={`Landing Page ${launchPhase?.name}`} />
+        
+        <div className="lp-content-wrapper">
+          {/* Content Header */}
+          <div className="lp-content-header">
             <div>
-              <h2>
-                {launch?.name || "Lançamento"} - Landing Page {launchPhase?.name}
-              </h2>
+              <h3>
+                <KTIcon iconName="rocket" className="fs-4 text-primary me-2" />
+                Landing Pages - {launchPhase?.name}
+              </h3>
               <div className="subtitle">
-                Gerenciamento de Landing Pages •{" "}
                 {lps.myLPs.length} páginas cadastradas
               </div>
             </div>
-            <div className="d-flex justify-content-end align-items-center gap-2">
-              <div
-                className="card-toolbar"
+            
+            <div className="lp-action-buttons">
+              <button
+                className="btn btn-primary"
+                onClick={() => createComponent()}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-trigger="hover"
-                title="Click to add a landing page"
+                title="Adicionar nova landing page"
               >
-                <a
-                  href="#!"
-                  className="btn btn-primary"
-                  onClick={() => createComponent()}
-                >
-                  <KTIcon iconName="plus" className="fs-2" />
-                  Nova landing page
-                </a>
-              </div>
+                <KTIcon iconName="plus" className="fs-6 me-2" />
+                Nova Landing Page
+              </button>
 
-              <div
-                className="card-toolbar"
+              <button
+                className="btn btn-secondary"
+                onClick={() => importLP()}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-trigger="hover"
-                title="Import landing page"
+                title="Importar landing page"
+                disabled={lps.loadingImport || lps.loadingDuplicate}
               >
-                <a
-                  href="#!"
-                  className="btn btn-secondary"
-                  onClick={() => importLP()}
-                >
-                  <KTIcon iconName="file-up" className="fs-2" />
-                  Importar landing page
-                  {(lps.loadingImport || lps.loadingDuplicate) && <span className="spinner-border spinner-border-sm ms-2"></span>}
-                </a>
-              </div>
+                <KTIcon iconName="file-up" className="fs-6 me-2" />
+                Importar
+                {(lps.loadingImport || lps.loadingDuplicate) && (
+                  <span className="spinner-border spinner-border-sm ms-2"></span>
+                )}
+              </button>
             </div>
           </div>
-        </div>
 
-        <div className={`card ${className}`}>
-          <div className="card-body py-3">
-            <div className="table-responsive">
+          <div className="lp-content-body">
+            <div className="card-body py-3">
+              <div className="table-responsive">
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bolder text-muted">
@@ -580,7 +596,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                       isInactive ? "text-muted" : "text-gray-900"
                                     }`}
                                   >
-                                    https://insiderhof.com.br/{launchPhase?.name === "Vendas" ? "join" : "subscribe"}/{launchPhase?.slug || launchPhaseId}/{child.slug}
+                                    {`https://insiderhof.com.br/${launchPhase?.name === "Vendas" ? "join" : "subscribe"}/${launchPhase?.slug || launchPhaseId}/${child.slug}`}
                                   </a>
                                 </div>
                               </div>
@@ -681,17 +697,8 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   </AnimatePresence>
                 </Reorder.Group>
               </table>
-            </div>
-            
-            {/* Action Buttons */}
-            {/* {handleBackToItems && (
-              <div className="action-buttons">
-                <Button variant="secondary" size="lg" onClick={handleBackToItems}>
-                  <KTIcon iconName="arrow-left" className="fs-5 me-2" />
-                  Voltar aos Itens
-                </Button>
               </div>
-            )} */}
+            </div>
           </div>
         </div>
       </div>

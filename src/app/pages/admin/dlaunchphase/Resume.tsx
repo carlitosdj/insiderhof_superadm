@@ -7,6 +7,7 @@ import { ApplicationState } from "../../../../store";
 import Manage from "../dlaunchhasoffers/Manage";
 import SurveyManagement from "./SurveyManagement";
 import SurveyStatistics from "./SurveyStatistics";
+import { LaunchHeaderCard } from "./LaunchHeaderCard";
 
 // Estilos CSS customizados inspirados no Resume copy.tsx
 const resumeStyles = `
@@ -22,16 +23,76 @@ const resumeStyles = `
     padding: 2rem;
     border-radius: 12px;
     margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  
+  .resume-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
   }
   
   .resume-header h2 {
     margin: 0;
     font-weight: 700;
+    position: relative;
+    z-index: 2;
   }
   
   .resume-header .subtitle {
     opacity: 0.9;
     margin-top: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .header-metrics {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .metric-card {
+    background: rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 140px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .metric-number {
+    
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+  
+  .metric-label {
+    
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .resume-header {
+      padding: 1.5rem;
+    }
+    
+    .header-metrics {
+      flex-direction: column;
+      gap: 1rem !important;
+    }
+    
+    .metric-card {
+      min-width: auto;
+      width: 100%;
+    }
   }
   
   .stats-grid {
@@ -359,44 +420,75 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
       <style>{resumeStyles}</style>
       
       <div className="resume-container">
-        {/* Header */}
+        {/* Header Rica com Métricas */}
         <div className="resume-header">
-          <div className="d-flex justify-content-between align-items-start">
-            <div>
+          <div className="d-flex justify-content-between align-items-start mb-4">
+            <div style={{ position: 'relative', zIndex: 2 }}>
               <h2>{launch.name} - Resumo</h2>
               <div className="subtitle">
                 Visão geral e métricas do lançamento • {launch.type || 'N/A'}
               </div>
             </div>
-            <Badge bg={getStatusColor(launch)} className="status-badge">
+            <Badge bg={getStatusColor(launch)} className="status-badge" style={{ position: 'relative', zIndex: 2 }}>
               {getStatusText(launch)}
             </Badge>
           </div>
+          
+          {/* Métricas Principais em Cards Inline */}
+          <div className="d-flex flex-wrap gap-3 header-metrics">
+            <div className="metric-card d-flex align-items-center text-primary">
+              <div className="me-3">
+                <KTIcon iconName="user-plus" className="fs-1 text-primary opacity-75" />
+              </div>
+              <div>
+                <div className="fs-2 fw-bold metric-number">{formatNumber(launch.leadsCount || 0)}</div>
+                <div className="fs-7 fw-semibold metric-label">Leads</div>
+              </div>
+            </div>
+            
+            <div className="metric-card d-flex align-items-center text-primary">
+              <div className="me-3">
+                <KTIcon iconName="dollar" className="fs-1 text-primary opacity-75" />
+              </div>
+              <div>
+                <div className="fs-2 fw-bold metric-number">{formatNumber(launch.cartCount || 0)}</div>
+                <div className="fs-7 fw-semibold metric-label">Vendas</div>
+              </div>
+            </div>
+            
+            <div className="metric-card d-flex align-items-center text-primary">
+              <div className="me-3">
+                <KTIcon iconName="chart-line-up" className="fs-1 text-primary opacity-75" />
+              </div>
+              <div>
+                <div className="fs-2 fw-bold metric-number">{getConversionRate(launch)}%</div>
+                <div className="fs-7 fw-semibold metric-label">Conversão</div>
+              </div>
+            </div>
+            
+            <div className="metric-card d-flex align-items-center text-primary">
+              <div className="me-3">
+                <KTIcon iconName="wallet" className="fs-1 text-primary opacity-75" />
+              </div>
+              <div>
+                <div className="fs-2 fw-bold metric-number">{formatCurrency(price)}</div>
+                <div className="fs-7 fw-semibold metric-label">Ticket Médio</div>
+              </div>
+            </div>
+            
+            <div className="metric-card d-flex align-items-center text-primary">
+              <div className="me-3">
+                <KTIcon iconName="money" className="fs-1 text-primary opacity-75" />
+              </div>
+              <div>
+                <div className="fs-2 fw-bold metric-number">{formatCurrency(getRevenue(launch))}</div>
+                <div className="fs-7 fw-semibold metric-label">Receita Total</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Estatísticas Principais */}
-        <div className="stats-grid">
-          <div className="stat-box bg-light-primary">
-            <div className="stat-number">{formatNumber(launch.leadsCount || 0)}</div>
-            <div className="stat-label">Leads Capturados</div>
-          </div>
-          <div className="stat-box bg-light-primary">
-            <div className="stat-number">{formatNumber(launch.cartCount || 0)}</div>
-            <div className="stat-label">Vendas Realizadas</div>
-          </div>
-          <div className="stat-box bg-light-primary">
-            <div className="stat-number">{getConversionRate(launch)}%</div>
-            <div className="stat-label">Taxa de Conversão</div>
-          </div>
-          <div className="stat-box bg-light-primary">
-            <div className="stat-number">{formatCurrency(launch.price || 0)}</div>
-            <div className="stat-label">Ticket Médio</div>
-          </div>
-          <div className="stat-box bg-light-primary">
-            <div className="stat-number">{formatCurrency(getRevenue(launch))}</div>
-            <div className="stat-label">Receita Total</div>
-          </div>
-        </div>
+        
 
         {/* Main Content */}
         <Row className="g-4 align-items-stretch">

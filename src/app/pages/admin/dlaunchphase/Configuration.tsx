@@ -27,6 +27,21 @@ const configurationStyles = `
     padding: 2rem;
     border-radius: 12px;
     margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .config-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    transform: translate(50%, -50%);
   }
   
   .config-header h2 {
@@ -42,9 +57,10 @@ const configurationStyles = `
   .form-section {
     background: white;
     border: 1px solid #e1e5e9;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 1.5rem;
     overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   }
   
   .section-header {

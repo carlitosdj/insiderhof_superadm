@@ -8,6 +8,7 @@ import { ApplicationState } from "../../../../store";
 
 import Create from "./create";
 import Update from "./update";
+import { LaunchHeaderCard } from "../dlaunchphase/LaunchHeaderCard";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { AnimatePresence, Reorder } from "framer-motion";
@@ -26,28 +27,61 @@ import {
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
 
-// Estilos CSS customizados inspirados no Resume.tsx
+// Estilos CSS padronizados para o novo layout
 const widgetStyles = `
-  .widget-container {
-    padding: 2rem;
+  .phase-extra-container {
+    padding: 1.5rem;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
   }
   
-  .widget-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 2rem;
+  .phase-extra-wrapper {
+    background: white;
     border-radius: 12px;
-    margin-bottom: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    flex: 1;
   }
   
-  .widget-header h2 {
+  .phase-extra-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e4e6ea;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .phase-extra-header h3 {
     margin: 0;
-    font-weight: 700;
+    color: #181c32;
+    font-weight: 600;
+    font-size: 1.2rem;
   }
   
-  .widget-header .subtitle {
-    opacity: 0.9;
+  .phase-extra-header .subtitle {
+    color: #7e8299;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .phase-extra-content {
+    padding: 0;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .phase-extra-container {
+      padding: 1rem;
+    }
+  }
+  
+  .extra-item {
     margin-top: 0.5rem;
   }
   
@@ -132,7 +166,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
 
   const reorder = (children: LaunchPhaseExtras[]) => {
     // console.log("children", children);
-    children.map((child) => {
+    children.forEach((child) => {
       let index = children.findIndex((item): any => item.id === child.id);
       if (index !== -1) {
         children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
@@ -144,7 +178,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
   const reorderToSave = (children: LaunchPhaseExtras[]) => {
     //Verifica se o old é igual ao children para atualizar no backend:
     if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-      children.map((child) => {
+      children.forEach((child) => {
         dispatch(
           updateLaunchPhaseExtrasRequest({ id: child.id, order: child.order })
         );
@@ -214,43 +248,40 @@ const ManageLaunchPhaseExtraWidget: React.FC<
         </div>
       </Modal>
 
-      <div className="widget-container">
-        {/* Header */}
-        <div className="widget-header">
-          <div className="d-flex justify-content-between align-items-start">
+      <div className="phase-extra-container">
+        {/* Header Card Padronizado */}
+        <LaunchHeaderCard phaseName={launchPhase?.name} />
+        
+        <div className="phase-extra-wrapper">
+          {/* Content Header */}
+          <div className="phase-extra-header">
             <div>
-              <h2>
-                {launch?.name || "Lançamento"} - {launchPhase?.name}
-              </h2>
+              <h3>
+                <KTIcon iconName="gear" className="fs-4 text-primary me-2" />
+                Itens da Fase - {launchPhase?.name}
+              </h3>
               <div className="subtitle">
-                Gerenciamento de itens da fase •{" "}
                 {launchphaseextras.myLaunchPhaseExtras.length} itens cadastrados
               </div>
             </div>
-            <div className="d-flex flex-column gap-2">
-              {/* <div
-                className="card-toolbar"
+            
+            <div className="d-flex align-items-center gap-2">
+              <button
+                className="btn btn-primary"
+                onClick={() => createComponent()}
                 data-bs-toggle="tooltip"
                 data-bs-placement="top"
-                data-bs-trigger="hover"
-                title="Click to add a item"
+                title="Adicionar novo item"
               >
-                <a
-                  //href="#!"
-                  className="btn btn-primary btn-sm"
-                  onClick={() => createComponent()}
-                >
-                  <KTIcon iconName="plus" className="fs-6 me-1" />
-                  Item
-                </a>
-              </div> */}
+                <KTIcon iconName="plus" className="fs-6 me-2" />
+                Novo Item
+              </button>
             </div>
           </div>
-        </div>
 
-        <div className={`card ${className}`}>
-          <div className="card-body py-3">
-            <div className="table-responsive">
+          <div className="phase-extra-content">
+            <div className="card-body py-3">
+              <div className="table-responsive">
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bolder text-muted">
@@ -388,6 +419,7 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                   {/* </AnimatePresence> */}
                 </Reorder.Group>
               </table>
+              </div>
             </div>
           </div>
         </div>
