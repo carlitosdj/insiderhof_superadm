@@ -22,9 +22,13 @@ import {
   deleteLaunchPhasesSuccess,
   deleteLaunchPhasesFailure,
 
+  loadPhaseStatisticsRequest,
+  loadPhaseStatisticsSuccess,
+  loadPhaseStatisticsFailure,
+
 } from './actions'
 
-import {LaunchPhases} from './types'
+import {LaunchPhases, PhaseStatistics} from './types'
 
 //Load
 export function* loadLaunchPhase(payload: ReturnType<typeof loadLaunchPhasesRequest>) {
@@ -85,5 +89,16 @@ export function* deleteLaunchPhase(payload: ReturnType<typeof deleteLaunchPhases
     yield put(deleteLaunchPhasesSuccess(response))
   } catch (error: any) {
     yield put(deleteLaunchPhasesFailure(error.response.data))
+  }
+}
+
+//Statistics
+export function* loadPhaseStatistics(payload: ReturnType<typeof loadPhaseStatisticsRequest>) {
+  try {
+    // Removendo o put desnecessário que estava causando loop infinito
+    const response: PhaseStatistics = yield call(api.get, `launch-answer/statistics/phase/${payload.payload}`)
+    yield put(loadPhaseStatisticsSuccess(response.data))
+  } catch (error: any) {
+    yield put(loadPhaseStatisticsFailure(error.response?.data || error.message))
   }
 }

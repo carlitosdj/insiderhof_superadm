@@ -1,5 +1,5 @@
 import {action} from 'typesafe-actions'
-import {LaunchPhasesTypes, LaunchPhases} from './types'
+import {LaunchPhasesTypes, LaunchPhases, PhaseStatistics} from './types'
 
 export const reorderLaunchPhasesRequest = (data: LaunchPhases[]) => action(LaunchPhasesTypes.REORDER_LAUNCHPHASES, data)
 
@@ -27,3 +27,8 @@ export const updateLaunchPhasesFailure = (err: any[]) => action(LaunchPhasesType
 export const deleteLaunchPhasesRequest = (id: number) => action(LaunchPhasesTypes.DELETE_LAUNCHPHASES_REQUEST, id)
 export const deleteLaunchPhasesSuccess = (data: LaunchPhases) => action(LaunchPhasesTypes.DELETE_LAUNCHPHASES_SUCCESS, data)
 export const deleteLaunchPhasesFailure = (err: any[]) => action(LaunchPhasesTypes.DELETE_LAUNCHPHASES_FAILURE, err)
+
+//Statistics
+export const loadPhaseStatisticsRequest = (phaseId: number) => action(LaunchPhasesTypes.LOAD_PHASE_STATISTICS_REQUEST, phaseId)
+export const loadPhaseStatisticsSuccess = (data: PhaseStatistics) => action(LaunchPhasesTypes.LOAD_PHASE_STATISTICS_SUCCESS, data)
+export const loadPhaseStatisticsFailure = (err: any[]) => action(LaunchPhasesTypes.LOAD_PHASE_STATISTICS_FAILURE, err)

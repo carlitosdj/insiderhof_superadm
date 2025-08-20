@@ -87,6 +87,7 @@ export interface UpdateLaunchQuestionDto {
   weight?: string; // Backend expects string
   order?: number;
   launchPhaseId?: number;
+  options?: CreateLaunchQuestionOptionDto[];
 }
 
 export interface ReorderQuestionsDto {

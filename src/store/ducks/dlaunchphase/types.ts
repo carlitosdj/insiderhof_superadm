@@ -27,6 +27,11 @@ export enum LaunchPhasesTypes {
   DELETE_LAUNCHPHASES_REQUEST = "@extras/DELETE_LAUNCHPHASES_REQUEST",
   DELETE_LAUNCHPHASES_SUCCESS = "@extras/DELETE_LAUNCHPHASES_SUCCESS",
   DELETE_LAUNCHPHASES_FAILURE = "@extras/DELETE_LAUNCHPHASES_FAILURE",
+
+  //Statistics
+  LOAD_PHASE_STATISTICS_REQUEST = "@extras/LOAD_PHASE_STATISTICS_REQUEST",
+  LOAD_PHASE_STATISTICS_SUCCESS = "@extras/LOAD_PHASE_STATISTICS_SUCCESS",
+  LOAD_PHASE_STATISTICS_FAILURE = "@extras/LOAD_PHASE_STATISTICS_FAILURE",
 }
 
 /**
@@ -45,12 +50,45 @@ export interface LaunchPhases {
   launchId?: number | undefined;
   extras?: any
 }
+
+// Survey Statistics Interfaces
+export interface QuestionStatistics {
+  questionId: number;
+  question: string;
+  type: 'multiple_choice' | 'scale' | 'text';
+  totalResponses: number;
+  averageScore: number;
+  distribution: {
+    optionText: string;
+    count: number;
+    percentage: number;
+  }[];
+}
+
+export interface ScoreRange {
+  range: string;
+  count: number;
+  percentage: number;
+}
+
+export interface PhaseStatistics {
+  phaseId: number;
+  totalResponses: number;
+  questionStatistics: QuestionStatistics[];
+  leadScoreAverage: number;
+  leadScoreDistribution: {
+    scoreRanges: ScoreRange[];
+  };
+}
+
 /**
  * State type
  */
 export interface LaunchPhasesState {
   readonly myLaunchPhases: LaunchPhases[];
   readonly launchPhase: LaunchPhases;
+  readonly phaseStatistics: PhaseStatistics | null;
   readonly loading: boolean;
+  readonly loadingStatistics: boolean;
   readonly error: boolean;
 }

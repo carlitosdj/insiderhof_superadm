@@ -111,7 +111,12 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           type: values.type,
           required: values.required,
           weight: values.weight.toString(),
-          launchPhaseId
+          launchPhaseId,
+          options: values.type === 'text' ? undefined : values.options.filter(opt => opt.optionText.trim()).map(opt => ({
+            optionText: opt.optionText,
+            weight: opt.weight.toString(),
+            order: opt.order
+          }))
         }));
       } else {
         // Create new question
@@ -363,7 +368,14 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                         type="text"
                         name={`options.${index}.optionText`}
                         value={option.optionText}
-                        onChange={formik.handleChange}
+                        onChange={(e) => {
+                          const newOptions = [...formik.values.options];
+                          newOptions[index] = {
+                            ...newOptions[index],
+                            optionText: e.target.value
+                          };
+                          formik.setFieldValue('options', newOptions);
+                        }}
                         onBlur={formik.handleBlur}
                         placeholder="Digite a opção de resposta"
                         isInvalid={
@@ -384,7 +396,14 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
                         max="10"
                         name={`options.${index}.weight`}
                         value={option.weight}
-                        onChange={formik.handleChange}
+                        onChange={(e) => {
+                          const newOptions = [...formik.values.options];
+                          newOptions[index] = {
+                            ...newOptions[index],
+                            weight: parseFloat(e.target.value) || 0
+                          };
+                          formik.setFieldValue('options', newOptions);
+                        }}
                         onBlur={formik.handleBlur}
                         placeholder="Peso"
                         size="sm"

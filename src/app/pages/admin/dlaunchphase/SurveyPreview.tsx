@@ -31,36 +31,81 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
 
   const calculateScore = () => {
     let totalScore = 0;
-    let totalWeight = 0;
+    let maxPossibleScore = 0;
+
+    console.log('🔢 CALCULATING SCORE - Total questions:', sortedQuestions.length);
+    console.log('🔢 Current answers:', answers);
 
     sortedQuestions.forEach(question => {
+      const questionWeight = question.weight || 1;
+      console.log(`\n📝 Question ${question.id}: "${question.question}"`);
+      console.log(`   Type: ${question.type}, Weight: ${questionWeight}`);
+      
       if (answers[question.id!] !== undefined && question.id) {
         const answer = answers[question.id];
         let optionWeight = 0;
+        console.log(`   Answer: ${answer}`);
 
         if (question.type === 'multiple_choice') {
           const selectedOption = question.options?.find(
             opt => opt.optionText === answer
           );
           optionWeight = selectedOption?.weight || 0;
+          console.log(`   Selected option weight: ${optionWeight}`);
+          
+          // Find max weight among all options for this question
+          const maxOptionWeight = question.options?.reduce((max, opt) => 
+            Math.max(max, opt.weight || 0), 0) || 0;
+          maxPossibleScore += questionWeight * maxOptionWeight;
+          console.log(`   Max option weight: ${maxOptionWeight}, contributes: ${questionWeight * maxOptionWeight}`);
+          
         } else if (question.type === 'scale') {
-          optionWeight = Number(answer);
+          const selectedOption = question.options?.find(
+            opt => opt.optionText.includes(String(answer))
+          );
+          optionWeight = selectedOption?.weight || Number(answer);
+          console.log(`   Scale option weight: ${optionWeight}`);
+          
+          // Find max weight among scale options for this question
+          const maxOptionWeight = question.options?.reduce((max, opt) => 
+            Math.max(max, opt.weight || 0), 0) || 5; // Default to 5 if no options
+          maxPossibleScore += questionWeight * maxOptionWeight;
+          console.log(`   Max scale weight: ${maxOptionWeight}, contributes: ${questionWeight * maxOptionWeight}`);
+          
         } else if (question.type === 'text') {
-          // For text questions, give max weight if answered
-          optionWeight = answer.toString().trim() ? question.weight : 0;
+          // For text questions, give full question weight if answered
+          optionWeight = answer.toString().trim() ? questionWeight : 0;
+          maxPossibleScore += questionWeight * questionWeight; // Max is the question weight itself
+          console.log(`   Text answered: ${!!answer.toString().trim()}, weight: ${optionWeight}`);
         }
 
-        const questionScore = (question.weight || 1) * optionWeight;
+        const questionScore = questionWeight * optionWeight;
         totalScore += questionScore;
-        totalWeight += question.weight || 1;
+        console.log(`   Question score: ${questionWeight} * ${optionWeight} = ${questionScore}`);
+        
+      } else {
+        console.log(`   Not answered`);
+        // Even unanswered questions contribute to max possible score
+        if (question.type === 'multiple_choice' || question.type === 'scale') {
+          const maxOptionWeight = question.options?.reduce((max, opt) => 
+            Math.max(max, opt.weight || 0), 0) || (question.type === 'scale' ? 5 : 1);
+          maxPossibleScore += questionWeight * maxOptionWeight;
+          console.log(`   Unanswered max contributes: ${questionWeight * maxOptionWeight}`);
+        } else if (question.type === 'text') {
+          maxPossibleScore += questionWeight * questionWeight;
+          console.log(`   Unanswered text max contributes: ${questionWeight * questionWeight}`);
+        }
       }
     });
 
-    return {
+    const result = {
       totalScore,
-      totalWeight,
-      percentage: totalWeight > 0 ? (totalScore / (totalWeight * 10)) * 100 : 0 // Assuming max weight per option is 10
+      maxPossibleScore,
+      percentage: maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0
     };
+    
+    console.log(`\n🎯 FINAL RESULT:`, result);
+    return result;
   };
 
   const getScoreColor = (percentage: number) => {
@@ -239,7 +284,7 @@ const SurveyPreview: React.FC<SurveyPreviewProps> = ({
             <div>
               <h6 className="mb-1">Pontuação Calculada</h6>
               <p className="mb-0">
-                Score Total: <strong>{score.totalScore.toFixed(2)}</strong> de <strong>{score.totalWeight * 10}</strong> possíveis
+                Score Total: <strong>{score.totalScore.toFixed(2)}</strong> de <strong>{score.maxPossibleScore.toFixed(2)}</strong> possíveis
               </p>
             </div>
             <div className="text-end">

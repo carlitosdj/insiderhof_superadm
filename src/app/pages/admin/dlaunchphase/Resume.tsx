@@ -6,6 +6,7 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import { ApplicationState } from "../../../../store";
 import Manage from "../dlaunchhasoffers/Manage";
 import SurveyManagement from "./SurveyManagement";
+import SurveyStatistics from "./SurveyStatistics";
 
 // Estilos CSS customizados inspirados no Resume copy.tsx
 const resumeStyles = `
@@ -776,6 +777,41 @@ const Resume = ({ onEdit }: { onEdit?: () => void }) => {
                         permitindo priorizar os contatos mais qualificados.
                       </div>
                     </Alert>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          ) : null;
+        })()}
+
+        {/* Survey Statistics Section */}
+        {(() => {
+          const captacaoPhase = useSelector((state: ApplicationState) => 
+            state.launchphase.myLaunchPhases.find(
+              (phase: any) => phase.launchId === Number(launchId) && 
+              (phase.name?.toLowerCase().includes('captação') || phase.name?.toLowerCase().includes('captacao'))
+            )
+          );
+          
+          return captacaoPhase ? (
+            <Row className="mb-4">
+              <Col lg={12}>
+                <Card className="shadow-sm">
+                  <Card.Header className="bg-light-success">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div className="d-flex align-items-center">
+                        <KTIcon iconName="chart-line-up" className="fs-2 text-success me-3" />
+                        <div>
+                          <h5 className="mb-1 text-dark">Estatísticas das Pesquisas</h5>
+                          <p className="text-muted mb-0">
+                            Análise das respostas dos leads e distribuição de scores
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Header>
+                  <Card.Body>
+                    <SurveyStatistics phaseId={captacaoPhase.id!} />
                   </Card.Body>
                 </Card>
               </Col>

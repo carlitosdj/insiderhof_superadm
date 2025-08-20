@@ -5,8 +5,10 @@ import {LaunchPhasesState, LaunchPhasesTypes} from './types'
 const INITIAL_STATE: LaunchPhasesState = {
   myLaunchPhases: [],
   launchPhase: {},
+  phaseStatistics: null,
   error: false,
   loading: true,
+  loadingStatistics: false,
 }
 
 
@@ -98,6 +100,15 @@ const reducer: Reducer<LaunchPhasesState> = (state = INITIAL_STATE, action: any)
       return {...state, loading: false, error: false, myLaunchPhases: state.myLaunchPhases.filter((item) => item.id !== action.payload.data.id)}
     case LaunchPhasesTypes.DELETE_LAUNCHPHASES_FAILURE:
       return {...state, loading: false, error: action.payload, myLaunchPhases: []}
+
+    //Statistics
+    case LaunchPhasesTypes.LOAD_PHASE_STATISTICS_REQUEST:
+      return {...state, loadingStatistics: true}
+    case LaunchPhasesTypes.LOAD_PHASE_STATISTICS_SUCCESS:
+      return {...state, loadingStatistics: false, error: false, phaseStatistics: action.payload}
+    case LaunchPhasesTypes.LOAD_PHASE_STATISTICS_FAILURE:
+      return {...state, loadingStatistics: false, error: action.payload, phaseStatistics: null}
+
     default:
       return state
   }

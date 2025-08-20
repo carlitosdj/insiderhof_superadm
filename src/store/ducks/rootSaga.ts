@@ -85,7 +85,7 @@ import { createLaunch as dcreateLaunch, deleteLaunch, loadLaunch, loadMyLaunchs,
 import { LaunchHasOfferTypes } from './dlaunchhasoffers/types'
 import { createLaunchHasOffers, deleteLaunchHasOffers, loadLaunchHasOffers, updateLaunchHasOffers } from './dlaunchhasoffers/sagas'
 import { LaunchPhasesTypes } from './dlaunchphase/types'
-import { createLaunchPhase, deleteLaunchPhase, loadLaunchPhase, loadMyLaunchPhase, updateLaunchPhase } from './dlaunchphase/sagas'
+import { createLaunchPhase, deleteLaunchPhase, loadLaunchPhase, loadMyLaunchPhase, updateLaunchPhase, loadPhaseStatistics } from './dlaunchphase/sagas'
 import { LaunchPhaseExtrasTypes } from './dlaunchphaseextras/types'
 import { createLaunchPhaseExtra, deleteLaunchPhaseExtra, loadLaunchPhaseExtra, loadMyLaunchPhaseExtra, updateLaunchPhaseExtra } from './dlaunchphaseextras/sagas'
 import { SingleMailTypes } from './singlemail/types'
@@ -264,6 +264,7 @@ export default function* rootSaga() {
     takeLatest(LaunchPhasesTypes.CREATE_LAUNCHPHASES_REQUEST, createLaunchPhase),
     takeLatest(LaunchPhasesTypes.UPDATE_LAUNCHPHASES_REQUEST, updateLaunchPhase),
     takeLatest(LaunchPhasesTypes.DELETE_LAUNCHPHASES_REQUEST, deleteLaunchPhase),
+    takeLatest(LaunchPhasesTypes.LOAD_PHASE_STATISTICS_REQUEST, loadPhaseStatistics),
 
     //LaunchPhaseExtra
     takeLatest(LaunchPhaseExtrasTypes.LOAD_LAUNCHPHASEEXTRA_REQUEST, loadLaunchPhaseExtra),
