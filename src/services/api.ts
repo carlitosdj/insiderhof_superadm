@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 const api = axios.create({
-  //baseURL: 'https://api.insiderhof.com.br'
-  baseURL: 'http://localhost:3007',
+  baseURL: 'https://api.insiderhof.com.br'
+  
+  //baseURL: 'http://localhost:3007',
 })
 
 // Add a request interceptor
