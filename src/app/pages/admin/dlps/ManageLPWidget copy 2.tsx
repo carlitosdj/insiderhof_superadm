@@ -494,7 +494,7 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                     <th className="min-w-150px">NOME</th>
                     <th className="min-w-150px">SLUG</th>
                     <th className="min-w-200px">DESCRIÇÃO</th>
-                    <th className="min-w-100px">ORDEM</th>
+                    {/* <th className="min-w-100px">ORDEM</th> */}
                     <th className="min-w-100px">STATUS</th>
                     <th className="min-w-100px">LAYOUT</th>
                     <th className="min-w-50px text-end">AÇÕES</th>
@@ -571,11 +571,11 @@ const ManageLPWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 {child.description}
                               </span>
                             </td>
-                            <td onPointerDownCapture={(e) => e.stopPropagation()}>
+                            {/* <td onPointerDownCapture={(e) => e.stopPropagation()}>
                               <span className={isInactive ? "text-muted" : ""}>
                                 {child.order}
                               </span>
-                            </td>
+                            </td> */}
                             <td onPointerDownCapture={(e) => e.stopPropagation()}>
                               <span className={`badge ${
                                 child.status === "1" 

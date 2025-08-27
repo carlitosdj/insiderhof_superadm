@@ -51,6 +51,35 @@ export interface LaunchPhases {
   extras?: any
 }
 
+// UTM Breakdown Interfaces
+export interface UtmAdData {
+  count: number;
+  percentage: number;
+  classPercentage: number;
+}
+
+export interface UtmCampaignData {
+  campaignCount: number;
+  campaignPercentage: number;
+  ads: {
+    [adName: string]: UtmAdData;
+  };
+}
+
+export interface UtmSourceData {
+  totalCount: number;
+  totalPercentage: number;
+  campaigns: {
+    [campaignName: string]: UtmCampaignData;
+  };
+}
+
+export interface UtmAdBreakdown {
+  [scoreClass: string]: {
+    [utmSource: string]: UtmSourceData;
+  };
+}
+
 // Survey Statistics Interfaces
 export interface QuestionStatistics {
   questionId: number;
@@ -79,6 +108,7 @@ export interface PhaseStatistics {
   leadScoreDistribution: {
     scoreRanges: ScoreRange[];
   };
+  utmAdBreakdown?: UtmAdBreakdown;
 }
 
 /**

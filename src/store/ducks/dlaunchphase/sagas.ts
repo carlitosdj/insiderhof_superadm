@@ -95,11 +95,39 @@ export function* deleteLaunchPhase(payload: ReturnType<typeof deleteLaunchPhases
 //Statistics
 export function* loadPhaseStatistics(payload: ReturnType<typeof loadPhaseStatisticsRequest>): Generator {
   try {
-    const response: any = yield call(api.get, `launch-answer/statistics/phase/${payload.payload}`)
-    console.log('Saga: Full API response:', response)
-    yield put(loadPhaseStatisticsSuccess(response.data))
+    // PRIMEIRO: Tentar endpoint original para manter funcionamento
+    console.log('🔍 SAGA: Trying original endpoint first...')
+    const originalResponse: any = yield call(api.get, `launch-answer/statistics/phase/${payload.payload}`)
+    console.log('📊 SAGA: Original endpoint response:', originalResponse)
+    
+    let finalData = originalResponse.data || {}
+    
+    // SEGUNDO: Tentar buscar dados UTM do lead-scoring
+    try {
+      console.log('🎯 SAGA: Trying to get UTM data from lead-scoring endpoint...')
+      const utmResponse: any = yield call(api.get, `lead-scoring/report/phase/${payload.payload}`)
+      console.log('📈 SAGA: Lead-scoring UTM response:', utmResponse)
+      
+      // Adicionar UTM data ao response original se existir
+      if (utmResponse.data?.utmAdBreakdown) {
+        finalData = {
+          ...finalData,
+          utmAdBreakdown: utmResponse.data.utmAdBreakdown
+        }
+        console.log('✅ SAGA: UTM data merged successfully')
+      } else {
+        console.log('⚠️ SAGA: No UTM data found in lead-scoring response')
+      }
+    } catch (utmError: any) {
+      console.error('❌ SAGA: Failed to get UTM data:', utmError)
+      // Continua sem UTM data, não quebra o fluxo
+    }
+    
+    console.log('🚀 SAGA: Final data being sent to Redux:', finalData)
+    yield put(loadPhaseStatisticsSuccess(finalData))
+    
   } catch (error: any) {
-    console.log('Saga: Error loading statistics:', error)
+    console.error('💥 SAGA: Main error loading statistics:', error)
     yield put(loadPhaseStatisticsFailure(error.response?.data || error.message))
   }
 }

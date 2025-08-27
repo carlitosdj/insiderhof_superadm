@@ -107,6 +107,22 @@ const widgetStyles = `
   .card-body {
     padding: 1.5rem;
   }
+  
+  /* Table responsiveness fixes */
+  .table-responsive {
+    overflow-x: hidden !important;
+  }
+  
+  .table {
+    table-layout: fixed !important;
+    width: 100% !important;
+  }
+  
+  .table th, .table td {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    text-overflow: ellipsis !important;
+  }
 `;
 
 type Props = {
@@ -285,12 +301,12 @@ const ManageLaunchPhaseExtraWidget: React.FC<
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bolder text-muted">
-                    <th className="min-w-150px">ITEM</th>
-                    <th className="min-w-150px">VALUE</th>
-                    <th className="min-w-150px">NAME</th>
-                    <th className="min-w-150px">TYPE</th>
-                    <th className="min-w-50px text-end">AÇÕES</th>
-                    <th className="w-15px"></th>
+                    <th style={{width: "25%", maxWidth: "150px"}}>ITEM</th>
+                    <th style={{width: "25%", maxWidth: "150px"}}>VALUE</th>
+                    <th style={{width: "20%", maxWidth: "120px"}}>NAME</th>
+                    <th style={{width: "15%", maxWidth: "100px"}}>TYPE</th>
+                    <th style={{width: "10%", minWidth: "80px"}} className="text-end">AÇÕES</th>
+                    <th style={{width: "5%", minWidth: "40px"}}></th>
                   </tr>
                 </thead>
                 <Reorder.Group

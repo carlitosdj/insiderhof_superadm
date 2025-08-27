@@ -260,14 +260,15 @@ const configurationStyles = `
   }
 `;
 
-const Configuration = ({ onCancel }: { onCancel?: () => void }) => {
+const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCancel?: () => void }) => {
   const dispatch = useDispatch();
   const { launchId } = useParams();
   
-  // Get launch data from Redux state
-  const launch = useSelector((state: ApplicationState) => 
+  // Get launch data from Redux state or use prop
+  const launchFromRedux = useSelector((state: ApplicationState) => 
     state.launch.myLaunchs.find(l => l.id === Number(launchId))
   );
+  const launch = propLaunch || launchFromRedux;
 
   const [validated, setValidated] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

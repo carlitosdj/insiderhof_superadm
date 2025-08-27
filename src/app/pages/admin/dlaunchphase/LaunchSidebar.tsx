@@ -140,44 +140,15 @@ const sidebarStyles = `
     color: #009ef7;
   }
   
-  /* Responsividade */
-  @media (max-width: 992px) {
+  /* Desktop - sidebar sempre visível */
+  @media (min-width: 993px) {
     .launch-sidebar {
-      width: 100%;
-      max-width: 280px;
-      position: fixed;
-      top: 0;
-      left: -280px;
-      z-index: 1050; /* Bootstrap modal z-index is 1055 */
-      transition: left 0.3s ease;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    
-    .launch-sidebar.show {
-      left: 0;
-      box-shadow: 0 0 50px 0 rgba(82, 63, 105, 0.4);
+      position: relative !important;
+      left: 0 !important;
+      display: flex !important;
     }
   }
-  
-  @media (max-width: 576px) {
-    .launch-sidebar {
-      max-width: 100%;
-      width: 100%;
-    }
-    
-    .launch-sidebar-header {
-      padding: 1rem;
-    }
-    
-    .launch-sidebar-header h4 {
-      font-size: 1rem;
-    }
-    
-    .sidebar-menu-item {
-      padding: 1rem 1rem;
-    }
-  }
+
   
   /* Loading state */
   .sidebar-loading {
@@ -247,6 +218,14 @@ const LaunchSidebar: React.FC<LaunchSidebarProps> = ({
               <span className="label">Resumo</span>
             </button>
             
+            <button
+              className={`sidebar-menu-item ${activeTab === "lead-score" ? "active" : ""}`}
+              onClick={() => handleMenuItemClick("lead-score")}
+            >
+              <KTIcon iconName="chart-line-up" className="icon" />
+              <span className="label">Lead Score</span>
+            </button>
+            
             {/* <button
               className={`sidebar-menu-item ${activeTab === "configuracao" ? "active" : ""}`}
               onClick={() => handleMenuItemClick("configuracao")}
@@ -276,9 +255,9 @@ const LaunchSidebar: React.FC<LaunchSidebarProps> = ({
                         : phase.name === "Evento"
                         ? "calendar"
                         : phase.name === "Vendas"
-                        ? "purchase"
+                        ? "rocket"
                         : phase.name === "Aquecimento"
-                        ? "flame"
+                        ? "sun"
                         : phase.name === "Debriefing"
                         ? "chart-simple-3"
                         : "gear"
@@ -286,13 +265,15 @@ const LaunchSidebar: React.FC<LaunchSidebarProps> = ({
                     className="icon"
                   />
                   <span className="label">{phase.name}</span>
-                  <button
+                  <div
                     className="edit-btn"
                     onClick={(e) => handleEditClick(phase, e)}
                     title={`Editar fase ${phase.name}`}
+                    role="button"
+                    tabIndex={0}
                   >
                     <KTIcon iconName="pencil" className="fs-7" />
-                  </button>
+                  </div>
                 </button>
               ))}
             </div>

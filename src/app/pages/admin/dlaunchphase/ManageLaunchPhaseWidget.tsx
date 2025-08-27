@@ -17,6 +17,7 @@ import { AnimatePresence, Reorder } from "framer-motion";
 import Manage from "../dlaunchhasoffers/Manage";
 import { ManageLaunchPhaseExtraWidget } from "../dlaunchphaseextra/ManageLaunchPhaseExtraWidget";
 import Resume from "./Resume";
+import LeadScore from "./LeadScore";
 import { ManageLPWidget } from "../dlps/ManageLPWidget";
 import {
   LaunchPhases,
@@ -85,7 +86,7 @@ const layoutStyles = `
       position: fixed;
       bottom: 20px;
       right: 20px;
-      z-index: 1049;
+      z-index: 1060;
       background: #009ef7;
       color: white;
       border: none;
@@ -96,8 +97,9 @@ const layoutStyles = `
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
     
     .mobile-sidebar-toggle:hover {
@@ -108,6 +110,103 @@ const layoutStyles = `
     .mobile-sidebar-toggle:active {
       transform: scale(0.95);
     }
+    
+    /* Force mobile sidebar behavior - Simples e limpo */
+    .launch-sidebar {
+      position: fixed !important;
+      top: 0 !important;
+      left: -280px !important;
+      z-index: 1055 !important;
+      height: 100vh !important;
+      width: 280px !important;
+      background: white !important;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5) !important;
+      transition: left 0.3s ease !important;
+      overflow-y: auto !important;
+    }
+    
+    .launch-sidebar.show {
+      left: 0 !important;
+    }
+    
+    /* Forçar o LaunchSidebar interno a aparecer no mobile */
+    .launch-sidebar .launch-sidebar {
+      position: relative !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      display: flex !important;
+    }
+  }
+  
+  /* Layout responsivo para tabelas e conteúdo */
+  .content-wrapper {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  .tab-content-wrapper {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  .component-wrapper {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Tabelas responsivas */
+  .table-responsive {
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+  
+  /* Cards e containers responsivos */
+  .card, .card-body {
+    width: 100% !important;
+    overflow-x: hidden !important;
+    word-wrap: break-word !important;
+  }
+  
+  /* Colunas responsivas para formulários e grids */
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, 
+  .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+  [class*="col-"] {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  @media (max-width: 768px) {
+    /* Em telas pequenas, forçar colunas para largura total */
+    .col-md-6, .col-lg-4, .col-xl-3 {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+    
+    /* Reduzir padding em telas pequenas */
+    .card-body, .content-wrapper {
+      padding: 1rem !important;
+    }
+    
+    /* Tabelas em telas pequenas */
+    table {
+      font-size: 0.875rem !important;
+    }
+    
+    th, td {
+      padding: 0.5rem !important;
+    }
+  }
   }
   
   /* Sidebar overlay */
@@ -122,11 +221,19 @@ const layoutStyles = `
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    display: none;
   }
   
   .launch-sidebar-overlay.show {
     opacity: 1;
     visibility: visible;
+    display: block;
+  }
+  
+  @media (min-width: 993px) {
+    .launch-sidebar-overlay {
+      display: none !important;
+    }
   }
   
   @media (min-width: 993px) {
@@ -267,6 +374,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     } else if (launchPhaseId === "landing-page-vendas") {
       setActiveTab("landing-page-vendas");
       setSelectedLandingPage("vendas");
+    } else if (launchPhaseId === "lead-score") {
+      setActiveTab("lead-score");
     } else if (launchPhaseId) {
       setActiveTab(launchPhaseId);
     } else if (launchId) {
@@ -282,7 +391,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       "ManageLaunchPhaseWidget: useEffect fase ativa, activeTab:",
       activeTab
     );
-    if (activeTab && activeTab !== "resumo" && activeTab !== "configuracao" && activeTab !== "landing-page-captacao" && activeTab !== "landing-page-vendas") {
+    if (activeTab && activeTab !== "resumo" && activeTab !== "lead-score" && activeTab !== "configuracao" && activeTab !== "landing-page-captacao" && activeTab !== "landing-page-vendas") {
       dispatch(loadMyLaunchPhaseExtrasRequest(Number(activeTab)));
       dispatch(loadMyLPsRequest(Number(activeTab))); // Carrega os LPs da fase
       // LPSessions e LPFeatures serão carregados sob demanda quando necessário
@@ -331,6 +440,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     if (tabId === "resumo") {
       setIsEditing(false);
       navigate(`/launch/${launchId}`);
+    } else if (tabId === "lead-score") {
+      navigate(`/launch/${launchId}/lead-score`);
     } else if (tabId === "configuracao") {
       navigate(`/launch/${launchId}/configuracao`);
     } else if (tabId === "landing-page-captacao" || tabId === "landing-page-vendas") {
@@ -356,7 +467,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     console.log("renderTabContent - Iniciando renderização");
     
     // Verifica se os dados estão carregando
-    if (launchphases.loading || !launch) {
+    if (launchphases.loading || !finalLaunch) {
       console.log("renderTabContent - Mostrando loading");
       return (
         <div className="content-loading">
@@ -376,10 +487,20 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
         <div className="tab-content-wrapper">
           <div className="component-wrapper">
             {!isEditing ? (
-              <Resume onEdit={() => setIsEditing(true)} />
+              <Resume launch={finalLaunch} onEdit={() => setIsEditing(true)} />
             ) : (
-              <Configuration onCancel={() => setIsEditing(false)} />
+              <Configuration launch={finalLaunch} onCancel={() => setIsEditing(false)} />
             )}
+          </div>
+        </div>
+      );
+    }
+
+    if (activeTab === "lead-score") {
+      return (
+        <div className="tab-content-wrapper">
+          <div className="component-wrapper">
+            <LeadScore launch={finalLaunch} />
           </div>
         </div>
       );
@@ -389,8 +510,8 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       return (
         <div className="tab-content-wrapper">
           <div className="component-wrapper">
-            <div className="p-0">
-              <div className="card-body p-0">
+            <div className="p-0" style={{ overflow: 'hidden', width: '100%' }}>
+              <div className="card-body p-0" style={{ width: '100%' }}>
                 {(() => {
                   // Encontra a fase correspondente à landing page selecionada
                   const targetPhase = launchphases.myLaunchPhases.find(phase => {
@@ -407,16 +528,26 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   console.log("ManageLaunchPhaseWidget - lps.loading:", lps.loading);
                   
                   return (
-                    <ManageLPWidget 
-                      key={activeTab}
-                      resetToListFlag={lpListResetFlag}
-                      className="" 
-                      lps={lps} 
-                      //handleBackToItems={handleBackToLandingPages}
-                      lpsessions={lpsessions}
-                      lpfeatures={lpfeatures}
-                      launchPhaseId={targetPhase ? Number(targetPhase.id) : undefined}
-                    />
+                    <>
+                      <style>{`
+                        .launch-sidebar {
+                          width: 280px !important;
+                          min-width: 280px !important;
+                          max-width: 280px !important;
+                          flex-shrink: 0 !important;
+                        }
+                      `}</style>
+                      <ManageLPWidget 
+                        key={activeTab}
+                        resetToListFlag={lpListResetFlag}
+                        className="" 
+                        lps={lps} 
+                        //handleBackToItems={handleBackToLandingPages}
+                        lpsessions={lpsessions}
+                        lpfeatures={lpfeatures}
+                        launchPhaseId={targetPhase ? Number(targetPhase.id) : undefined}
+                      />
+                    </>
                   );
                 })()}
               </div>
@@ -441,6 +572,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     const phase = launchphases.myLaunchPhases.find(
       (p) => p.id?.toString() === activeTab
     );
+    
     if (!phase) {
       return (
         <div className="content-loading">
@@ -460,11 +592,21 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     return (
       <div className="tab-content-wrapper">
         <div className="component-wrapper">
-          <ManageLaunchPhaseExtraWidget
-            launchPhaseId={Number(activeTab)}
-            launchphaseextras={launchphaseextras}
-            className=""
-          />
+          <>
+            <style>{`
+              .launch-sidebar {
+                width: 280px !important;
+                min-width: 280px !important;
+                max-width: 280px !important;
+                flex-shrink: 0 !important;
+              }
+            `}</style>
+            <ManageLaunchPhaseExtraWidget
+              launchPhaseId={Number(activeTab)}
+              launchphaseextras={launchphaseextras}
+              className=""
+            />
+          </>
         </div>
       </div>
     );
@@ -481,8 +623,14 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
     isEditing
   });
 
+
+  // Buscar launch do Redux state geral como fallback
+  const launchState = useSelector((state: ApplicationState) => state.launch);
+  const fallbackLaunch = launchState.launch?.id === Number(launchId) ? launchState.launch : null;
+  const finalLaunch = launch || fallbackLaunch;
+
   // Se ainda está carregando os dados básicos, mostra loading
-  if (!launch && launchphases.loading) {
+  if (!finalLaunch && (launchphases.loading || launchState.loading)) {
     console.log("Mostrando loading - dados básicos carregando");
     return (
       <div className="card">
@@ -502,7 +650,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
   }
 
   // Se não tem launch mas não está carregando, pode ser erro
-  if (!launch && !launchphases.loading) {
+  if (!finalLaunch && !launchphases.loading && !launchState.loading) {
     console.log("Erro: Não tem launch e não está carregando");
     return (
       <div className="card">
@@ -575,18 +723,20 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       <div className="launch-layout">
         {/* Sidebar */}
         <div className={`launch-sidebar ${showMobileSidebar ? 'show' : ''}`}>
-          <LaunchSidebar
-            activeTab={activeTab}
-            onTabClick={handleTabClick}
-            isEditing={isEditing}
-            onEdit={updateComponent}
-          />
+          <div style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+            <LaunchSidebar
+              activeTab={activeTab}
+              onTabClick={handleTabClick}
+              isEditing={isEditing}
+              onEdit={updateComponent}
+            />
+          </div>
         </div>
 
         {/* Main Content Area */}
         <div className="launch-main-content">
           {/* Header Card - Não mostrar para abas que têm headers próprias */}
-          {!["resumo", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) && 
+          {!["resumo", "lead-score", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) && 
            !activeTab.match(/^\d+$/) && (
             <div className="launch-content-area" style={{ paddingBottom: 0 }}>
               <LaunchHeaderCard activeTab={activeTab} />
@@ -595,7 +745,7 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
           
           {/* Content */}
           <div className="launch-content-area" style={{ 
-            paddingTop: (["resumo", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) || 
+            paddingTop: (["resumo", "lead-score", "configuracao", "landing-page-captacao", "landing-page-vendas"].includes(activeTab) || 
                         activeTab.match(/^\d+$/)) ? 0 : 0, 
             flex: 1 
           }}>
@@ -610,9 +760,10 @@ const ManageLaunchPhaseWidget: React.FC<React.PropsWithChildren<Props>> = ({
       <button
         className="mobile-sidebar-toggle"
         onClick={toggleMobileSidebar}
-        title="Menu de navegação"
+        title={showMobileSidebar ? "Fechar menu" : "Abrir menu"}
+        aria-label={showMobileSidebar ? "Fechar menu" : "Abrir menu"}
       >
-        <KTIcon iconName="burger-menu-2" />
+        <KTIcon iconName={showMobileSidebar ? "cross" : "burger-menu-2"} />
       </button>
     </>
   );
