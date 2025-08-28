@@ -5,6 +5,7 @@ import { loadPhaseStatisticsRequest } from '../../../../store/ducks/dlaunchphase
 import { PhaseStatistics, QuestionStatistics } from '../../../../store/ducks/dlaunchphase/types'
 import UtmAdBreakdown from './UtmAdBreakdown'
 import CompactUtmBreakdown from './CompactUtmBreakdown'
+import AdStatistics from './AdStatistics'
 
 interface SurveyStatisticsProps {
   phaseId: number
@@ -211,6 +212,20 @@ const SurveyStatistics: React.FC<SurveyStatisticsProps> = ({ phaseId }) => {
       <div className="mb-6">
         {renderScoreDistribution(phaseStatistics)}
       </div>
+
+      {/* Estatísticas dos Anúncios */}
+      {phaseStatistics?.utmAdBreakdown && (
+        <div className="mb-6">
+          <div className="card">
+            <div className="card-body">
+              <AdStatistics 
+                utmBreakdown={phaseStatistics.utmAdBreakdown}
+                totalResponses={phaseStatistics.totalResponses}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Leads Não Classificados com UTM Data */}
       {phaseStatistics?.utmAdBreakdown && phaseStatistics.utmAdBreakdown['Não classificado'] && (
