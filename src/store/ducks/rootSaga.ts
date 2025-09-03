@@ -61,7 +61,7 @@ import { CityTypes } from './city/types'
 import { loadState } from './state/sagas'
 import { loadCity } from './city/sagas'
 import { CommentsTypes } from './comments/types'
-import { loadComments } from './comments/sagas'
+import { loadComments, replyComment, updateComment, deleteComment } from './comments/sagas'
 import { OnlineUsersTypes } from './onlineusers/types'
 import { loadconnectedTimeGroupedByHour, loadconnectedTimeGroupedByHourById, loadconnectedTimeGroupedByWeekDay, loadconnectedTimeGroupedByWeekDayById, loadconnectedUsers } from './onlineusers/sagas'
 
@@ -165,6 +165,9 @@ export default function* rootSaga() {
 
     //Comments
     takeLatest(CommentsTypes.LOAD_COMMENTS_REQUEST, loadComments),
+    takeLatest(CommentsTypes.REPLY_COMMENT_REQUEST, replyComment),
+    takeLatest(CommentsTypes.UPDATE_COMMENT_REQUEST, updateComment),
+    takeLatest(CommentsTypes.DELETE_COMMENT_REQUEST, deleteComment),
 
 
 

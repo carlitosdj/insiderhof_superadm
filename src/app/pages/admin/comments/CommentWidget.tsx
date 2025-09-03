@@ -1,18 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState} from 'react'
-import {Modal} from 'react-bootstrap'
-import {KTSVG} from '../../../../_metronic/helpers'
-import {User} from '../../../../store/ducks/me/types'
-// import CreateEmail from './create'
-// import {Support, SupportState} from '../../../../store/ducks/support/types'
-
-import Info from './info'
-// import Create from './create'
-import Update from './update'
-import {useIntl} from 'react-intl'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { KTSVG } from '../../../../_metronic/helpers'
+import { useIntl } from 'react-intl'
 
 import Loading from '../../../loading'
 import { Comment, CommentsState } from '../../../../store/ducks/comments/types'
+import { deleteCommentRequest } from '../../../../store/ducks/comments/actions'
+import { CommentCard } from './CommentCard'
+import { CommentReplyForm } from './CommentReplyForm'
+import { CommentEditModal } from './CommentEditModal'
 
 type Props = {
   className: string
@@ -20,128 +17,151 @@ type Props = {
 }
 
 const CommentWidget: React.FC<React.PropsWithChildren<Props>> = ({className, comments}) => {
-  const MOMENT = require('moment')
   const intl = useIntl()
+  const dispatch = useDispatch()
 
-  const [show, setShow] = useState<boolean>(false)
-  const [action, setAction] = useState<string>('')
-  const [child, setChild] = useState<User>({})
-
-  // const infoSupport = (support: Support) => {
-  //   setAction('infoSupport')
-  //   setShow(true)
-  //   setChild(support)
-  // }
-  // const updateSupport = (support: Support) => {
-  //   setAction('editSupport')
-  //   setShow(true)
-  //   setChild(support)
-  // }
-
-  const handleClose = () => {
-    setShow(false)
+  const [selectedComment, setSelectedComment] = useState<Comment | undefined>()
+  const [replyingTo, setReplyingTo] = useState<Comment | undefined>()
+  const [showEditModal, setShowEditModal] = useState(false)
+  
+  const handleReply = (comment: Comment) => {
+    setReplyingTo(comment)
   }
-  console.log('Comments', comments)
+
+  const handleEdit = (comment: Comment) => {
+    setSelectedComment(comment)
+    setShowEditModal(true)
+  }
+
+  const handleDelete = (comment: Comment) => {
+    if (window.confirm(`Tem certeza que deseja excluir este comentário?\n\n"${comment.comment}"`)) {
+      dispatch(deleteCommentRequest(comment.id!))
+    }
+  }
+
+  const handleCancelReply = () => {
+    setReplyingTo(undefined)
+  }
+
+  const handleReplySuccess = () => {
+    setReplyingTo(undefined)
+    // TODO: Refresh comments or update state
+  }
+
+  const handleEditSuccess = () => {
+    setSelectedComment(undefined)
+    // TODO: Refresh comments or update state
+  }
+
+  const organizeComments = (comments: Comment[]): Comment[] => {
+    // Find replies for each comment by checking different possible fields
+    const commentsWithReplies = comments.map(comment => {
+      // Find replies for this comment using different possible parent field names
+      const replies = comments.filter(c => 
+        c.parentCommentId === comment.id || 
+        (c as any).parentId === comment.id ||
+        (c as any).parent_id === comment.id
+      )
+      
+      // A comment is answered if it has replies
+      const isAnswered = replies.length > 0
+      
+      return {
+        ...comment,
+        replies: replies,
+        isAnswered: isAnswered,
+        hasReplies: replies.length > 0,
+        repliesCount: replies.length,
+        // Mock launchId for demonstration - should come from API
+        launchId: 95
+      }
+    })
+
+    // Return only top-level comments (not replies) - filter out comments that are replies
+    const topLevelComments = commentsWithReplies.filter(comment => 
+      !comment.parentCommentId && 
+      !(comment as any).parentId && 
+      !(comment as any).parent_id
+    )
+    
+    return topLevelComments
+  }
+  
   if (comments.loading) return <Loading />
+
+  const organizedComments = organizeComments(comments.data)
+
   return (
     <>
-      <Modal size='lg' show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {action === 'infoSupport' ? 'Informações do chamado' : ''}
-            {action === 'editSupport' ? 'Responder chamado' : ''}
-            {/* { (action === 'createUser')?'Adicionar usuário':'' } */}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {action === 'infoSupport' ? <Info handleClose={handleClose} child={child} /> : ''}
-          {action === 'editSupport' ? <Update handleClose={handleClose} child={child} /> : ''}
-          {/* { (action === 'createUser')?<Create handleClose={handleClose}/>:'' } */}
-        </Modal.Body>
-      </Modal>
       <div className={`card ${className}`}>
-        {/* begin::Header */}
+        {/* Header */}
         <div className='card-header border-0 pt-5'>
           <h3 className='card-title align-items-start flex-column'>
             <span className='card-label fw-bolder fs-3 mb-1'>
-              {/* {intl.formatMessage({id: 'MENU.SUPPORT'})} */}
               Comentários
             </span>
-            <span className='text-muted mt-1 fw-bold fs-7'>Comentários na plataforma</span>
+            <span className='text-muted mt-1 fw-bold fs-7'>
+              Gerenciamento de comentários da plataforma
+            </span>
           </h3>
-        </div>
-        {/* end::Header */}
-        {/* begin::Body */}
-        <div className='card-body py-3'>
-          {/* begin::Table container */}
-          <div className='table-responsive'>
-            {/* begin::Table */}
-            <table className='table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4'>
-              {/* begin::Table head */}
-              <thead>
-                <tr className='fw-bolder text-muted'>
-                  <th className='min-w-50px'>ID</th>
-                  <th className='min-w-100px'>REGISTRO</th>
-                  <th className='min-w-100px'>COMENTÁRIO</th>
-                  <th className='min-w-100px'>AULA</th>
-                  
-                  <th className='min-w-120px'>USUÁRIO</th>
-                  {/* <th className='min-w-120px'>Status</th>
-                  <th className='min-w-100px text-end'>Actions</th> */}
-                </tr>
-              </thead>
-              {/* end::Table head */}
-              {/* begin::Table body */}
-              <tbody>
-                {comments.data.map((comment: Comment, index: number) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <div className='d-flex align-items-center'>
-                          <div className='d-flex justify-content-start flex-column'>
-                            {comment.id}
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span className='text-muted fw-bold d-block fs-7'>
-                          {MOMENT(comment.createdAt).utc().format('DD/MM/YYYY HH:mm')}
-                        </span>
-                      </td>
-                      <td>
-                        <span className='text-gray-900 fw-bold d-block fs-7'>{comment.comment}</span>
-                      </td>
-                      <td>
-                        <span className='text-muted fw-bold d-block fs-7'>
-                        {comment.class?.module?.product?.name}{" > "}
-                            {comment.class?.module?.name}{" > "}
-                            {comment.class?.name}
-                        </span>
-                      </td>
-                      
-
-                      <td>
-                        <span className='text-muted fw-bold d-block fs-7'>
-                          {comment.parentUser?.name}
-                        </span>
-                      </td>
-                      {/* <td>
-                        <span className='text-muted fw-bold text-muted d-block fs-7'>
-                          {support.status}
-                        </span>
-                      </td> */}
-                    </tr>
-                  )
-                })}
-              </tbody>
-              {/* end::Table body */}
-            </table>
-            {/* end::Table */}
+          <div className='card-toolbar'>
+            <div className='d-flex align-items-center gap-3'>
+              <div className='d-flex align-items-center'>
+                <span className='badge badge-success me-2'>{organizedComments.filter(c => c.isAnswered).length}</span>
+                <span className='fs-7 text-muted'>Respondidos</span>
+              </div>
+              <div className='d-flex align-items-center'>
+                <span className='badge badge-danger me-2'>{organizedComments.filter(c => !c.isAnswered).length}</span>
+                <span className='fs-7 text-muted'>Não respondidos</span>
+              </div>
+            </div>
           </div>
-          {/* end::Table container */}
         </div>
-        {/* begin::Body */}
+
+        {/* Body */}
+        <div className='card-body py-3'>
+          {organizedComments.length === 0 ? (
+            <div className="text-center py-10">
+              <div className="mb-4">
+                <KTSVG path="/media/icons/duotune/communication/com012.svg" className="svg-icon-1 text-muted" />
+              </div>
+              <p className="text-muted fs-6 fw-semibold">
+                Nenhum comentário encontrado
+              </p>
+            </div>
+          ) : (
+            <div className="timeline">
+              {organizedComments.map((comment, index) => (
+                <div key={comment.id || index}>
+                  <CommentCard
+                    comment={comment}
+                    onReply={handleReply}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                  
+                  {/* Show reply form if this comment is being replied to */}
+                  {replyingTo?.id === comment.id && (
+                    <CommentReplyForm
+                      parentComment={comment}
+                      onCancel={handleCancelReply}
+                      onSuccess={handleReplySuccess}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Edit Modal */}
+      <CommentEditModal
+        show={showEditModal}
+        comment={selectedComment}
+        onHide={() => setShowEditModal(false)}
+        onSuccess={handleEditSuccess}
+      />
     </>
   )
 }
