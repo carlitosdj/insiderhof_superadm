@@ -31,7 +31,7 @@ export function* loadComments(payload: ReturnType<typeof loadCommentsRequest>) {
 }
 
 // Reply
-export function* replyComment(action: ReturnType<typeof replyCommentRequest>) {
+export function* replyComment(action: ReturnType<typeof replyCommentRequest>): Generator<any, void, any> {
   try {
     const { parentId, comment } = action.payload
     
