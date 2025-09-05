@@ -49,6 +49,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
   const carts = useSelector((state: ApplicationState) => state.carts);
+  const currentProject = useSelector((state: ApplicationState) => state.projects.currentProject);
 
    const { startDate, endDate, launchId } = useParams<ParamTypes>();
 
@@ -59,7 +60,7 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
       dispatch(loadCartsRequest());
     }
      //Puxa componentes com seus filhos primários
-  }, [dispatch, startDate, endDate]);
+  }, [dispatch, startDate, endDate, currentProject?.id]); // Agora também escuta mudanças no projeto atual
 
   console.log("carts", carts);
   if (carts.loading) return <Loading />;

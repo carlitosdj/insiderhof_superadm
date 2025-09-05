@@ -53,12 +53,15 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
 
   const dispatch = useDispatch()
   const leads = useSelector((state: ApplicationState) => state.leads)
+  const currentProject = useSelector((state: ApplicationState) => state.projects.currentProject);
   const {page, take} = useParams<ParamTypes>();
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(loadLeadsRequest(+page!,+take!))
-  }, [dispatch,page, take])
+    if (page && take) {
+      dispatch(loadLeadsRequest(+page, +take))
+    }
+  }, [dispatch, page, take, currentProject?.id]) // Agora também escuta mudanças no projeto atual
 
   if (leads.loading) return <Loading />
 

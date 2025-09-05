@@ -40,10 +40,13 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const me = useSelector((state: ApplicationState) => state.me);
   const offer = useSelector((state: ApplicationState) => state.offer);
+  const currentProject = useSelector((state: ApplicationState) => state.projects.currentProject);
 
   useEffect(() => {
-    dispatch(loadMyOffersRequest(me.me.id!)); //Puxa componentes com seus filhos primários
-  }, [dispatch, ]);
+    if (me.me && me.me.id) {
+      dispatch(loadMyOffersRequest(me.me.id)); //Puxa componentes com seus filhos primários
+    }
+  }, [dispatch, me.me?.id, currentProject?.id]); // Agora também escuta mudanças no projeto atual
 
   console.log("offerxx", offer);
 
