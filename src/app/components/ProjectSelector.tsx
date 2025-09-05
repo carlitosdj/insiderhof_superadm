@@ -22,12 +22,14 @@ const ProjectSelector: React.FC = () => {
   }
 
   return (
-    <div className='menu-item px-3 my-3'>
-      <div className='menu-content d-flex align-items-center px-3'>
+    // <div className='menu-item'>
+    <div className=''>
+      <div className='menu-content d-flex align-items-center justify-content-center' >
+        {/* <div className='symbol symbol-50px me-5'>}}>
         {/* <div className='symbol symbol-50px me-5'>
           <KTIcon iconName='abstract-28' className='fs-2x text-gray-500' />
         </div> */}
-        <div className='d-flex flex-column'>
+        <div className='d-flex flex-column w-100' >
           {/* <div className='fw-semibold d-flex align-items-center fs-5'>
             Projeto Atual
           </div> */}

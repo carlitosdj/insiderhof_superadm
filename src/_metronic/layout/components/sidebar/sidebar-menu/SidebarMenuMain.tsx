@@ -8,24 +8,24 @@ const SidebarMenuMain = () => {
 
   return (
     <>
-      <SidebarMenuItem
+      {/* <SidebarMenuItem
         to="/dashboard"
         icon="element-11"
         title={intl.formatMessage({ id: "MENU.DASHBOARD" })}
         fontIcon="bi-app-indicator"
-      />
-      <SidebarMenuItem
+      /> */}
+      {/* <SidebarMenuItem
         to="/ideaction"
         icon="sun"
         title="Ideação"
         fontIcon="bi-app-indicator"
-      />
-      <SidebarMenuItem
+      /> */}
+      {/* <SidebarMenuItem
         to="/roasplanner"
         icon="sun"
         title="ROAS planner"
         fontIcon="bi-app-indicator"
-      />
+      /> */}
       
       {/* <SidebarMenuItem
         to="/builder"
@@ -34,55 +34,16 @@ const SidebarMenuMain = () => {
         fontIcon="bi-layers"
       /> */}
 
-      {/* <SidebarMenuItem
-        to="/manage/1"
-        icon="element-plus"
-        title={intl.formatMessage({ id: "MENU.MANAGE" })}
-        fontIcon="bi-app-indicator"
-      /> */}
+     
 
+      
       {/* <div className="menu-item">
-        <div className="menu-content pt-8 pb-2">
-          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-            ESTRATÉGICO
-          </span>
-        </div>
-      </div> */}
-      {/* <SidebarMenuItem
-        to="#"
-        icon="arrow-up-refraction"
-        fontIcon="bi-app-indicator"
-        //title={intl.formatMessage({ id: "MENU.PRODUCTS" })}
-        title={"Formalização/Jornada"}
-      /> */}
-      {/* <SidebarMenuItem
-        to="#"
-        icon="arrow-up-refraction"
-        fontIcon="bi-app-indicator"
-        //title={intl.formatMessage({ id: "MENU.PRODUCTS" })}
-        title={"Nicho, Avatar e Roma"}
-      /> */}
-      {/* <SidebarMenuItem
-        to="#"
-        icon="arrow-up-refraction"
-        fontIcon="bi-app-indicator"
-        //title={intl.formatMessage({ id: "MENU.PRODUCTS" })}
-        title={"Árvore de objeções"}
-      /> */}
-      {/* <SidebarMenuItem
-        to="#"
-        icon="arrow-up-refraction"
-        fontIcon="bi-app-indicator"
-        //title={intl.formatMessage({ id: "MENU.PRODUCTS" })}
-        title={"Oferta"}
-      /> */}
-      <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
             INFOPRODUTOS
           </span>
         </div>
-      </div>
+      </div> */}
       <SidebarMenuItem
         to="/products"
         icon="note-2"
@@ -97,13 +58,13 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.OFFERS" })}
       />
 
-      <div className="menu-item">
+      {/* <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
             LANÇAMENTOS
           </span>
         </div>
-      </div>
+      </div> */}
 
       <SidebarMenuItem
         to="/launch"
@@ -127,6 +88,14 @@ const SidebarMenuMain = () => {
         //title={intl.formatMessage({ id: "MENU.SELLS" })}
         title="Vendas"
       />
+
+      <div className="menu-item">
+        <div className="menu-content pt-8 pb-2">
+          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+            USUÁRIOS
+          </span>
+        </div>
+      </div>
 
       <SidebarMenuItem
         to="/users/1/100/true"
@@ -189,12 +158,7 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.MYLAUNCHES" })}
       /> */}
 
-      <SidebarMenuItem
-        to="/wppcamp"
-        icon="whatsapp"
-        fontIcon="bi-app-indicator"
-        title={intl.formatMessage({ id: "MENU.WHATSAPPGROUPS" })}
-      />
+      
 
       {/* <SidebarMenuItem
         to="/manage/5"
@@ -217,6 +181,13 @@ const SidebarMenuMain = () => {
         title="Emails p/ alunos"
       />
 
+      <SidebarMenuItem
+        to="/wppcamp"
+        icon="whatsapp"
+        fontIcon="bi-app-indicator"
+        title={intl.formatMessage({ id: "MENU.WHATSAPPGROUPS" })}
+      />
+
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
@@ -230,12 +201,34 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.SUPPORT" })}
       />
-      <SidebarMenuItem
+      {/* <SidebarMenuItem
         to="/contact"
         icon="notification-status"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.CONTACT" })}
+      /> */}
+
+      <div className="menu-item">
+        <div className="menu-content pt-8 pb-2">
+          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+            FERRAMENTAS
+          </span>
+        </div>
+      </div>
+
+      <SidebarMenuItem
+        to="/ideaction"
+        icon="sun"
+        title="Ideação"
+        fontIcon="bi-app-indicator"
       />
+      <SidebarMenuItem
+        to="/roasplanner"
+        icon="sun"
+        title="ROAS planner"
+        fontIcon="bi-app-indicator"
+      />
+
       {/* <SidebarMenuItem
         to="/manage/4"
         icon="notification-circle"
