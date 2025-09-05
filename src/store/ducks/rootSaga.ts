@@ -22,6 +22,9 @@ import {
 import {MeTypes} from './me/types'
 import {loginUser, createMe, updateMe, deleteMe, recoveryUser, loadMe} from './me/sagas'
 
+import {ProjectActionTypes} from './projects'
+import {projectSaga} from './projects'
+
 import {LeadTypes} from './lead/types'
 import {loadLead, createLead, confirmLead, notDisturbLead} from './lead/sagas'
 
@@ -106,6 +109,8 @@ import { loadLaunchQuestionOptions, loadLaunchQuestionOption, createLaunchQuesti
 
 export default function* rootSaga() {
   yield all([
+    // Projects saga
+    projectSaga(),
     takeLatest(CartsTypes.LOAD_CARTS_REQUEST, loadCarts),
     takeLatest(CartsTypes.LOAD_CART_REQUEST, loadCart),
     takeLatest(CartsTypes.CREATE_CART_REQUEST, createCart),

@@ -1,4 +1,5 @@
 import {SidebarMenuMain} from './SidebarMenuMain'
+import ProjectSelector from '../../../../../app/components/ProjectSelector'
 
 const SidebarMenu = () => {
   return (
@@ -20,6 +21,8 @@ const SidebarMenu = () => {
           data-kt-menu='true'
           data-kt-menu-expand='false'
         >
+          <ProjectSelector />
+          <div className='separator border-gray-200 mb-6'></div>
           <SidebarMenuMain />
         </div>
       </div>

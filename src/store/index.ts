@@ -41,6 +41,7 @@ import { LPState } from './ducks/dlps/types'
 import { IdeactionState } from './ducks/ideaction/types'
 import { LaunchQuestionState } from './ducks/dlaunchquestion/types'
 import { LaunchQuestionOptionState } from './ducks/dlaunchquestionoption/types'
+import { ProjectState } from './ducks/projects'
 
 
 export interface ApplicationState {
@@ -49,6 +50,7 @@ export interface ApplicationState {
   
 
   me: MeState
+  projects: ProjectState
   extras: ExtrasState
   lead: LeadState
   leads: LeadsState

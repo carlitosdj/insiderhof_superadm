@@ -4,6 +4,7 @@ import carts from './carts'
 import users from './users'
 
 import me from './me'
+import projects from './projects'
 
 import extras from './extras'
 import lead from './lead'
@@ -48,6 +49,7 @@ export default combineReducers({
   users,
 
   me,
+  projects,
 
   extras,
   lead,
