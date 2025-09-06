@@ -1,24 +1,53 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ApplicationState } from '../../store'
-import { ProjectActions, Project } from '../../store/ducks/projects'
+import { Project } from '../../store/ducks/projects/types'
+import * as projectActions from '../../store/ducks/projects/actions'
 import { KTIcon } from '../../_metronic/helpers'
+import { useNavigate } from 'react-router-dom'
 
 const ProjectSelector: React.FC = () => {
   const dispatch = useDispatch()
-  const { projects, currentProject, loading } = useSelector(
+  const navigate = useNavigate()
+  const { projects, currentProject, loading, error } = useSelector(
     (state: ApplicationState) => state.projects
   )
 
   useEffect(() => {
     // Load projects on component mount
     if (projects.length === 0) {
-      dispatch(ProjectActions.loadProjectsRequest())
+      dispatch(projectActions.loadProjectsRequest())
     }
   }, [dispatch, projects.length])
 
+  // Debug: Log the current state
+  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
+
+  // Debug: Log the current state
+  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
+
+  // Debug: Log the current state
+  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
+
   const handleProjectSelect = (project: Project) => {
-    dispatch(ProjectActions.selectProject(project))
+    console.log('Project selected:', project);
+    dispatch(projectActions.selectProjectRequest(project.id))
+    
+    // Fechar a dropdown após seleção
+    const dropdown = document.querySelector('.dropdown-toggle') as HTMLElement;
+    if (dropdown) {
+      const bsDropdown = (dropdown as any).bsDropdown;
+      if (bsDropdown) {
+        bsDropdown.hide();
+      } else {
+        // Fallback para Bootstrap 5
+        dropdown.click();
+      }
+    }
+  }
+
+  const handleManageProjects = () => {
+    navigate('/projects/manage')
   }
 
   return (
@@ -49,7 +78,7 @@ const ProjectSelector: React.FC = () => {
               {currentProject?.name || 'Selecione um projeto'}
             </button>
             <ul className='dropdown-menu w-100'>
-              {projects.map((project) => (
+              {Array.isArray(projects) && projects.map((project: any) => (
                 <li key={project.id}>
                   <button
                     className={`dropdown-item d-flex align-items-center ${
@@ -77,12 +106,33 @@ const ProjectSelector: React.FC = () => {
                   </button>
                 </li>
               ))}
-              {projects.length === 0 && !loading && (
+              {Array.isArray(projects) && projects.length === 0 && !loading && (
                 <li>
                   <span className='dropdown-item-text text-muted'>
-                    Nenhum projeto encontrado
+                    {error ? 'Erro ao carregar projetos' : 'Nenhum projeto encontrado'}
                   </span>
                 </li>
+              )}
+              {Array.isArray(projects) && projects.length > 0 && (
+                <>
+                  <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <button
+                      className="dropdown-item d-flex align-items-center"
+                      onClick={handleManageProjects}
+                    >
+                      <div className="symbol symbol-30px me-3">
+                        <div className="symbol-label bg-light-info text-info">
+                          <KTIcon iconName="setting-2" className="fs-6" />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="fw-semibold">Gerenciar Projetos</div>
+                        <div className="text-muted fs-7">Criar, editar e gerenciar projetos</div>
+                      </div>
+                    </button>
+                  </li>
+                </>
               )}
             </ul>
           </div>

@@ -50,6 +50,10 @@ const PrivateRoutes = () => {
     () => lazy(() => import("../pages/admin/annotations")),
     []
   );
+  const ManageProjects = useMemo(
+    () => lazy(() => import("../pages/admin/projects/Manage")),
+    []
+  );
 
   const Contact = useMemo(
     () => lazy(() => import("../pages/admin/contact")),
@@ -389,6 +393,15 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <Contact />
+            </SuspensedView>
+          }
+        />
+
+        <Route
+          path="projects/manage"
+          element={
+            <SuspensedView>
+              <ManageProjects />
             </SuspensedView>
           }
         />

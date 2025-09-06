@@ -22,8 +22,20 @@ import {
 import {MeTypes} from './me/types'
 import {loginUser, createMe, updateMe, deleteMe, recoveryUser, loadMe} from './me/sagas'
 
-import {ProjectActionTypes} from './projects'
-import {projectSaga} from './projects'
+import { ProjectsTypes } from './projects/types'
+import {
+  loadProjects,
+  loadAllProjects,
+  createProject,
+  updateProject,
+  deleteProject,
+  loadProjectUsers,
+  addProjectUser,
+  updateProjectUser,
+  removeProjectUser,
+  searchUsers,
+  selectProject,
+} from './projects/sagas'
 
 import {LeadTypes} from './lead/types'
 import {loadLead, createLead, confirmLead, notDisturbLead} from './lead/sagas'
@@ -109,8 +121,18 @@ import { loadLaunchQuestionOptions, loadLaunchQuestionOption, createLaunchQuesti
 
 export default function* rootSaga() {
   yield all([
-    // Projects saga
-    projectSaga(),
+    // Projects
+    takeLatest(ProjectsTypes.LOAD_PROJECTS_REQUEST, loadProjects),
+    takeLatest(ProjectsTypes.LOAD_ALL_PROJECTS_REQUEST, loadAllProjects),
+    takeLatest(ProjectsTypes.CREATE_PROJECT_REQUEST, createProject),
+    takeLatest(ProjectsTypes.UPDATE_PROJECT_REQUEST, updateProject),
+    takeLatest(ProjectsTypes.DELETE_PROJECT_REQUEST, deleteProject),
+    takeLatest(ProjectsTypes.LOAD_PROJECT_USERS_REQUEST, loadProjectUsers),
+    takeLatest(ProjectsTypes.ADD_PROJECT_USER_REQUEST, addProjectUser),
+    takeLatest(ProjectsTypes.UPDATE_PROJECT_USER_REQUEST, updateProjectUser),
+    takeLatest(ProjectsTypes.REMOVE_PROJECT_USER_REQUEST, removeProjectUser),
+    takeLatest(ProjectsTypes.SEARCH_USERS_REQUEST, searchUsers),
+    takeLatest(ProjectsTypes.SELECT_PROJECT, selectProject),
     takeLatest(CartsTypes.LOAD_CARTS_REQUEST, loadCarts),
     takeLatest(CartsTypes.LOAD_CART_REQUEST, loadCart),
     takeLatest(CartsTypes.CREATE_CART_REQUEST, createCart),

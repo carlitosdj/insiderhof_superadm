@@ -6,7 +6,7 @@ import * as authHelper from './AuthHelpers'
 import {getUserByToken} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
 import {useDispatch} from 'react-redux'
-import {initializeProjects} from '../../../../store/ducks/projects'
+import * as projectActions from '../../../../store/ducks/projects/actions'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -68,7 +68,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
           if (data) {
             setCurrentUser(data)
             // Initialize projects after user is authenticated
-            dispatch(initializeProjects())
+            dispatch(projectActions.loadProjectsRequest())
           }
         }
       } catch (error) {
