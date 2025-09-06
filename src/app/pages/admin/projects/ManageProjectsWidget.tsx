@@ -109,7 +109,8 @@ const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
   };
 
   const handleSearchUsers = (query: string) => {
-    if (query.length > 2) {
+    // Verificar se o query é uma string válida e não NaN
+    if (query && typeof query === 'string' && query.length > 2) {
       dispatch(projectActions.searchUsersRequest(query));
     }
   };
@@ -242,8 +243,8 @@ const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
                   </td>
                   <td>
                     <div className="d-flex align-items-center">
-                      <span className={`badge badge-light-${project.status === 'active' ? 'success' : 'secondary'} fs-7 fw-bold`}>
-                        {project.status === 'active' ? 'Ativo' : 'Inativo'}
+                      <span className={`badge badge-light-${project.status === '1' ? 'success' : 'secondary'} fs-7 fw-bold`}>
+                        {project.status === '1' ? 'Ativo' : 'Inativo'}
                       </span>
                     </div>
                   </td>
@@ -291,7 +292,7 @@ const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
             </tbody>
           </table>
         </div>
-
+        
         {projects.length === 0 && !managementLoading && (
           <div className="d-flex flex-column flex-center">
             <img
@@ -477,8 +478,8 @@ const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
               <tbody>
                 {projectUsers.map((projectUser: any, index: number) => (
                   <tr key={`${projectUser.userId}-${projectUser.projectId}-${index}`}>
-                    <td>{projectUser.user.name}</td>
-                    <td>{projectUser.user.email}</td>
+                    <td>{projectUser.user?.name || 'Nome não disponível'}</td>
+                    <td>{projectUser.user?.email || 'Email não disponível'}</td>
                     <td>
                       <span className={`badge ${
                         projectUser.role === 'owner' ? 'badge-light-danger' :

@@ -163,12 +163,12 @@ const reducer: Reducer<ProjectState> = (state = INITIAL_STATE, action: any) => {
     case ProjectsTypes.UPDATE_PROJECT_USER_REQUEST:
       return { ...state, managementLoading: true, error: false }
     case ProjectsTypes.UPDATE_PROJECT_USER_SUCCESS:
-      return { 
-        ...state, 
-        managementLoading: false, 
-        error: false, 
-        projectUsers: state.projectUsers.map(pu => 
-          pu.id === (action.payload as ProjectUser).id ? (action.payload as ProjectUser) : pu
+      return {
+        ...state,
+        managementLoading: false,
+        error: false,
+        projectUsers: state.projectUsers.map(pu =>
+          pu.userId === (action.payload as ProjectUser).userId ? (action.payload as ProjectUser) : pu
         )
       }
     case ProjectsTypes.UPDATE_PROJECT_USER_FAILURE:

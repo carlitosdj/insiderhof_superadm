@@ -136,7 +136,7 @@ export function* loadProjectUsers(action: ReturnType<typeof loadProjectUsersRequ
 // Add project user
 export function* addProjectUser(action: ReturnType<typeof addProjectUserRequest>) {
   try {
-    const response: { data: ProjectUser } = yield call(api.post, `/project/${action.payload.projectId}/users`, action.payload.data);
+    const response: { data: ProjectUser } = yield call(api.post, `/projects/${action.payload.projectId}/users`, action.payload.data);
     yield put(addProjectUserSuccess(response.data));
   } catch (error: any) {
     yield put(addProjectUserFailure(error.response?.data || error.message));
@@ -146,7 +146,7 @@ export function* addProjectUser(action: ReturnType<typeof addProjectUserRequest>
 // Update project user
 export function* updateProjectUser(action: ReturnType<typeof updateProjectUserRequest>) {
   try {
-    const response: { data: ProjectUser } = yield call(api.patch, `/project/${action.payload.projectId}/users/${action.payload.userId}`, action.payload.data);
+    const response: { data: ProjectUser } = yield call(api.patch, `/projects/${action.payload.projectId}/users/${action.payload.userId}`, action.payload.data);
     yield put(updateProjectUserSuccess(response.data));
   } catch (error: any) {
     yield put(updateProjectUserFailure(error.response?.data || error.message));
@@ -166,7 +166,13 @@ export function* removeProjectUser(action: ReturnType<typeof removeProjectUserRe
 // Search users
 export function* searchUsers(action: ReturnType<typeof searchUsersRequest>) {
   try {
-    const response: { data: any[] } = yield call(api.get, `/user/search?q=${action.payload}`);
+    // Verificar se o payload é uma string válida
+    if (!action.payload || typeof action.payload !== 'string' || action.payload.trim() === '') {
+      yield put(searchUsersSuccess([]));
+      return;
+    }
+    
+    const response: { data: any[] } = yield call(api.get, `/projects/search/users/${encodeURIComponent(action.payload.trim())}`);
     yield put(searchUsersSuccess(response.data));
   } catch (error: any) {
     yield put(searchUsersFailure(error.response?.data || error.message));

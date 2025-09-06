@@ -48,7 +48,8 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
 
   console.log("projects", projects);
   console.log('=== Fim Manage useEffect ===');
-  if (projects.managementLoading) return <Loading />;
+  //if (projects.managementLoading) return <Loading />;
+  if (projects.loading) return <Loading />;
 
   return (
     <>

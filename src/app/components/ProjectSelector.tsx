@@ -112,7 +112,7 @@ const ProjectSelector: React.FC = () => {
                   </span>
                 </li>
               )}
-              {Array.isArray(projects) && projects.length > 0 && (
+              {/* {Array.isArray(projects) && projects.length > 0 && (
                 <>
                   <li><hr className="dropdown-divider" /></li>
                   <li>
@@ -132,7 +132,7 @@ const ProjectSelector: React.FC = () => {
                     </button>
                   </li>
                 </>
-              )}
+              )} */}
             </ul>
           </div>
         </div>
