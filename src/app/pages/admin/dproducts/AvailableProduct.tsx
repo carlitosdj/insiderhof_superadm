@@ -103,7 +103,8 @@ const AvailableProduct = ({ handleClose, child }: handleCloseProps) => {
 
   useEffect(() => {
     //Itens para modalidade:
-    setConfigItems(child.availableProduct!);
+    const availableProducts = child.availableProduct || [];
+    setConfigItems(availableProducts);
     dispatch(loadMyLaunchsRequest(me.me.id!));
   }, []);
 

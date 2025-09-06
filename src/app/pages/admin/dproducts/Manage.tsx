@@ -45,10 +45,11 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
 
 
   useEffect(() => {
-    if (me.me && me.me.id) {
-      dispatch(loadMyProductsRequest(Number(me.me.id))); //Puxa componentes com seus filhos primários
+    if (currentProject && currentProject.id) {
+      console.log('Carregando produtos para o projeto:', currentProject);
+      dispatch(loadMyProductsRequest(currentProject.id)); //Puxa produtos do projeto atual
     }
-  }, [dispatch, me.me?.id, currentProject?.id]); // Agora também escuta mudanças no projeto atual
+  }, [dispatch, currentProject?.id]); // Agora também escuta mudanças no projeto atual
 
   console.log("products", products);
   if (products.loading) return <Loading />;

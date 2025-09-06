@@ -52,10 +52,13 @@ import { Project, ProjectUser } from './types';
 // Load projects
 export function* loadProjects(action: ReturnType<typeof loadProjectsRequest>): Generator<any, void, unknown> {
   try {
+    console.log('=== loadProjects saga iniciado ===');
     const response = yield call(api.get, '/projects/all/1/10');
     console.log('API Response:', response);
     // Handle different response formats
     const projects = (response as any).data?.data || (response as any).data || [];
+    console.log('Projetos extraídos da API:', projects);
+    console.log('=== loadProjects saga finalizado, disparando LOAD_PROJECTS_SUCCESS ===');
     yield put(loadProjectsSuccess(projects));
   } catch (error) {
     console.error('Error loading projects:', error);

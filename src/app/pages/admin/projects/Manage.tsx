@@ -37,12 +37,17 @@ const Manage: FC<React.PropsWithChildren<unknown>> = () => {
   const projects = useSelector((state: ApplicationState) => state.projects);
 
   useEffect(() => {
+    console.log('=== Manage useEffect ===');
+    console.log('me.me:', me.me);
+    console.log('me.me.id:', me.me?.id);
     if (me.me && me.me.id) {
+      console.log('Disparando loadProjectsRequest');
       dispatch(projectActions.loadProjectsRequest());
     }
   }, [dispatch, me.me?.id]);
 
   console.log("projects", projects);
+  console.log('=== Fim Manage useEffect ===');
   if (projects.managementLoading) return <Loading />;
 
   return (

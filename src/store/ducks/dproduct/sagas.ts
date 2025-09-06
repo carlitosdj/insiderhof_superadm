@@ -20,7 +20,9 @@ import {
 
   deleteProductRequest,
   deleteProductSuccess,
-  deleteProductFailure
+  deleteProductFailure,
+
+  reorderProductsRequest
 } from './actions'
 
 import {Product} from './types'
@@ -28,10 +30,18 @@ import {Product} from './types'
 
 export function* loadMyProducts(payload: ReturnType<typeof loadMyProductsRequest>) {
   try {
+    console.log('=== loadMyProducts saga iniciado ===');
+    console.log('Payload:', payload.payload);
     put(loadMyProductsRequest(payload.payload))
-    const response: Product[] = yield call(api.get, 'product/owner/' + payload.payload)
+    // Usar o endpoint que já usa o contexto do projeto atual
+    const response: Product[] = yield call(api.get, 'product')
+    console.log('API Response:', response);
+    console.log('Produtos extraídos:', response);
+    console.log('=== loadMyProducts saga finalizado ===');
     yield put(loadMyProductsSuccess(response))
   } catch (error: any) {
+    console.error('Error loading products:', error);
+    console.error('Error response:', error.response);
     yield put(loadMyProductsFailure(error.response.data))
   }
 }

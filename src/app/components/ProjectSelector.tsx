@@ -21,13 +21,12 @@ const ProjectSelector: React.FC = () => {
   }, [dispatch, projects.length])
 
   // Debug: Log the current state
-  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
-
-  // Debug: Log the current state
-  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
-
-  // Debug: Log the current state
-  console.log('ProjectSelector state:', { projects, currentProject, loading, error })
+  console.log('=== ProjectSelector state ===');
+  console.log('Projetos disponíveis:', projects);
+  console.log('Projeto atual selecionado:', currentProject);
+  console.log('Loading:', loading);
+  console.log('Error:', error);
+  console.log('=== Fim ProjectSelector state ===');
 
   const handleProjectSelect = (project: Project) => {
     console.log('Project selected:', project);

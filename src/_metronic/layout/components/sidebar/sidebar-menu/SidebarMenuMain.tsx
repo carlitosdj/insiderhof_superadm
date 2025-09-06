@@ -35,15 +35,20 @@ const SidebarMenuMain = () => {
       /> */}
 
      
-
+      <SidebarMenuItem
+        to="/projects/manage"
+        icon="note-2"
+        fontIcon="bi-app-indicator"
+        title={intl.formatMessage({ id: "MENU.PROJECTS" })}
+      />
       
-      {/* <div className="menu-item">
+      <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
             INFOPRODUTOS
           </span>
         </div>
-      </div> */}
+      </div>
       <SidebarMenuItem
         to="/products"
         icon="note-2"

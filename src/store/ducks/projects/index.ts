@@ -18,21 +18,46 @@ const reducer: Reducer<ProjectState> = (state = INITIAL_STATE, action: any) => {
     case ProjectsTypes.LOAD_PROJECTS_REQUEST:
       return { ...state, loading: true, error: false }
     case ProjectsTypes.LOAD_PROJECTS_SUCCESS:
+      console.log('=== LOAD_PROJECTS_SUCCESS ===');
+      console.log('Projetos carregados:', action.payload);
+      console.log('Estado atual currentProject:', state.currentProject);
+      
       const storedProjectId = localStorage.getItem('currentProjectId');
+      console.log('Projeto salvo no localStorage:', storedProjectId);
+      
       let selectedProject = state.currentProject;
       
-      if (!selectedProject && storedProjectId) {
-        selectedProject = (action.payload as Project[]).find((p: Project) => p.id.toString() === storedProjectId) || null;
+      // Se há projeto salvo no localStorage, verificar se ele existe na lista atual
+      if (storedProjectId) {
+        const foundProject = (action.payload as Project[]).find((p: Project) =>
+          p.id.toString() === storedProjectId
+        );
+        console.log('Projeto encontrado no localStorage:', foundProject);
+        
+        if (foundProject) {
+          selectedProject = foundProject;
+        } else {
+          // Se o projeto salvo não existe mais, limpar o localStorage
+          console.log('Projeto salvo não encontrado na lista atual, limpando localStorage');
+          localStorage.removeItem('currentProjectId');
+        }
       }
       
+      // Se não houver projeto selecionado (ou o salvo não foi encontrado), usar o primeiro
       if (!selectedProject && (action.payload as Project[]).length > 0) {
         selectedProject = (action.payload as Project[])[0];
+        console.log('Selecionando primeiro projeto:', selectedProject);
       }
       
-      return { 
-        ...state, 
-        loading: false, 
-        error: false, 
+      console.log('Projeto final selecionado:', selectedProject);
+      console.log('Salvando projeto no localStorage:', selectedProject?.id);
+      localStorage.setItem('currentProjectId', selectedProject?.id.toString() || '');
+      console.log('=== FIM LOAD_PROJECTS_SUCCESS ===');
+      
+      return {
+        ...state,
+        loading: false,
+        error: false,
         projects: action.payload as Project[],
         currentProject: selectedProject
       }

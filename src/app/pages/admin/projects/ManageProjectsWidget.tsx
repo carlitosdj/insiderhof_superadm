@@ -51,7 +51,7 @@ interface AddUserFormData {
 
 const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
   const dispatch = useDispatch();
-  const { projectUsers, searchUsers, managementLoading, error } = useSelector(
+  const { projectUsers, searchUsers, managementLoading, error, currentProject } = useSelector(
     (state: ApplicationState) => state.projects
   );
   
@@ -132,6 +132,15 @@ const ManageProjectsWidget: React.FC<Props> = ({ className, projects }) => {
       setIsUsersModalLoading(false);
     }
   }, [projectUsers, isUsersModalLoading]);
+
+  // Sincronizar com o currentProject do Redux
+  useEffect(() => {
+    if (currentProject) {
+      console.log('ManageProjectsWidget: currentProject changed to:', currentProject);
+      // Aqui você pode adicionar lógica para atualizar o estado interno do widget
+      // Por exemplo, se o widget tiver um estado interno de projeto selecionado
+    }
+  }, [currentProject]);
 
   useEffect(() => {
     if (error && typeof error === 'string') {

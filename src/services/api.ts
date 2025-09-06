@@ -16,7 +16,7 @@ api.interceptors.request.use(
     // Add project context header if available
     const currentProjectId = localStorage.getItem('currentProjectId');
     if (currentProjectId) {
-      config.headers!['X-Project-Id'] = currentProjectId;
+      config.headers!['x-project-id'] = currentProjectId;
     }
     
     return config;
