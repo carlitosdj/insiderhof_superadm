@@ -25,3 +25,13 @@ api.interceptors.request.use(
 );
 
 export default api
+
+// User UTM Tracking API
+export const getUserUTMHistory = (userId: number) => {
+  return api.get(`/user/${userId}/utm`)
+}
+
+// User Lead History API
+export const getUserLeadHistory = (userId: number) => {
+  return api.get(`/user/${userId}/lead-history`)
+}

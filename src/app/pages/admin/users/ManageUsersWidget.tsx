@@ -6,7 +6,8 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import { useDispatch } from "react-redux";
 
 import { UsersState } from "../../../../store/ducks/users/types";
-import { User } from "../../../../store/ducks/me/types";
+import { User, UserUtm } from "../../../../store/ducks/me/types";
+import { getUserUTMHistory, getUserLeadHistory } from "../../../../services/api";
 import {
   deleteUserRequest,
   loadUsersRequest,
@@ -68,6 +69,16 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   const [action, setAction] = useState<string>("");
   const [child, setChild] = useState<User>({});
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+  
+  // UTM Modal states
+  const [utmShow, setUtmShow] = useState<boolean>(false);
+  const [utmData, setUtmData] = useState<UserUtm[]>([]);
+  const [loadingUtm, setLoadingUtm] = useState<boolean>(false);
+  
+  // Lead Modal states
+  const [leadData, setLeadData] = useState<any[]>([]);
+  const [loadingLead, setLoadingLead] = useState<boolean>(false);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   useScrollRestoreAfterBack("/admin/users", "scroll-pos");
 
@@ -119,6 +130,31 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     setAction("onboardingMail");
     setShow(true);
     setChild(user);
+  };
+
+  const viewUserUTM = async (user: User) => {
+    setLoadingUtm(true);
+    setLoadingLead(true);
+    try {
+      // Buscar dados UTM
+      const utmResponse = await getUserUTMHistory(user.id!);
+      console.log('Resposta da API UTM:', utmResponse);
+      setUtmData(utmResponse.data.data || []);
+      
+      // Buscar dados LEAD
+      const leadResponse = await getUserLeadHistory(user.id!);
+      console.log('Resposta da API LEAD:', leadResponse);
+      setLeadData(leadResponse.data.data || []);
+      setUserEmail(leadResponse.data.userEmail || user.email || '');
+      
+      setUtmShow(true);
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+      alert('Erro ao buscar dados do usuário');
+    } finally {
+      setLoadingUtm(false);
+      setLoadingLead(false);
+    }
   };
 
   const deleteUser = (user: User) => {
@@ -296,6 +332,227 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
         </div>
       </Modal>
 
+      {/* UTM Modal */}
+      <Modal size="xl" show={utmShow} onHide={() => setUtmShow(false)}>
+        <div className="modal-header">
+          <h2>Histórico UTM - {child.name}</h2>
+          <div
+            className="btn btn-sm btn-icon btn-active-color-primary"
+            onClick={() => setUtmShow(false)}
+          >
+            <KTIcon className="fs-1" iconName="cross" />
+          </div>
+        </div>
+        <div className="modal-body py-lg-10 px-lg-10">
+          {/* Loading state */}
+          {(loadingUtm || loadingLead) && (
+            <div className="text-center mb-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Carregando...</span>
+              </div>
+              <p className="mt-2">Carregando dados...</p>
+            </div>
+          )}
+
+          {/* UTM Data Section */}
+          {!loadingUtm && !loadingLead && (
+            <>
+              <div className="mb-5">
+                <h4 className="mb-3">Dados UTM do Usuário</h4>
+                {utmData.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                      <thead>
+                        <tr className="fw-bolder text-muted">
+                          <th>Data</th>
+                          <th>Origem</th>
+                          <th>Meio</th>
+                          <th>Campanha</th>
+                          <th>Evento</th>
+                          <th>Valor</th>
+                          <th>Referer</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {utmData.map((utm, index) => (
+                          <tr key={index}>
+                            <td>
+                              {MOMENT(utm.createdAt).format('DD/MM/YYYY HH:mm')}
+                            </td>
+                            <td>
+                              <span className="badge badge-light-info">
+                                {utm.utmSource || 'direct'}
+                              </span>
+                            </td>
+                            <td>{utm.utmMedium || '-'}</td>
+                            <td>{utm.utmCampaign || '-'}</td>
+                            <td>
+                              <span className={`badge ${
+                                utm.eventType === 'purchase'
+                                  ? 'badge-light-success'
+                                  : 'badge-light-primary'
+                              }`}>
+                                {utm.eventType === 'purchase' ? 'Compra' : 'Intenção'}
+                              </span>
+                            </td>
+                            <td>
+                              {utm.amount ? (
+                                <span className="text-success fw-bold">
+                                  R$ {parseFloat(utm.amount).toFixed(2)}
+                                </span>
+                              ) : (
+                                <span className="text-muted">-</span>
+                              )}
+                            </td>
+                            <td className="text-truncate" style={{ maxWidth: '200px' }}>
+                              {utm.referrer ? (
+                                <span title={utm.referrer}>
+                                  {utm.referrer.length > 50
+                                    ? utm.referrer.substring(0, 50) + '...'
+                                    : utm.referrer}
+                                </span>
+                              ) : (
+                                <span className="text-muted">-</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-muted">Nenhum dado UTM encontrado para este usuário.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Lead Data Section */}
+              {userEmail && (
+                <div>
+                  <h4 className="mb-3">Histórico do Email na Tabela LEAD: {userEmail}</h4>
+                  {leadData.length > 0 ? (
+                    <div className="table-responsive">
+                      <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                        <thead>
+                          <tr className="fw-bolder text-muted">
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>WhatsApp</th>
+                            <th>Lista</th>
+                            <th>Data Criação</th>
+                            <th>Origem</th>
+                            {/* <th>Status</th> */}
+                            <th>Fase Lançamento</th>
+                            <th>UTM Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {leadData.map((lead, index) => (
+                            <tr key={index}>
+                              <td>
+                                <span className="badge badge-light-primary">
+                                  #{lead.id}
+                                </span>
+                              </td>
+                              <td>
+                                <div className="d-flex align-items-center">
+                                  {lead.name && (
+                                    <div className="symbol symbol-circle symbol-30px me-2">
+                                      <div className="symbol-label">
+                                        <span className="fw-bold">
+                                          {lead.name.charAt(0).toUpperCase()}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )}
+                                  <span>{lead.name || '-'}</span>
+                                </div>
+                              </td>
+                              <td>
+                                {lead.whatsapp ? (
+                                  <a
+                                    href={`https://api.whatsapp.com/send?phone=${lead.whatsapp.replace(/[|&;$%@"<>()+,-]/g, '')}`}
+                                    target="_blank"
+                                    className="text-primary"
+                                  >
+                                    {lead.whatsapp}
+                                  </a>
+                                ) : (
+                                  <span className="text-muted">-</span>
+                                )}
+                              </td>
+                              <td>
+                                {lead.list ? (
+                                  <span className="badge badge-light-info">
+                                    {lead.list}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted">-</span>
+                                )}
+                              </td>
+                              <td>
+                                {MOMENT(lead.createdAt).format('DD/MM/YYYY HH:mm')}
+                              </td>
+                              <td>
+                                {lead.origin ? (
+                                  <span className="badge badge-light-warning">
+                                    {lead.origin}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted">-</span>
+                                )}
+                              </td>
+                              {/* <td>
+                                {lead.naoperturbe ? (
+                                  <span className="badge badge-light-danger">
+                                    Não Perturbe
+                                  </span>
+                                ) : lead.confirmed ? (
+                                  <span className="badge badge-light-success">
+                                    Confirmado
+                                  </span>
+                                ) : (
+                                  <span className="badge badge-light-secondary">
+                                    Pendente
+                                  </span>
+                                )}
+                              </td> */}
+                              <td>
+                                {lead.launchPhase?.name ? (
+                                  <span className="badge badge-light-primary">
+                                    {lead.launchPhase.name}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted">-</span>
+                                )}
+                              </td>
+                              <td>
+                                {lead.utmSource ? (
+                                  <span className="badge badge-light-info">
+                                    {lead.utmSource}
+                                  </span>
+                                ) : (
+                                  <span className="text-muted">-</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <p className="text-muted">Nenhum registro encontrado na tabela LEAD para este email.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </Modal>
+
       {/* <InputGroup className="mb-3">
         <FormControl
           placeholder="Pesquise por e-mail, nome, ou número da turma."
@@ -412,12 +669,15 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   </th>
                   {/* <th className="w-20px">ID</th> */}
                   <th className="min-w-100px">NOME</th>
-                  <th className="min-w-200px">ENDEREÇO</th>
+                  <th className="min-w-100px">ENDEREÇO</th>
                   <th className="min-w-100px">LOGIN EM</th>
                   <th className="min-w-100px">WHATSAPP</th>
                   <th className="min-w-100px">REGISTRO</th>
 
                   {/* <th className='min-w-120px'>Última aula assistida</th> */}
+                  <th className="min-w-100px">ORIGEM</th>
+                  <th className="min-w-100px">ÚLTIMO EVENTO</th>
+                  <th className="min-w-100px">VALOR</th>
                   <th className="min-w-100px">
                     {hasCart === "true" ? "TURMA" : "INTENÇÃO"}
                   </th>
@@ -616,6 +876,53 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           {hasCart === "false" && child.origin}
                         </span>
                       </td>
+                      {/* Origem Marketing */}
+                      <td>
+                        <div className="d-flex flex-column">
+                          {child.utmSource ? (
+                            <>
+                              <span className="badge badge-light-info mb-1">
+                                {child.utmSource}
+                              </span>
+                              {child.utmCampaign && (
+                                <span className="text-muted text-sm">
+                                  - {child.utmCampaign}
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <span className="badge badge-light-secondary">
+                              Direto
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Último Evento */}
+                      <td>
+                        {child.eventType ? (
+                          <span className={`badge ${
+                            child.eventType === 'purchase' 
+                              ? 'badge-light-success' 
+                              : 'badge-light-primary'
+                          }`}>
+                            {child.eventType === 'purchase' ? 'Compra' : 'Intenção'}
+                          </span>
+                        ) : (
+                          <span className="text-muted text-sm">-</span>
+                        )}
+                      </td>
+
+                      {/* Valor */}
+                      <td>
+                        {child.amount ? (
+                          <span className="text-success fw-bold">
+                            R$ {parseFloat(child.amount).toFixed(2)}
+                          </span>
+                        ) : (
+                          <span className="text-muted">-</span>
+                        )}
+                      </td>
 
                       <td>
                         <div className="d-flex justify-content-end flex-shrink-0">
@@ -675,6 +982,46 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     Informações
                                   </a>
                                 </li>
+                                <li>
+                                  <a
+                                    href="#!"
+                                    onClick={() => viewUserUTM(child)}
+                                    className="dropdown-item"
+                                  >
+                                    <KTIcon
+                                      iconName="chart"
+                                      iconType="outline"
+                                    />{" "}
+                                    Ver UTM + Lead
+                                  </a>
+                                </li>
+                                {/* <li>
+                                  <a
+                                    href="#!"
+                                    onClick={() => {
+                                      // Buscar apenas dados do lead
+                                      setLoadingLead(true);
+                                      getUserLeadHistory(child.id!)
+                                        .then(response => {
+                                          setLeadData(response.data.data || []);
+                                          setUserEmail(response.data.userEmail || child.email || '');
+                                          setUtmShow(true);
+                                        })
+                                        .catch(error => {
+                                          console.error('Erro ao buscar dados LEAD:', error);
+                                          alert('Erro ao buscar dados LEAD do usuário');
+                                        })
+                                        .finally(() => setLoadingLead(false));
+                                    }}
+                                    className="dropdown-item"
+                                  >
+                                    <KTIcon
+                                      iconName="envelope"
+                                      iconType="outline"
+                                    />{" "}
+                                    Ver Lead
+                                  </a>
+                                </li> */}
                                 <li>
                                   <hr className="dropdown-divider" />
                                 </li>

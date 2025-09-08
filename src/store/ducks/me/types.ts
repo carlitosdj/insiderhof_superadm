@@ -3,6 +3,29 @@ import { Completed } from "../dclass/types"
 //import { Completed } from "../component/types"
 import { State } from "../state/types"
 
+export interface UserUtm {
+  id: number
+  userId: number
+  utmSource?: string
+  utmMedium?: string
+  utmCampaign?: string
+  utmContent?: string
+  utmTerm?: string
+  utmId?: string
+  adId?: string
+  fbclid?: string
+  gclid?: string
+  eventType: 'intent' | 'purchase'
+  eventData?: Record<string, any>
+  amount?: string
+  referrer?: string
+  landingPage?: string
+  userAgent?: string
+  sessionId?: string
+  createdAt: string
+  updatedAt: string
+}
+
 /**
  * Action types
  */
@@ -91,6 +114,19 @@ export interface User {
   cityId?: string
   stateId?: string
   roles?: string
+
+  // UTM Tracking Fields
+  utmSource?: string
+  utmCampaign?: string
+  utmMedium?: string
+  utmContent?: string
+  utmTerm?: string
+  utmId?: string
+  eventType?: string
+  amount?: string
+  lastEventType?: string
+  lastPurchaseAmount?: string
+  marketingOrigin?: string
 
   cart?: any
   access?: any
