@@ -82,8 +82,14 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
                 onChange={(e: any) => setValue(e.target.value)}
                 className="form-control form-control-lg form-control-solid"
                 as="textarea"
-                rows={8}
+                rows={type === 'template' ? 20 : 8}
+                style={type === 'template' ? { fontFamily: 'monospace', fontSize: '0.875rem' } : {}}
               />
+              {type === 'template' && (
+                <Form.Text className="text-muted">
+                  Use variáveis Handlebars: {'{{name}}'}, {'{{expert}}'}, {'{{eventName}}'}, {'{{url_confirm}}'}, etc.
+                </Form.Text>
+              )}
               <Form.Control.Feedback type="invalid">
                 Por favor informe a descrição
               </Form.Control.Feedback>
@@ -114,6 +120,7 @@ const Create = ({ handleClose, launchPhaseId }: handleCloseProps) => {
                 <option value="link">Link</option>
                 <option value="datetime">Data/Hora</option>
                 <option value="image">Imagem</option>
+                <option value="template">Template de Email</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">
                 Por favor selecione o tipo

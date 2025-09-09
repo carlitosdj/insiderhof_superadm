@@ -33,7 +33,7 @@ export enum LaunchPhaseExtrasTypes {
  * Data types
  */
 // User Imported from Me
-export type LaunchPhaseExtraType = 'text' | 'link' | 'datetime' | 'image';
+export type LaunchPhaseExtraType = 'text' | 'link' | 'datetime' | 'image' | 'template';
 
 export interface LaunchPhaseExtras {
   id?: number | undefined;

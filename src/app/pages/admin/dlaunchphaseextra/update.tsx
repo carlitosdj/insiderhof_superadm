@@ -7,7 +7,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import momentDurationFormatSetup from "moment-duration-format";
-import { LaunchPhaseExtras, LaunchPhaseExtraType } from "../../../../store/ducks/dlaunchphaseextras/types";
+import {
+  LaunchPhaseExtras,
+  LaunchPhaseExtraType,
+} from "../../../../store/ducks/dlaunchphaseextras/types";
 import { updateLaunchPhaseExtrasRequest } from "../../../../store/ducks/dlaunchphaseextras/actions";
 const MOMENT = require("moment");
 momentDurationFormatSetup(MOMENT);
@@ -32,21 +35,28 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [price, setPrice] = useState(0);
   const [oldPrice, setOldPrice] = useState(0);
 
-
   useEffect(() => {
     setKey(child.key);
     setValue(child.value);
     setStatus(child.status!);
     setName(child.name);
     setType(child.type || "text");
-    
+
     // Set selected date if type is datetime and value exists
     if (child.type === "datetime" && child.value) {
       // Parse DD/MM/YYYY HH:mm format
-      const dateParts = child.value.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+      const dateParts = child.value.match(
+        /(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/
+      );
       if (dateParts) {
         const [, day, month, year, hours, minutes] = dateParts;
-        const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day), parseInt(hours), parseInt(minutes));
+        const date = new Date(
+          parseInt(year),
+          parseInt(month) - 1,
+          parseInt(day),
+          parseInt(hours),
+          parseInt(minutes)
+        );
         setSelectedDate(date);
       } else {
         // Fallback to standard Date parsing
@@ -71,14 +81,14 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
       let formattedValue = value;
       if (type === "datetime" && selectedDate) {
         // Format as DD/MM/YYYY HH:mm
-        const day = selectedDate.getDate().toString().padStart(2, '0');
-        const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = selectedDate.getDate().toString().padStart(2, "0");
+        const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
         const year = selectedDate.getFullYear().toString();
-        const hours = selectedDate.getHours().toString().padStart(2, '0');
-        const minutes = selectedDate.getMinutes().toString().padStart(2, '0');
+        const hours = selectedDate.getHours().toString().padStart(2, "0");
+        const minutes = selectedDate.getMinutes().toString().padStart(2, "0");
         formattedValue = `${day}/${month}/${year} ${hours}:${minutes}`;
       }
-      
+
       const componentToUpdate: LaunchPhaseExtras = {
         id: child.id,
         key,
@@ -128,11 +138,16 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                     setSelectedDate(date);
                     if (date) {
                       // Format as DD/MM/YYYY HH:mm for display
-                      const day = date.getDate().toString().padStart(2, '0');
-                      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                      const day = date.getDate().toString().padStart(2, "0");
+                      const month = (date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
                       const year = date.getFullYear().toString();
-                      const hours = date.getHours().toString().padStart(2, '0');
-                      const minutes = date.getMinutes().toString().padStart(2, '0');
+                      const hours = date.getHours().toString().padStart(2, "0");
+                      const minutes = date
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0");
                       setValue(`${day}/${month}/${year} ${hours}:${minutes}`);
                     } else {
                       setValue("");
@@ -147,15 +162,28 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                   isClearable
                 />
               ) : (
-                <Form.Control
-                  placeholder=""
-                  value={value}
-                  onChange={(e: any) => setValue(e.target.value)}
-                  name="description"
-                  className="form-control form-control-lg form-control-solid"
-                  as="textarea"
-                  rows={8}
-                />
+                <>
+                  <Form.Control
+                    placeholder=""
+                    //required
+                    value={value}
+                    onChange={(e: any) => setValue(e.target.value)}
+                    className="form-control form-control-lg form-control-solid"
+                    as="textarea"
+                    rows={type === "template" ? 20 : 8}
+                    style={
+                      type === "template"
+                        ? { fontFamily: "monospace", fontSize: "0.875rem" }
+                        : {}
+                    }
+                  />
+                  {type === "template" && (
+                    <Form.Text className="text-muted">
+                      Use variáveis Handlebars: {"{{name}}"}, {"{{expert}}"},{" "}
+                      {"{{eventName}}"}, {"{{url_confirm}}"}, etc.
+                    </Form.Text>
+                  )}
+                </>
               )}
               <Form.Control.Feedback type="invalid">
                 Por favor informe a descrição do produto
@@ -183,13 +211,16 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               </Form.Label>
               <Form.Select
                 value={type}
-                onChange={(e: any) => setType(e.target.value as LaunchPhaseExtraType)}
+                onChange={(e: any) =>
+                  setType(e.target.value as LaunchPhaseExtraType)
+                }
                 className="form-control form-control-lg form-control-solid"
               >
                 <option value="text">Texto</option>
                 <option value="link">Link</option>
                 <option value="datetime">Data/Hora</option>
                 <option value="image">Imagem</option>
+                <option value="template">Template de Email</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">
                 Por favor selecione o tipo
