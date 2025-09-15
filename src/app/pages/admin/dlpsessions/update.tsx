@@ -29,6 +29,7 @@ enum ConfigKey {
   BTNTALK_TEXT = "btntalkText",
   BTNTALK_URL = "btntalkUrl",
   MEDIA_URL = "mediaUrl",
+  IS_ANCHOR = "isAnchor",
 }
 
 // Session type options for select
@@ -51,6 +52,7 @@ const ALLOWED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
     ConfigKey.BTNTALK_TEXT,
     ConfigKey.BTNTALK_URL,
     ConfigKey.MEDIA_URL,
+    ConfigKey.IS_ANCHOR,
   ],
   [SessionType.FEATURE]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
   [SessionType.PRODUCTS]: [ConfigKey.TITLE, ConfigKey.SUBTITLE],
@@ -61,6 +63,7 @@ const ALLOWED_CONFIGS_PER_TYPE: Record<SessionType, ConfigKey[]> = {
     ConfigKey.BTN_TEXT,
     ConfigKey.BTNTALK_TEXT,
     ConfigKey.BTNTALK_URL,
+    ConfigKey.IS_ANCHOR,
   ],
 };
 
@@ -83,6 +86,7 @@ const CONFIG_KEY_LABELS: Record<ConfigKey, string> = {
   [ConfigKey.BTNTALK_TEXT]: "Texto do Botão Falar Conosco",
   [ConfigKey.BTNTALK_URL]: "URL do Botão Falar Conosco",
   [ConfigKey.MEDIA_URL]: "URL do Vídeo ou Imagem (opcional)",
+  [ConfigKey.IS_ANCHOR]: "Faz âncora para #buy ao clicar",
 };
 
 interface handleCloseProps {
@@ -113,6 +117,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     [ConfigKey.BTNTALK_TEXT]: "",
     [ConfigKey.BTNTALK_URL]: "",
     [ConfigKey.MEDIA_URL]: "",
+    [ConfigKey.IS_ANCHOR]: "false",
   });
 
   // Cache para armazenar as configurações de cada tipo
@@ -144,6 +149,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         [ConfigKey.BTNTALK_TEXT]: "",
         [ConfigKey.BTNTALK_URL]: "",
         [ConfigKey.MEDIA_URL]: "",
+        [ConfigKey.IS_ANCHOR]: "false",
       };
 
       setConfigValues(emptyValues);
@@ -177,6 +183,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
       [ConfigKey.BTNTALK_TEXT]: "",
       [ConfigKey.BTNTALK_URL]: "",
       [ConfigKey.MEDIA_URL]: "",
+      [ConfigKey.IS_ANCHOR]: "false",
     };
 
     // Para cada campo permitido no novo tipo
@@ -301,29 +308,48 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     console.log("Rendering fields for type", type);
     console.log("Current values:", configValues);
 
-    return allowedKeys.map((key) => (
-      <Form.Group key={key} className="mb-4">
-        <Form.Label
-          className={
-            requiredKeys.includes(key)
-              ? "required fw-bold fs-6"
-              : "fw-bold fs-6"
-          }
-        >
-          {CONFIG_KEY_LABELS[key]}
-        </Form.Label>
-        <Form.Control
-          className="form-control form-control-lg form-control-solid"
-          placeholder={`Digite ${CONFIG_KEY_LABELS[key].toLowerCase()}`}
-          value={configValues[key] || ""}
-          onChange={(e) => handleConfigChange(key, e.target.value)}
-          required={requiredKeys.includes(key)}
-        />
-        <Form.Control.Feedback type="invalid">
-          Por favor informe {CONFIG_KEY_LABELS[key].toLowerCase()}
-        </Form.Control.Feedback>
-      </Form.Group>
-    ));
+    return allowedKeys.map((key) => {
+      // Campo especial para isAnchor - checkbox
+      if (key === ConfigKey.IS_ANCHOR) {
+        return (
+          <Form.Group key={key} className="mb-4">
+            <Form.Check
+              type="checkbox"
+              id={`isAnchor-${key}`}
+              label={CONFIG_KEY_LABELS[key]}
+              checked={configValues[key] === "true"}
+              onChange={(e) => handleConfigChange(key, e.target.checked ? "true" : "false")}
+              className="fw-bold fs-6"
+            />
+          </Form.Group>
+        );
+      }
+
+      // Campos normais - input text
+      return (
+        <Form.Group key={key} className="mb-4">
+          <Form.Label
+            className={
+              requiredKeys.includes(key)
+                ? "required fw-bold fs-6"
+                : "fw-bold fs-6"
+            }
+          >
+            {CONFIG_KEY_LABELS[key]}
+          </Form.Label>
+          <Form.Control
+            className="form-control form-control-lg form-control-solid"
+            placeholder={`Digite ${CONFIG_KEY_LABELS[key].toLowerCase()}`}
+            value={configValues[key] || ""}
+            onChange={(e) => handleConfigChange(key, e.target.value)}
+            required={requiredKeys.includes(key)}
+          />
+          <Form.Control.Feedback type="invalid">
+            Por favor informe {CONFIG_KEY_LABELS[key].toLowerCase()}
+          </Form.Control.Feedback>
+        </Form.Group>
+      );
+    });
   };
 
   return (
