@@ -17,7 +17,7 @@ import { useCookies } from "react-cookie";
 import { User } from "../../store/ducks/me/types";
 import { useDispatch } from "react-redux";
 import { authfromcookie } from "../../store/ducks/me/actions";
- 
+
 /**
  * Base URL of the website.
  *
