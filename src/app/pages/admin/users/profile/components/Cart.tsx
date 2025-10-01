@@ -61,7 +61,7 @@ export function CartPage({ user }: paymentProps) {
   };
   return (
     <div>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} size="xl">
         <div className="modal-header">
           <h2>
             {action === "createComponent" ? "Adicionar pagamento" : ""}
@@ -151,6 +151,7 @@ export function CartPage({ user }: paymentProps) {
                           <th className="min-w-140px">TAXA/FINANCIAMENTO</th>
 
                           <th className="min-w-140px">TURMA</th>
+                          <th className="min-w-140px">RENOVATION</th>
                           <th className="min-w-100px text-end">AÇÕES</th>
                         </tr>
                       </thead>
@@ -225,6 +226,7 @@ export function CartPage({ user }: paymentProps) {
 
 
                               <td>{payment.launch?.name}</td>
+                              <td>{payment.renovationTime}</td>
                               <td>
                                 <div className="d-flex justify-content-end flex-shrink-0">
                                   <a

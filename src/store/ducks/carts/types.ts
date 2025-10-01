@@ -74,6 +74,7 @@ export interface Cart {
   userId?: number
   idreference?: string
   notafiscal?: string
+  renovationTime?: number | null
 
   total_paid_amount?: string ;
   net_received_amount?: string ;
