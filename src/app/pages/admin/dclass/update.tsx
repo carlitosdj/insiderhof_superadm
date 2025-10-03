@@ -165,6 +165,22 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               </Form.Control.Feedback>
             </Form.Group>
             <br />
+            <Form.Group controlId="fromName">
+              <Form.Label className="required fw-bold fs-6 mb-5">
+                Status
+              </Form.Label>
+              <Form.Control
+                placeholder=""
+                value={status.toString()}
+                onChange={(e: any) => setStatus(e.target.value)}
+                name="tags"
+                className="form-control form-control-lg form-control-solid"
+              />
+              <Form.Control.Feedback type="invalid">
+                Por favor informe as tags
+              </Form.Control.Feedback>
+            </Form.Group>
+            <br />
 
             
           </div>
