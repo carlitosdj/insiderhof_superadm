@@ -11,6 +11,21 @@ import {
   searchLeadsRequest,
   searchLeadsSuccess,
   searchLeadsFailure,
+
+  //Lead Lists
+  loadLeadListsRequest,
+  loadLeadListsSuccess,
+  loadLeadListsFailure,
+
+  //Leads by list
+  loadLeadsByListRequest,
+  loadLeadsByListSuccess,
+  loadLeadsByListFailure,
+
+  //Export leads
+  loadExportLeadsRequest,
+  loadExportLeadsSuccess,
+  loadExportLeadsFailure,
 } from './actions'
 
 import {Lead} from '../lead/types'
@@ -36,3 +51,36 @@ export function* searchLeads(payload: ReturnType<typeof searchLeadsRequest>) {
     yield put(searchLeadsFailure(error.response.data))
   }
 }
+
+//Lead Lists
+export function* loadLeadLists() {
+  try {
+    // @ts-ignore
+    const response = yield call(api.get, 'lead/lists')
+    yield put(loadLeadListsSuccess(response.data))
+  } catch (error: any) {
+    yield put(loadLeadListsFailure(error.response.data))
+  }
+}
+
+//Leads by list
+export function* loadLeadsByList(payload: ReturnType<typeof loadLeadsByListRequest>) {
+  try {
+    const response: Lead[] = yield call(api.get, 'lead/list/' + payload.payload)
+    yield put(loadLeadsByListSuccess(response))
+  } catch (error: any) {
+    yield put(loadLeadsByListFailure(error.response.data))
+  }
+}
+
+//Export leads
+export function* loadExportLeads(payload: ReturnType<typeof loadExportLeadsRequest>) {
+  try {
+    // @ts-ignore
+    const response = yield call(api.get, 'lead/list/' + payload.payload)
+    yield put(loadExportLeadsSuccess(response.data))
+  } catch (error: any) {
+    yield put(loadExportLeadsFailure(error.response.data))
+  }
+}
+

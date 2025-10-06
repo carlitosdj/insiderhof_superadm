@@ -41,7 +41,7 @@ import {LeadTypes} from './lead/types'
 import {loadLead, createLead, confirmLead, notDisturbLead} from './lead/sagas'
 
 import {LeadsTypes} from './leads/types'
-import {loadLeads, searchLeads} from './leads/sagas'
+import {loadLeads, searchLeads, loadLeadLists, loadLeadsByList, loadExportLeads} from './leads/sagas'
 
 
 import {ListsTypes} from './lists/types'
@@ -180,6 +180,9 @@ export default function* rootSaga() {
     //All leads
     takeLatest(LeadsTypes.LOAD_LEAD_REQUEST, loadLeads),
     takeLatest(LeadsTypes.SEARCH_LEADS_REQUEST, searchLeads),
+    takeLatest(LeadsTypes.LOAD_LEAD_LISTS_REQUEST, loadLeadLists),
+    takeLatest(LeadsTypes.LOAD_LEADS_BY_LIST_REQUEST, loadLeadsByList),
+    takeLatest(LeadsTypes.LOAD_EXPORT_LEADS_REQUEST, loadExportLeads),
 
     //All lists
     takeLatest(ListsTypes.LOAD_LISTS_REQUEST, loadLists),

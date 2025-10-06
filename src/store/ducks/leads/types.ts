@@ -11,6 +11,20 @@ export enum LeadsTypes {
   SEARCH_LEADS_REQUEST = '@leads/SEARCH_LEADS_REQUEST',
   SEARCH_LEADS_SUCCESS = '@leads/SEARCH_LEADS_SUCCESS',
   SEARCH_LEADS_FAILURE = '@leads/SEARCH_LEADS_FAILURE',
+
+  LOAD_LEAD_LISTS_REQUEST = '@leads/LOAD_LEAD_LISTS_REQUEST',
+  LOAD_LEAD_LISTS_SUCCESS = '@leads/LOAD_LEAD_LISTS_SUCCESS',
+  LOAD_LEAD_LISTS_FAILURE = '@leads/LOAD_LEAD_LISTS_FAILURE',
+
+  LOAD_LEADS_BY_LIST_REQUEST = '@leads/LOAD_LEADS_BY_LIST_REQUEST',
+  LOAD_LEADS_BY_LIST_SUCCESS = '@leads/LOAD_LEADS_BY_LIST_SUCCESS',
+  LOAD_LEADS_BY_LIST_FAILURE = '@leads/LOAD_LEADS_BY_LIST_FAILURE',
+
+  LOAD_EXPORT_LEADS_REQUEST = '@leads/LOAD_EXPORT_LEADS_REQUEST',
+  LOAD_EXPORT_LEADS_SUCCESS = '@leads/LOAD_EXPORT_LEADS_SUCCESS',
+  LOAD_EXPORT_LEADS_FAILURE = '@leads/LOAD_EXPORT_LEADS_FAILURE',
+
+  SET_SELECTED_LIST = '@leads/SET_SELECTED_LIST',
 }
 
 /**
@@ -28,4 +42,9 @@ export interface LeadsState {
   readonly count: number
   readonly loading: boolean
   readonly error?: Error
+  readonly leadLists: {list: string}[]
+  readonly leadListsLoading: boolean
+  readonly exportData: Lead[]
+  readonly exportLoading: boolean
+  readonly selectedList: string
 }

@@ -15,6 +15,10 @@ import { LeadsState } from "../../../../store/ducks/leads/types";
 import {
   loadLeadsRequest,
   searchLeadsRequest,
+  loadLeadListsRequest,
+  loadLeadsByListRequest,
+  loadExportLeadsRequest,
+  setSelectedList,
 } from "../../../../store/ducks/leads/actions";
 import Pagination from "../../../../customHooks/Pagination";
 import { KTIcon } from "../../../../_metronic/helpers";
@@ -49,6 +53,25 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   // const [extra, setExtra] = useState<Extras>({});
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadLeadListsRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (leads.exportData.length > 0 && !leads.exportLoading) {
+      const csvContent = "data:text/csv;charset=utf-8,"
+        + "Nome,Email,Lista,Registro,Confirmado,Confirmado Em,Não Perturbe,Origem\n"
+        + leads.exportData.map((lead: any) => `"${lead.name}","${lead.email}","${lead.list}","${lead.createdAt}","${lead.confirm}","${lead.confirmedAt}","${lead.naoperturbe}","${lead.origin}"`).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `leads_${leads.selectedList}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [leads.exportData, leads.exportLoading, leads.selectedList]);
   // const history = useHistory();
 
   const searchLeads = () => {
@@ -56,6 +79,15 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
     if (search) dispatch(searchLeadsRequest(search));
     else dispatch(loadLeadsRequest(+page!, +take!));
   };
+
+  const exportCSV = () => {
+    if (!leads.selectedList) {
+      alert("Selecione uma lista para exportar.");
+      return;
+    }
+    dispatch(loadExportLeadsRequest(leads.selectedList));
+  };
+
   console.log("leads", leads);
   let count = leads.count;
   // let pages = Math.ceil(+count! / +take!)
@@ -66,7 +98,8 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
       <div className={`card ${className}`}>
         {/* begin::Header */}
         <div className="card-header border-0 pt-6">
-          <div className="card-title">
+          {/* <div className=""> */}
+            <div className="card-title">
             {/* begin::Search */}
             <div className="d-flex align-items-center position-relative my-1">
               <KTIcon
@@ -86,7 +119,36 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
               />
             </div>
             {/* end::Search */}
-            
+            <div className="d-flex align-items-center">
+              <FormControl
+                as="select"
+                value={leads.selectedList}
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  dispatch(setSelectedList(value));
+                  if (value) {
+                    dispatch(loadLeadsByListRequest(value));
+                  } else {
+                    dispatch(loadLeadsRequest(+page!, +take!));
+                  }
+                }}
+                className="form-control form-control-solid w-200px me-3"
+              >
+                <option value="">Todas as listas</option>
+                {leads.leadLists?.map((list, index) => (
+                  <option key={index} value={list.list}>
+                    {list.list}
+                  </option>
+                ))}
+              </FormControl>
+              <Button
+                variant="primary"
+                onClick={exportCSV}
+                disabled={!leads.selectedList || leads.exportLoading}
+              >
+                {leads.exportLoading ? "Exportando..." : "Exportar CSV"}
+              </Button>
+            </div>
           </div>
           {leads.count > 0 && (
             <div className="card-toolbar text-muted">
@@ -113,12 +175,18 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-200px">CONFIRMADO EM</th>
                   <th className="min-w-150px">NÃO PERTURBE</th>
                   <th className="min-w-150px">ORIGEM</th>
+                  <th className="min-w-150px">UTMSOURCE</th>
+                  <th className="min-w-150px">UTMMEDIUM</th>
+                  <th className="min-w-150px">UTMCAMPAIGN</th>
+                  <th className="min-w-150px">UTMCONTENT</th>
+                  <th className="min-w-150px">UTMID</th>
+                  <th className="min-w-150px">UTMTERM</th>
                 </tr>
               </thead>
               {/* end::Table head */}
               {/* begin::Table body */}
               <tbody>
-                {leads.data?.map((child, index) => {
+                {Array.isArray(leads.data) && leads.data.map((child, index) => {
                   return (
                     <tr key={index}>
                       {/* <td>
@@ -195,6 +263,36 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           {child.origin}
                         </span>
                       </td>
+                      <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmSource}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmMedium}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmCampaign}
+                        </span>
+                      </td>
+                       <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmContent}
+                        </span>
+                      </td>
+                       <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmId}
+                        </span>
+                      </td>
+                       <td>
+                        <span className="text-muted fw-bold d-block fs-7">
+                          {child.utmTerm}
+                        </span>
+                      </td>
 
                       {/* <td>
                         <div className='d-flex justify-content-end flex-shrink-0'>
@@ -240,7 +338,7 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
         {/* begin::Body */}
       </div>
 
-      {!search ? (
+      {!search && !leads.selectedList ? (
         <Pagination
           className=""
           currentPage={currentPage!}
