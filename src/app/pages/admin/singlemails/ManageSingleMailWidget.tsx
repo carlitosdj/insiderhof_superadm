@@ -133,7 +133,7 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <span className="text-gray-900 d-block fs-7">
                           
                           
-                          {parse(DOMPurify.sanitize(child.message || ""))}
+                          {parse(DOMPurify.sanitize(child.message?.substring(0, 30) || ""))}
                         
                           
                         </span>
