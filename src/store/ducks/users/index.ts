@@ -12,7 +12,10 @@ const INITIAL_STATE: UsersState = {
   showPagination: true,
   filterStartDate: 0,
   filterEndDate: 0,
-  
+  userLaunches: [],
+  selectedLaunch: "",
+  exportData: [],
+  exportLoading: false,
 }
 
 const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action: any) => {
@@ -119,6 +122,34 @@ const reducer: Reducer<UsersState> = (state = INITIAL_STATE, action: any) => {
 
     case UsersTypes.SET_FILTER_END_DATE:
       return {...state, filterEndDate: action.payload}
+
+    // User Launches
+    case UsersTypes.LOAD_USER_LAUNCHES_REQUEST:
+      return {...state}
+    case UsersTypes.LOAD_USER_LAUNCHES_SUCCESS:
+      return {...state, userLaunches: action.payload}
+    case UsersTypes.LOAD_USER_LAUNCHES_FAILURE:
+      return {...state, error: action.payload}
+
+    // Users by launch (FILTRO - não popula exportData)
+    case UsersTypes.LOAD_USERS_BY_LAUNCH_REQUEST:
+      return {...state, loading: true}
+    case UsersTypes.LOAD_USERS_BY_LAUNCH_SUCCESS:
+      return {...state, loading: false, data: action.payload.data, count: action.payload.data.length, showPagination: false, exportData: []}
+    case UsersTypes.LOAD_USERS_BY_LAUNCH_FAILURE:
+      return {...state, loading: false, error: action.payload, exportData: []}
+
+    // Export users
+    case UsersTypes.LOAD_EXPORT_USERS_REQUEST:
+      return {...state, exportLoading: true}
+    case UsersTypes.LOAD_EXPORT_USERS_SUCCESS:
+      return {...state, exportLoading: false, exportData: action.payload}
+    case UsersTypes.LOAD_EXPORT_USERS_FAILURE:
+      return {...state, exportLoading: false, error: action.payload}
+
+    // Set selected launch
+    case UsersTypes.SET_SELECTED_LAUNCH:
+      return {...state, selectedLaunch: action.payload}
 
     default:
       return state

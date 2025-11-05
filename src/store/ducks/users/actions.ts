@@ -47,3 +47,21 @@ export const selectUsersRemoveSuccess = (data: User) => action(UsersTypes.SELECT
 //Date
 export const setFilterStartDateRequest = (startDate: number) => action(UsersTypes.SET_FILTER_START_DATE, startDate)
 export const setFilterEndDateRequest = (endDate: number) => action(UsersTypes.SET_FILTER_END_DATE, endDate)
+
+//User Launches (cursos comprados)
+export const loadUserLaunchesRequest = () => action(UsersTypes.LOAD_USER_LAUNCHES_REQUEST)
+export const loadUserLaunchesSuccess = (data: {id: number, name: string}[]) => action(UsersTypes.LOAD_USER_LAUNCHES_SUCCESS, data)
+export const loadUserLaunchesFailure = (err: any[]) => action(UsersTypes.LOAD_USER_LAUNCHES_FAILURE, err)
+
+//Users by launch
+export const loadUsersByLaunchRequest = (launchId: string) => action(UsersTypes.LOAD_USERS_BY_LAUNCH_REQUEST, launchId)
+export const loadUsersByLaunchSuccess = (data: User[]) => action(UsersTypes.LOAD_USERS_BY_LAUNCH_SUCCESS, data)
+export const loadUsersByLaunchFailure = (err: any[]) => action(UsersTypes.LOAD_USERS_BY_LAUNCH_FAILURE, err)
+
+//Export users by launch
+export const loadExportUsersRequest = (launchId: string) => action(UsersTypes.LOAD_EXPORT_USERS_REQUEST, launchId)
+export const loadExportUsersSuccess = (data: User[]) => action(UsersTypes.LOAD_EXPORT_USERS_SUCCESS, data)
+export const loadExportUsersFailure = (err: any[]) => action(UsersTypes.LOAD_EXPORT_USERS_FAILURE, err)
+
+//Set selected launch
+export const setSelectedLaunch = (launchId: string) => action(UsersTypes.SET_SELECTED_LAUNCH, launchId)

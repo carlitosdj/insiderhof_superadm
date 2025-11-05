@@ -38,6 +38,15 @@ import {
   filterUserRequest,
   filterUserSuccess,
   filterUserFailure,
+  loadUserLaunchesRequest,
+  loadUserLaunchesSuccess,
+  loadUserLaunchesFailure,
+  loadUsersByLaunchRequest,
+  loadUsersByLaunchSuccess,
+  loadUsersByLaunchFailure,
+  loadExportUsersRequest,
+  loadExportUsersSuccess,
+  loadExportUsersFailure,
   // setUserEndDateRequest,
   // setUserStartDateRequest,
 } from './actions'
@@ -177,6 +186,37 @@ export function* selectUsersRemove(payload: ReturnType<typeof selectUsersRemoveR
   }
 }
 
+//User Launches
+export function* loadUserLaunches() {
+  try {
+    // @ts-ignore
+    const response = yield call(api.get, 'user/launches')
+    yield put(loadUserLaunchesSuccess(response.data))
+  } catch (error: any) {
+    yield put(loadUserLaunchesFailure(error.response.data))
+  }
+}
+
+//Users by launch
+export function* loadUsersByLaunch(payload: ReturnType<typeof loadUsersByLaunchRequest>) {
+  try {
+    const response: User[] = yield call(api.get, 'user/launch/' + payload.payload)
+    yield put(loadUsersByLaunchSuccess(response))
+  } catch (error: any) {
+    yield put(loadUsersByLaunchFailure(error.response.data))
+  }
+}
+
+//Export users by launch
+export function* loadExportUsers(payload: ReturnType<typeof loadExportUsersRequest>) {
+  try {
+    // @ts-ignore
+    const response = yield call(api.get, 'user/launch/' + payload.payload)
+    yield put(loadExportUsersSuccess(response.data))
+  } catch (error: any) {
+    yield put(loadExportUsersFailure(error.response.data))
+  }
+}
 
 //Date
 // export function* setUserStartDate(payload: ReturnType<typeof setUserStartDateRequest>) {

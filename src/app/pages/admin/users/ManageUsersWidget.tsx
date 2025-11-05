@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { lazy, useEffect, useMemo, useState } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, FormControl } from "react-bootstrap";
 
 import { KTIcon } from "../../../../_metronic/helpers";
 import { useDispatch } from "react-redux";
@@ -14,6 +14,10 @@ import {
   searchUserRequest,
   selectUsersAddRequest,
   selectUsersRemoveRequest,
+  loadUserLaunchesRequest,
+  loadUsersByLaunchRequest,
+  loadExportUsersRequest,
+  setSelectedLaunch,
 } from "../../../../store/ducks/users/actions";
 
 import Info from "./infoUserModal";
@@ -84,6 +88,45 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   //console.log("users", users);
   const dispatch = useDispatch();
+
+  // Carregar lista de launches ao montar componente
+  useEffect(() => {
+    dispatch(loadUserLaunchesRequest());
+  }, [dispatch]);
+
+  // Auto-download do CSV SOMENTE quando dados de exportação estiverem prontos
+  // Usa flag separada para não disparar ao filtrar
+  useEffect(() => {
+    if (users.exportData.length > 0 && !users.exportLoading) {
+      // Remover duplicatas baseado no email quando exportar todos os launches
+      const uniqueUsers = users.selectedLaunch
+        ? users.exportData
+        : users.exportData.reduce((acc: any[], user: any) => {
+            // Verifica se já existe um usuário com esse email
+            if (!acc.find((item: any) => item.email === user.email)) {
+              acc.push(user);
+            }
+            return acc;
+          }, []);
+
+      const csvContent = "data:text/csv;charset=utf-8,"
+        + "Nome,Email,Whatsapp,Curso(s),Registro,Cidade,Estado\n"
+        + uniqueUsers.map((user: any) => {
+            const courses = user.cart?.map((c: any) => c.launch?.name).filter(Boolean).join("; ") || user.origin || '';
+            return `"${user.name}","${user.email}","${user.whatsapp}","${courses}","${user.createdAt}","${user.city?.name || ''}","${user.state?.state || ''}"`;
+          }).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      const fileName = users.selectedLaunch
+        ? `users_launch_${users.selectedLaunch}.csv`
+        : "users_todos_cursos.csv";
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [users.exportData, users.exportLoading, users.selectedLaunch]);
   //const navigate = useNavigate();
   //console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
   //console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
@@ -166,6 +209,12 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
     console.log("search", search);
     if (search) dispatch(searchUserRequest(search));
     else dispatch(loadUsersRequest(+page!, +take!, hasCart!));
+  };
+
+  const exportCSVByLaunch = () => {
+    // Usar "ALL" como palavra-chave para exportar todos os launches
+    const launchToExport = users.selectedLaunch || "ALL";
+    dispatch(loadExportUsersRequest(launchToExport));
   };
 
   const preMessageOnboarding = (user: User) => {
@@ -611,9 +660,43 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
           </div>
           <div className="card-toolbar">
             <div
-              className="d-flex justify-content-end"
+              className="d-flex justify-content-end align-items-center"
               data-kt-user-table-toolbar="base"
             >
+              {/* Filtro por launch/curso */}
+              <FormControl
+                as="select"
+                value={users.selectedLaunch}
+                onChange={(e: any) => {
+                  const value = e.target.value;
+                  dispatch(setSelectedLaunch(value));
+                  if (value) {
+                    dispatch(loadUsersByLaunchRequest(value));
+                  } else {
+                    dispatch(loadUsersRequest(+page!, +take!, hasCart!));
+                  }
+                }}
+                className="form-control form-control-solid w-200px me-3"
+              >
+                <option value="">Todos os cursos</option>
+                {users.userLaunches?.map((launch, index) => (
+                  <option key={index} value={launch.id.toString()}>
+                    {launch.name}
+                  </option>
+                ))}
+              </FormControl>
+
+              {/* Exportar por launch */}
+              <button
+                type="button"
+                className="btn btn-light-success me-3"
+                onClick={exportCSVByLaunch}
+                disabled={users.exportLoading}
+              >
+                <KTIcon iconName="file-down" className="fs-2" />
+                {users.exportLoading ? "Exportando..." : "Exportar CSV Alunos"}
+              </button>
+
               <button
                 type="button"
                 className="btn btn-light-primary me-3"

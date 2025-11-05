@@ -15,6 +15,9 @@ import {
   selectUsersRemove,
   filterUser,
   loadUser,
+  loadUserLaunches,
+  loadUsersByLaunch,
+  loadExportUsers,
   // setUserStartDate,
   // setUserEndDate,
 } from './users/sagas'
@@ -160,6 +163,9 @@ export default function* rootSaga() {
     takeLatest(UsersTypes.FILTER_USERS_REQUEST, filterUser),
     takeLatest(UsersTypes.SELECTED_USER_ADD, selectUsersAdd),
     takeLatest(UsersTypes.SELECTED_USER_REMOVE, selectUsersRemove),
+    takeLatest(UsersTypes.LOAD_USER_LAUNCHES_REQUEST, loadUserLaunches),
+    takeLatest(UsersTypes.LOAD_USERS_BY_LAUNCH_REQUEST, loadUsersByLaunch),
+    takeLatest(UsersTypes.LOAD_EXPORT_USERS_REQUEST, loadExportUsers),
     // takeLatest(UsersTypes.SET_USER_START_DATE, setUserStartDate),
     // takeLatest(UsersTypes.SET_USER_END_DATE, setUserEndDate),
 

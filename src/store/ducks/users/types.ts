@@ -47,6 +47,23 @@ export enum UsersTypes {
   SET_FILTER_START_DATE = '@users/SET_FILTER_START_DATE',
   SET_FILTER_END_DATE = '@users/SET_FILTER_END_DATE',
   
+  //User Launches
+  LOAD_USER_LAUNCHES_REQUEST = '@users/LOAD_USER_LAUNCHES_REQUEST',
+  LOAD_USER_LAUNCHES_SUCCESS = '@users/LOAD_USER_LAUNCHES_SUCCESS',
+  LOAD_USER_LAUNCHES_FAILURE = '@users/LOAD_USER_LAUNCHES_FAILURE',
+
+  //Users by launch
+  LOAD_USERS_BY_LAUNCH_REQUEST = '@users/LOAD_USERS_BY_LAUNCH_REQUEST',
+  LOAD_USERS_BY_LAUNCH_SUCCESS = '@users/LOAD_USERS_BY_LAUNCH_SUCCESS',
+  LOAD_USERS_BY_LAUNCH_FAILURE = '@users/LOAD_USERS_BY_LAUNCH_FAILURE',
+
+  //Export users
+  LOAD_EXPORT_USERS_REQUEST = '@users/LOAD_EXPORT_USERS_REQUEST',
+  LOAD_EXPORT_USERS_SUCCESS = '@users/LOAD_EXPORT_USERS_SUCCESS',
+  LOAD_EXPORT_USERS_FAILURE = '@users/LOAD_EXPORT_USERS_FAILURE',
+
+  //Selected launch
+  SET_SELECTED_LAUNCH = '@users/SET_SELECTED_LAUNCH',
 }
 
 /**
@@ -68,5 +85,8 @@ export interface UsersState {
   readonly showPagination: boolean
   readonly filterStartDate: number
   readonly filterEndDate: number
-  
+  readonly userLaunches?: {id: number, name: string}[]
+  readonly selectedLaunch: string
+  readonly exportData: User[]
+  readonly exportLoading: boolean
 }

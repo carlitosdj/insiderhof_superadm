@@ -60,13 +60,25 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   useEffect(() => {
     if (leads.exportData.length > 0 && !leads.exportLoading) {
+      // Remover duplicatas baseado no email quando exportar todas as listas
+      const uniqueLeads = leads.selectedList
+        ? leads.exportData
+        : leads.exportData.reduce((acc: any[], lead: any) => {
+            // Verifica se já existe um lead com esse email
+            if (!acc.find((item: any) => item.email === lead.email)) {
+              acc.push(lead);
+            }
+            return acc;
+          }, []);
+
       const csvContent = "data:text/csv;charset=utf-8,"
         + "Nome,Email,Lista,Registro,Confirmado,Confirmado Em,Não Perturbe,Origem\n"
-        + leads.exportData.map((lead: any) => `"${lead.name}","${lead.email}","${lead.list}","${lead.createdAt}","${lead.confirm}","${lead.confirmedAt}","${lead.naoperturbe}","${lead.origin}"`).join("\n");
+        + uniqueLeads.map((lead: any) => `"${lead.name}","${lead.email}","${lead.list}","${lead.createdAt}","${lead.confirm}","${lead.confirmedAt}","${lead.naoperturbe}","${lead.origin}"`).join("\n");
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `leads_${leads.selectedList}.csv`);
+      const fileName = leads.selectedList ? `leads_${leads.selectedList}.csv` : "leads_todas_listas.csv";
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -81,11 +93,9 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   };
 
   const exportCSV = () => {
-    if (!leads.selectedList) {
-      alert("Selecione uma lista para exportar.");
-      return;
-    }
-    dispatch(loadExportLeadsRequest(leads.selectedList));
+    // Usar "ALL" como palavra-chave para exportar todas as listas
+    const listToExport = leads.selectedList || "ALL";
+    dispatch(loadExportLeadsRequest(listToExport));
   };
 
   console.log("leads", leads);
@@ -144,7 +154,7 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
               <Button
                 variant="primary"
                 onClick={exportCSV}
-                disabled={!leads.selectedList || leads.exportLoading}
+                disabled={leads.exportLoading}
               >
                 {leads.exportLoading ? "Exportando..." : "Exportar CSV"}
               </Button>
