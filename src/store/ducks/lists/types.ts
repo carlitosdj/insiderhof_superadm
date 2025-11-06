@@ -13,19 +13,25 @@ export enum ListsTypes {
  */
 
 export interface Lists {
-  list?: string
-  number?: number
-  number_confirm?: number
+  list: string
+  count: number
+  name?: string // Para listas pré-definidas
+}
+
+export interface ListsResponse {
+  predefinedLists: Lists[]
+  customLists: Lists[]
 }
 
 export interface Error {
   error?: string
 }
+
 /**
  * State type
  */
 export interface ListsState {
-  readonly data: Lists[]
+  readonly data: ListsResponse
   readonly loading: boolean
   readonly error?: Error
 }

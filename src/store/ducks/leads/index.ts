@@ -6,7 +6,10 @@ const INITIAL_STATE: LeadsState = {
   count: 0,
   error: {},
   loading: false,
-  leadLists: [],
+  leadLists: {
+    predefinedLists: [],
+    customLists: []
+  },
   leadListsLoading: false,
   exportData: [],
   exportLoading: false,
@@ -37,7 +40,7 @@ const reducer: Reducer<LeadsState> = (state = INITIAL_STATE, action: any) => {
     case LeadsTypes.LOAD_LEAD_LISTS_SUCCESS:
       return {...state, leadListsLoading: false, leadLists: action.payload}
     case LeadsTypes.LOAD_LEAD_LISTS_FAILURE:
-      return {...state, leadListsLoading: false, leadLists: []}
+      return {...state, leadListsLoading: false, leadLists: { predefinedLists: [], customLists: [] }}
 
     //Leads by list
     case LeadsTypes.LOAD_LEADS_BY_LIST_REQUEST:

@@ -61,7 +61,7 @@ const ManageLeads: FC<React.PropsWithChildren<unknown>> = () => {
     if (page && take) {
       dispatch(loadLeadsRequest(+page, +take))
     }
-  }, [dispatch, page, take, currentProject?.id]) // Agora também escuta mudanças no projeto atual
+  }, [dispatch, page, take])
 
   if (leads.loading) return <Loading />
 

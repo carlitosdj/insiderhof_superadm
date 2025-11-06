@@ -17,15 +17,41 @@ const Leads = ({ handleClose }: handleCloseProps) => {
   const dispatch = useDispatch();
   const lists = useSelector((state: ApplicationState) => state.lists);
   const me = useSelector((state: ApplicationState) => state.me);
+  const currentProject = useSelector((state: ApplicationState) => state.projects.currentProject);
   const [list, setList] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [ckEditor, setCkEditor] = useState(true);
   const [validated, setValidated] = useState(false);
+  const [listCount, setListCount] = useState(0);
 
+  // Carrega listas quando componente monta
   useEffect(() => {
     dispatch(loadListsRequest());
   }, [dispatch]);
+
+  // Atualizar contagem quando lista mudar
+  useEffect(() => {
+    if (list && list !== "Selecione uma lista" && lists.data) {
+      // Procurar nas listas pré-definidas
+      const predefined = lists.data.predefinedLists?.find((l) => l.list === list);
+      if (predefined) {
+        setListCount(predefined.count);
+        return;
+      }
+
+      // Procurar nas listas customizadas
+      const custom = lists.data.customLists?.find((l) => l.list === list);
+      if (custom) {
+        setListCount(custom.count);
+        return;
+      }
+
+      setListCount(0);
+    } else {
+      setListCount(0);
+    }
+  }, [list, lists.data]);
 
   // console.log('listsxxx', lists)
   // console.log('emailToList', emailToList)
@@ -72,31 +98,35 @@ const Leads = ({ handleClose }: handleCloseProps) => {
                 className="form-control form-control-lg form-control-solid"
               >
                 <option>Selecione uma lista</option>
+                
                 <option disabled>--Tudo--</option>
-                <option value="@all">
-                  Todos os usuários do sistema (alunos e leads)
-                </option>
-                <option disabled>--Usuários--</option>
-                <option value="@students">
-                  Todos alunos (ativos e expirados)
-                </option>
-                <option value="@activestudents">
-                  Todos alunos ativos
-                </option>
-                <option value="@expiringstudents">
-                  Todos alunos que estão expirando
-                </option>
-                <option value="@expiredstudents">
-                  Todos alunos expirados
-                </option>
-                <option disabled>--Leads--</option>
-                <option value="@allleads">Todos Leads</option>
+                {lists.data?.predefinedLists?.map((item, index) => (
+                  <option key={`predefined-${index}`} value={item.list}>
+                    {item.name} ({item.count.toLocaleString('pt-BR')} emails)
+                  </option>
+                ))}
+                
                 <option disabled>--Lista específica--</option>
-                {lists.data.map((list, index) => {
-                  return <option key={index}>{list.list}</option>;
-                })}
+                {lists.data?.customLists?.map((item, index) => (
+                  <option key={`custom-${index}`} value={item.list}>
+                    {item.list} ({item.count.toLocaleString('pt-BR')} emails)
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
+
+            {/* Badge informativo com total de disparos */}
+            {list && list !== "Selecione uma lista" && (
+              <div className="alert alert-info mt-3 d-flex align-items-center">
+                <KTIcon iconName="envelope" className="fs-2x me-3" />
+                <div>
+                  <strong>Total de disparos:</strong>
+                  <div className="fs-2 fw-bold text-primary">
+                    {listCount.toLocaleString('pt-BR')} emails
+                  </div>
+                </div>
+              </div>
+            )}
             <br />
             <InputGroup className="mb-3">
               <FormControl

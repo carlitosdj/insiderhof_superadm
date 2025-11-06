@@ -4,7 +4,8 @@ import { Button, FormControl, InputGroup } from "react-bootstrap";
 // import {Link} from 'react-router-dom'
 
 // import {KTSVG} from '../../../_metronic/helpers'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
 // import {useNavigate} from 'react-router-dom'
 // import Create from './create'
@@ -53,7 +54,9 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
   // const [extra, setExtra] = useState<Extras>({});
   const dispatch = useDispatch();
+  const currentProject = useSelector((state: ApplicationState) => state.projects.currentProject);
 
+  // Carrega apenas listas quando componente monta (leads são carregados pelo componente pai)
   useEffect(() => {
     dispatch(loadLeadListsRequest());
   }, [dispatch]);
@@ -99,6 +102,8 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   };
 
   console.log("leads", leads);
+  console.log("leads.leadLists", leads.leadLists);
+  console.log("leads.leadLists.customLists", leads.leadLists?.customLists);
   let count = leads.count;
   // let pages = Math.ceil(+count! / +take!)
   let length = leads?.data?.length;
@@ -145,9 +150,9 @@ const ManageLeadsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 className="form-control form-control-solid w-200px me-3"
               >
                 <option value="">Todas as listas</option>
-                {leads.leadLists?.map((list, index) => (
+                {leads.leadLists?.customLists?.map((list, index) => (
                   <option key={index} value={list.list}>
-                    {list.list}
+                    {list.list} ({list.count} leads)
                   </option>
                 ))}
               </FormControl>

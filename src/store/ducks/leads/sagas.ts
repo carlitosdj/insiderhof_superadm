@@ -33,7 +33,6 @@ import {Lead} from '../lead/types'
 //Load
 export function* loadLeads(payload: ReturnType<typeof loadLeadsRequest>) {
   try {
-    put(loadLeadsRequest(payload.payload.page, payload.payload.take))
     const response: Lead[] = yield call(api.get, `lead/all/${payload.payload.page}/${payload.payload.take}`)
     yield put(loadLeadsSuccess(response))
   } catch (error: any) {
@@ -44,7 +43,6 @@ export function* loadLeads(payload: ReturnType<typeof loadLeadsRequest>) {
 //Search
 export function* searchLeads(payload: ReturnType<typeof searchLeadsRequest>) {
   try {
-    put(searchLeadsRequest(payload.payload))
     const response: Lead[] = yield call(api.get, 'lead/search/' + payload.payload)
     yield put(searchLeadsSuccess(response))
   } catch (error: any) {

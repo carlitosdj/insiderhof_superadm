@@ -42,7 +42,10 @@ export interface LeadsState {
   readonly count: number
   readonly loading: boolean
   readonly error?: Error
-  readonly leadLists: {list: string}[]
+  readonly leadLists: {
+    predefinedLists: {list: string; name: string; count: number}[]
+    customLists: {list: string; count: number}[]
+  }
   readonly leadListsLoading: boolean
   readonly exportData: Lead[]
   readonly exportLoading: boolean
