@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button, Modal, Badge } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -141,6 +141,9 @@ const ManageLaunchPhaseExtraWidget: React.FC<
     launchphaseextras.myLaunchPhaseExtras
   );
 
+  // Debounce ref for reorder operations
+  const reorderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Get launch data from Redux state to display in header
   const { launchId } = useParams();
   const launch = useSelector((state: ApplicationState) =>
@@ -182,27 +185,35 @@ const ManageLaunchPhaseExtraWidget: React.FC<
 
   const reorder = (children: LaunchPhaseExtras[]) => {
     // console.log("children", children);
-    children.forEach((child) => {
-      let index = children.findIndex((item): any => item.id === child.id);
-      if (index !== -1) {
-        children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
-      }
-    });
-    dispatch(reorderLaunchPhaseExtrasRequest(children));
+    const updatedChildren = children.map((child, index) => ({
+      ...child,
+      order: index + 1
+    }));
+    dispatch(reorderLaunchPhaseExtrasRequest(updatedChildren));
+    // Trigger debounced save after reorder
+    reorderToSave(updatedChildren);
   };
 
-  const reorderToSave = (children: LaunchPhaseExtras[]) => {
-    //Verifica se o old é igual ao children para atualizar no backend:
-    if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-      children.forEach((child) => {
-        dispatch(
-          updateLaunchPhaseExtrasRequest({ id: child.id, order: child.order })
-        );
-      });
-      //seta a lista de old para o novo:
-      setOldChildren(children);
+  const reorderToSave = useCallback((children: LaunchPhaseExtras[]) => {
+    // Clear existing timeout
+    if (reorderTimeoutRef.current) {
+      clearTimeout(reorderTimeoutRef.current);
     }
-  };
+
+    // Debounce the reorder save operation by 500ms
+    reorderTimeoutRef.current = setTimeout(() => {
+      //Verifica se o old é igual ao children para atualizar no backend:
+      if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
+        children.forEach((child) => {
+          dispatch(
+            updateLaunchPhaseExtrasRequest({ id: child.id, order: child.order })
+          );
+        });
+        //seta a lista de old para o novo:
+        setOldChildren(children);
+      }
+    }, 500);
+  }, [oldChildren, dispatch]);
 
   const openHasLaunchs = (child: LaunchPhaseExtras) => {
     setAction("manageLaunchs");
@@ -314,12 +325,6 @@ const ManageLaunchPhaseExtraWidget: React.FC<
                   //axis='y'
                   values={launchphaseextras.myLaunchPhaseExtras}
                   onReorder={reorder}
-                  onTap={(e) =>
-                    reorderToSave(launchphaseextras.myLaunchPhaseExtras)
-                  }
-                  onMouseUp={(e) =>
-                    reorderToSave(launchphaseextras.myLaunchPhaseExtras)
-                  }
                   style={{ touchAction: "none" }}
                 >
                   {/* <AnimatePresence> */}
