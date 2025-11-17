@@ -25,6 +25,10 @@ import {
   reorderLaunchQuestionsRequest,
   reorderLaunchQuestionsSuccess,
   reorderLaunchQuestionsFailure,
+
+  toggleSurveyStatusRequest,
+  toggleSurveyStatusSuccess,
+  toggleSurveyStatusFailure,
 } from './actions';
 
 import { LaunchQuestion } from './types';
@@ -92,5 +96,16 @@ export function* reorderLaunchQuestions(payload: ReturnType<typeof reorderLaunch
     yield put(reorderLaunchQuestionsSuccess(response));
   } catch (error: any) {
     yield put(reorderLaunchQuestionsFailure(error.response?.data || error.message));
+  }
+}
+
+// Toggle survey status
+export function* toggleSurveyStatus(payload: ReturnType<typeof toggleSurveyStatusRequest>) {
+  try {
+    put(toggleSurveyStatusRequest(payload.payload.launchPhaseId, payload.payload.enable));
+    const response: LaunchQuestion[] = yield call(api.patch, `launch-question/toggle-status/${payload.payload.launchPhaseId}`, { enable: payload.payload.enable });
+    yield put(toggleSurveyStatusSuccess(response));
+  } catch (error: any) {
+    yield put(toggleSurveyStatusFailure(error.response?.data || error.message));
   }
 }

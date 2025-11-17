@@ -118,7 +118,7 @@ import { exportLP } from './dlps/sagas'
 import { IdeactionTypes } from './ideaction/types'
 import { loadMyIdeactions, loadIdeaction, createIdeaction, updateIdeaction, deleteIdeaction, } from './ideaction/sagas'
 import { LaunchQuestionTypes } from './dlaunchquestion/types'
-import { loadLaunchQuestions, loadLaunchQuestion, createLaunchQuestion, updateLaunchQuestion, deleteLaunchQuestion, reorderLaunchQuestions } from './dlaunchquestion/sagas'
+import { loadLaunchQuestions, loadLaunchQuestion, createLaunchQuestion, updateLaunchQuestion, deleteLaunchQuestion, reorderLaunchQuestions, toggleSurveyStatus } from './dlaunchquestion/sagas'
 import { LaunchQuestionOptionTypes } from './dlaunchquestionoption/types'
 import { loadLaunchQuestionOptions, loadLaunchQuestionOption, createLaunchQuestionOption, updateLaunchQuestionOption, deleteLaunchQuestionOption, reorderLaunchQuestionOptions } from './dlaunchquestionoption/sagas'
 
@@ -350,6 +350,7 @@ export default function* rootSaga() {
     takeLatest(LaunchQuestionTypes.UPDATE_LAUNCHQUESTION_REQUEST, updateLaunchQuestion),
     takeLatest(LaunchQuestionTypes.DELETE_LAUNCHQUESTION_REQUEST, deleteLaunchQuestion),
     takeLatest(LaunchQuestionTypes.REORDER_LAUNCHQUESTIONS_REQUEST, reorderLaunchQuestions),
+    takeLatest(LaunchQuestionTypes.TOGGLE_SURVEY_STATUS_REQUEST, toggleSurveyStatus),
 
     //LaunchQuestionOption
     takeLatest(LaunchQuestionOptionTypes.LOAD_LAUNCHQUESTIONOPTIONS_REQUEST, loadLaunchQuestionOptions),

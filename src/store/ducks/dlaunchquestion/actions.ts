@@ -58,15 +58,25 @@ export const deleteLaunchQuestionFailure = (err: any[]) =>
   action(LaunchQuestionTypes.DELETE_LAUNCHQUESTION_FAILURE, err);
 
 // Reorder questions
-export const reorderLaunchQuestionsRequest = (data: ReorderQuestionsDto) => 
+export const reorderLaunchQuestionsRequest = (data: ReorderQuestionsDto) =>
   action(LaunchQuestionTypes.REORDER_LAUNCHQUESTIONS_REQUEST, data);
 
-export const reorderLaunchQuestionsSuccess = (data: LaunchQuestion[]) => 
+export const reorderLaunchQuestionsSuccess = (data: LaunchQuestion[]) =>
   action(LaunchQuestionTypes.REORDER_LAUNCHQUESTIONS_SUCCESS, data);
 
-export const reorderLaunchQuestionsFailure = (err: any[]) => 
+export const reorderLaunchQuestionsFailure = (err: any[]) =>
   action(LaunchQuestionTypes.REORDER_LAUNCHQUESTIONS_FAILURE, err);
 
+// Toggle survey status
+export const toggleSurveyStatusRequest = (launchPhaseId: number, enable: boolean) =>
+  action(LaunchQuestionTypes.TOGGLE_SURVEY_STATUS_REQUEST, { launchPhaseId, enable });
+
+export const toggleSurveyStatusSuccess = (data: LaunchQuestion[]) =>
+  action(LaunchQuestionTypes.TOGGLE_SURVEY_STATUS_SUCCESS, data);
+
+export const toggleSurveyStatusFailure = (err: any[]) =>
+  action(LaunchQuestionTypes.TOGGLE_SURVEY_STATUS_FAILURE, err);
+
 // Clear state
-export const clearLaunchQuestionState = () => 
+export const clearLaunchQuestionState = () =>
   action(LaunchQuestionTypes.CLEAR_LAUNCHQUESTION_STATE);

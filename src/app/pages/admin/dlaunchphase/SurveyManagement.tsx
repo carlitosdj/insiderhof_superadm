@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Button, Alert, Modal } from 'react-bootstrap';
+import { Card, Row, Col, Button, Alert, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { KTIcon } from '../../../../_metronic/helpers';
 import { ApplicationState } from '../../../../store';
-import { loadLaunchQuestionsRequest, clearLaunchQuestionState, deleteLaunchQuestionRequest } from '../../../../store/ducks/dlaunchquestion/actions';
+import { loadLaunchQuestionsRequest, clearLaunchQuestionState, deleteLaunchQuestionRequest, toggleSurveyStatusRequest } from '../../../../store/ducks/dlaunchquestion/actions';
 import { LaunchQuestion } from '../../../../store/ducks/dlaunchquestion/types';
 import QuestionForm from './QuestionForm';
 import SurveyPreview from './SurveyPreview';
@@ -30,22 +30,41 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
   );
 
   // Local state
-  const [showQuestionForm, setShowQuestionForm] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [selectedQuestion, setSelectedQuestion] = useState<LaunchQuestion | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [questionToDelete, setQuestionToDelete] = useState<LaunchQuestion | null>(null);
+   const [showQuestionForm, setShowQuestionForm] = useState(false);
+   const [showPreview, setShowPreview] = useState(false);
+   const [selectedQuestion, setSelectedQuestion] = useState<LaunchQuestion | null>(null);
+   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+   const [questionToDelete, setQuestionToDelete] = useState<LaunchQuestion | null>(null);
+   const [surveyEnabled, setSurveyEnabled] = useState(true);
 
   // Load questions on mount
-  useEffect(() => {
-    if (launchPhaseId) {
-      dispatch(loadLaunchQuestionsRequest(launchPhaseId));
-    }
+   useEffect(() => {
+     if (launchPhaseId) {
+       dispatch(loadLaunchQuestionsRequest(launchPhaseId));
+     }
 
-    return () => {
-      dispatch(clearLaunchQuestionState());
-    };
-  }, [dispatch, launchPhaseId]);
+     return () => {
+       dispatch(clearLaunchQuestionState());
+     };
+   }, [dispatch, launchPhaseId]);
+
+  // Update survey enabled state based on questions
+  useEffect(() => {
+    if (questions.length > 0) {
+      const hasActiveQuestions = questions.some(q => q.status === '1' || q.status === undefined);
+      setSurveyEnabled(hasActiveQuestions);
+    } else {
+      setSurveyEnabled(false);
+    }
+  }, [questions]);
+
+  // Handle survey toggle
+  const handleSurveyToggle = (enabled: boolean) => {
+    setSurveyEnabled(enabled);
+    if (launchPhaseId) {
+      dispatch(toggleSurveyStatusRequest(launchPhaseId, enabled));
+    }
+  };
 
   // Check if this is a CAPTACAO phase
   const isCaptacaoPhase = launchPhase?.name?.toLowerCase().includes('captação') || 
@@ -116,6 +135,19 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
                 </p>
               </div>
             </div>
+            <div className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center">
+                <span className="text-muted me-2">
+                  {surveyEnabled ? 'Exibir pesquisa' : 'Não exibir pesquisa'}
+                </span>
+                <Form.Check
+                  type="switch"
+                  id="survey-toggle"
+                  checked={surveyEnabled}
+                  onChange={(e) => handleSurveyToggle(e.target.checked)}
+                  className="custom-switch"
+                />
+              </div>
             <div className="d-flex gap-2">
               {questions.length > 0 && (
                 <Button
@@ -151,6 +183,7 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
                 </Button>
               )}
             </div>
+          </div>
           </div>
         </Card.Header>
 

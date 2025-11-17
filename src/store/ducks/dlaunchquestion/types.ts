@@ -32,6 +32,11 @@ export enum LaunchQuestionTypes {
   REORDER_LAUNCHQUESTIONS_SUCCESS = "@launchquestion/REORDER_LAUNCHQUESTIONS_SUCCESS",
   REORDER_LAUNCHQUESTIONS_FAILURE = "@launchquestion/REORDER_LAUNCHQUESTIONS_FAILURE",
 
+  // Toggle survey status
+  TOGGLE_SURVEY_STATUS_REQUEST = "@launchquestion/TOGGLE_SURVEY_STATUS_REQUEST",
+  TOGGLE_SURVEY_STATUS_SUCCESS = "@launchquestion/TOGGLE_SURVEY_STATUS_SUCCESS",
+  TOGGLE_SURVEY_STATUS_FAILURE = "@launchquestion/TOGGLE_SURVEY_STATUS_FAILURE",
+
   // Clear state
   CLEAR_LAUNCHQUESTION_STATE = "@launchquestion/CLEAR_LAUNCHQUESTION_STATE",
 }
@@ -47,6 +52,7 @@ export interface LaunchQuestion {
   weight: number;
   order: number;
   launchPhaseId: number;
+  status?: string;
   createdAt?: Date;
   updatedAt?: Date;
   // Relations - using backend schema names
