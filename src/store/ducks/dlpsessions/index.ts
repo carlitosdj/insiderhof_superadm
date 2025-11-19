@@ -10,7 +10,6 @@ const INITIAL_STATE: LPSessionState = {
 
 const reducer: Reducer<LPSessionState> = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
-
     case LPSessionsTypes.REORDER_LPSESSIONS:
       return {...state, myLPSessions: action.payload }
 
@@ -21,7 +20,6 @@ const reducer: Reducer<LPSessionState> = (state = INITIAL_STATE, action: any) =>
       return {...state, loading: false, error: false, myLPSessions: action.payload.data}
     case LPSessionsTypes.LOAD_MYLPSESSIONS_FAILURE:
       return {...state, loading: false, error: action.payload, myLPSessions: []}
-
 
     case LPSessionsTypes.LOAD_LPSESSION_REQUEST:
       return {...state, loading: true,}
