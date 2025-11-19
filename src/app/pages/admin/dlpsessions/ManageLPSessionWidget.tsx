@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -209,7 +209,22 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
   );
   const [showLPFeatures, setShowLPFeatures] = useState<boolean>(false);
   const [selectedLPSession, setSelectedLPSession] = useState<LPSession>({});
-  
+  const reorderTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sincroniza oldChildren com o estado do Redux
+  useEffect(() => {
+    setOldChildren(currentLPSessions?.myLPSessions || []);
+  }, [currentLPSessions?.myLPSessions]);
+
+  // Cleanup do timeout quando o componente desmontar
+  useEffect(() => {
+    return () => {
+      if (reorderTimeoutRef.current) {
+        clearTimeout(reorderTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Se lpsessions não estiver disponível, mostra loading
   if (!currentLPSessions) {
     return (
@@ -247,27 +262,44 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
     dispatch(deleteLPSessionRequest(child.id!));
   };
 
-  const reorder = (children: LPSession[]) => {
-    // console.log("children", children);
-    children.forEach((child) => {
-      let index = children.findIndex((item): any => item.id === child.id);
-      if (index !== -1) {
-        children[index] = { ...children[index], order: index + 1 }; // Replaces the object with id 2
-      }
-    });
-    dispatch(reorderLPSessionsRequest(children));
-  };
-
-  const reorderToSave = (children: LPSession[]) => {
-    //Verifica se o old é igual ao children para atualizar no backend:
-    if (JSON.stringify(oldChildren) !== JSON.stringify(children)) {
-      children.forEach((child) => {
-        dispatch(updateLPSessionRequest({ id: child.id, order: child.order }));
-      });
-      //seta a lista de old para o novo:
-      setOldChildren(children);
+  // Função para salvar reordenação no backend com debounce
+  const saveReorderToBackend = useCallback((children: LPSession[]) => {
+    // Limpa o timeout anterior se existir
+    if (reorderTimeoutRef.current) {
+      clearTimeout(reorderTimeoutRef.current);
     }
-  };
+
+    // Cria um novo timeout com debounce de 1 segundo
+    reorderTimeoutRef.current = setTimeout(() => {
+      // Verifica se houve mudança real comparando com oldChildren
+      const hasChanged = JSON.stringify(oldChildren) !== JSON.stringify(children);
+
+      if (hasChanged) {
+        // Envia uma requisição por item, mas com debounce para evitar sobrecarga
+        children.forEach((child) => {
+          dispatch(updateLPSessionRequest({ id: child.id, order: child.order }));
+        });
+
+        // Atualiza o oldChildren para refletir a nova ordem
+        setOldChildren(children);
+      }
+    }, 1000);
+  }, [oldChildren, dispatch]);
+
+  // Função chamada quando o usuário reordena os itens
+  const reorder = useCallback((children: LPSession[]) => {
+    // Atualiza a ordem local de cada item
+    const reorderedChildren = children.map((child, index) => ({
+      ...child,
+      order: index + 1
+    }));
+
+    // Atualiza o estado do Redux APENAS localmente para feedback visual imediato
+    dispatch(reorderLPSessionsRequest(reorderedChildren));
+
+    // Agenda salvamento no backend com debounce (não bloqueia a UI)
+    saveReorderToBackend(reorderedChildren);
+  }, [dispatch, saveReorderToBackend]);
 
   const openLPFeatures = (lpSession: LPSession) => {
     setSelectedLPSession(lpSession);
@@ -401,8 +433,8 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 <thead>
                   <tr className="fw-bolder text-muted">
                     <th className="min-w-150px">NOME</th>
-                    <th className="min-w-100px">CONFIG</th>
-                    <th className="min-w-100px">ORDEM</th>
+                    {/* <th className="min-w-100px">CONFIG</th> */}
+                    {/* <th className="min-w-100px">ORDEM</th> */}
                     <th className="min-w-100px">TIPO</th>
                     <th className="min-w-100px">STATUS</th>
                     <th className="min-w-50px text-end">AÇÕES</th>
@@ -414,8 +446,6 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   //axis='y'
                   values={currentLPSessions.myLPSessions}
                   onReorder={reorder}
-                  onTap={(e) => reorderToSave(currentLPSessions.myLPSessions)}
-                  onMouseUp={(e) => reorderToSave(currentLPSessions.myLPSessions)}
                   style={{ touchAction: "none" }}
                 >
                   <AnimatePresence>
@@ -460,14 +490,14 @@ const ManageLPSessionWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              {/* <td>
                                 <ConfigDisplay config={child.config} isInactive={isInactive} />
-                              </td>
-                              <td>
+                              </td> */}
+                              {/* <td>
                                 <span className={isInactive ? "text-muted" : ""}>
                                   {child.order}
                                 </span>
-                              </td>
+                              </td> */}
                               <td>
                                 <span className={isInactive ? "text-muted" : ""}>
                                   {child.type}
