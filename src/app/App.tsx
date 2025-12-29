@@ -22,5 +22,4 @@ const App = () => {
     </Suspense>
   )
 }
-
 export {App}
