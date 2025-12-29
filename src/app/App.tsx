@@ -21,5 +21,5 @@ const App = () => {
       </I18nProvider>
     </Suspense>
   )
-}
+} 
 export {App}
