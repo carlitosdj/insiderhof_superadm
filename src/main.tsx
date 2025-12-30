@@ -13,6 +13,7 @@ import "./_metronic/assets/keenicons/outline/style.css";
 import "./_metronic/assets/keenicons/solid/style.css";
 import {Provider} from 'react-redux'
 import store from './store'
+
 /**
  * TIP: Replace this style import with rtl styles to enable rtl mode
  *
