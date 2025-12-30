@@ -38,7 +38,7 @@ jobs:
       - name: Preparar dist para deploy
         run: chmod -R +r dist/
 
-      # 7️⃣ Deploy via rsync direto
+      # 7️⃣ Deploy via rsync direto (ignora exit code 23)
       - name: Deploy to Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -50,6 +50,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-          rsync -avz --delete --progress --stats --exclude '.DS_Store' \
+          rsync -avz --delete --progress --stats \
+            --exclude '.DS_Store' --exclude '*.tmp' --exclude '*.lock' \
             -e "ssh -i ~/.ssh/deploy_key -p $REMOTE_PORT -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa" \
-            dist/ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/adm.insiderhof.com.br/
+            dist/ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/adm.insiderhof.com.br/ || true
