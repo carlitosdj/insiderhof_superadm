@@ -43,6 +43,12 @@ import ideaction from './ideaction'
 import launchquestion from './dlaunchquestion'
 import launchquestionoption from './dlaunchquestionoption'
 
+// Events
+import events from './events'
+import eventtickets from './eventtickets'
+import eventcheckins from './eventcheckins'
+import eventrsvps from './eventrsvps'
+import eventsessions from './eventsessions'
 
 export default combineReducers({
   carts,
@@ -91,5 +97,12 @@ export default combineReducers({
 
   launchquestion,
   launchquestionoption,
-  
+
+  // Events
+  events,
+  eventtickets,
+  eventcheckins,
+  eventrsvps,
+  eventsessions,
+
 })

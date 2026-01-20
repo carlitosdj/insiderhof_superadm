@@ -122,6 +122,18 @@ import { loadLaunchQuestions, loadLaunchQuestion, createLaunchQuestion, updateLa
 import { LaunchQuestionOptionTypes } from './dlaunchquestionoption/types'
 import { loadLaunchQuestionOptions, loadLaunchQuestionOption, createLaunchQuestionOption, updateLaunchQuestionOption, deleteLaunchQuestionOption, reorderLaunchQuestionOptions } from './dlaunchquestionoption/sagas'
 
+// Events
+import { EventsTypes } from './events/types'
+import { loadEvents, loadEvent, createEvent, updateEvent, deleteEvent, loadEventMetrics, createRetroactiveTickets, autoCreateEventForProduct } from './events/sagas'
+import { EventTicketsTypes } from './eventtickets/types'
+import { loadTicketsByEvent, loadTicketsByUser, loadTicket, createTicket, updateTicket, validateTicket, transferTicket, loadAttendanceList } from './eventtickets/sagas'
+import { EventCheckinsTypes } from './eventcheckins/types'
+import { createCheckin, loadCheckinsByEvent, cancelCheckin } from './eventcheckins/sagas'
+import { EventRsvpsTypes } from './eventrsvps/types'
+import { confirmRsvp, loadRsvpsByEvent, loadRsvpByTicket } from './eventrsvps/sagas'
+import { EventSessionsTypes } from './eventsessions/types'
+import { loadSessions, loadSession, createSession, updateSession, deleteSession, loadSpeakers, loadSpeaker, createSpeaker, updateSpeaker, deleteSpeaker, addSpeakerToSession, removeSpeakerFromSession, loadArtifacts, loadArtifact, createArtifact, updateArtifact, deleteArtifact } from './eventsessions/sagas'
+
 export default function* rootSaga() {
   yield all([
     // Projects
@@ -359,6 +371,59 @@ export default function* rootSaga() {
     takeLatest(LaunchQuestionOptionTypes.UPDATE_LAUNCHQUESTIONOPTION_REQUEST, updateLaunchQuestionOption),
     takeLatest(LaunchQuestionOptionTypes.DELETE_LAUNCHQUESTIONOPTION_REQUEST, deleteLaunchQuestionOption),
     takeLatest(LaunchQuestionOptionTypes.REORDER_LAUNCHQUESTIONOPTIONS_REQUEST, reorderLaunchQuestionOptions),
+
+    // Events
+    takeLatest(EventsTypes.LOAD_EVENTS_REQUEST, loadEvents),
+    takeLatest(EventsTypes.LOAD_EVENT_REQUEST, loadEvent),
+    takeLatest(EventsTypes.CREATE_EVENT_REQUEST, createEvent),
+    takeLatest(EventsTypes.UPDATE_EVENT_REQUEST, updateEvent),
+    takeLatest(EventsTypes.DELETE_EVENT_REQUEST, deleteEvent),
+    takeLatest(EventsTypes.LOAD_EVENT_METRICS_REQUEST, loadEventMetrics),
+    takeLatest(EventsTypes.CREATE_RETROACTIVE_TICKETS_REQUEST, createRetroactiveTickets),
+    takeLatest(EventsTypes.AUTO_CREATE_EVENT_FOR_PRODUCT_REQUEST, autoCreateEventForProduct),
+
+    // Event Tickets
+    takeLatest(EventTicketsTypes.LOAD_TICKETS_BY_EVENT_REQUEST, loadTicketsByEvent),
+    takeLatest(EventTicketsTypes.LOAD_TICKETS_BY_USER_REQUEST, loadTicketsByUser),
+    takeLatest(EventTicketsTypes.LOAD_TICKET_REQUEST, loadTicket),
+    takeLatest(EventTicketsTypes.CREATE_TICKET_REQUEST, createTicket),
+    takeLatest(EventTicketsTypes.UPDATE_TICKET_REQUEST, updateTicket),
+    takeLatest(EventTicketsTypes.VALIDATE_TICKET_REQUEST, validateTicket),
+    takeLatest(EventTicketsTypes.TRANSFER_TICKET_REQUEST, transferTicket),
+    takeLatest(EventTicketsTypes.LOAD_ATTENDANCE_LIST_REQUEST, loadAttendanceList),
+
+    // Event Checkins
+    takeLatest(EventCheckinsTypes.CREATE_CHECKIN_REQUEST, createCheckin),
+    takeLatest(EventCheckinsTypes.LOAD_CHECKINS_BY_EVENT_REQUEST, loadCheckinsByEvent),
+    takeLatest(EventCheckinsTypes.CANCEL_CHECKIN_REQUEST, cancelCheckin),
+
+    // Event RSVPs
+    takeLatest(EventRsvpsTypes.CONFIRM_RSVP_REQUEST, confirmRsvp),
+    takeLatest(EventRsvpsTypes.LOAD_RSVPS_BY_EVENT_REQUEST, loadRsvpsByEvent),
+    takeLatest(EventRsvpsTypes.LOAD_RSVP_BY_TICKET_REQUEST, loadRsvpByTicket),
+
+    // Event Sessions
+    takeLatest(EventSessionsTypes.LOAD_SESSIONS_REQUEST, loadSessions),
+    takeLatest(EventSessionsTypes.LOAD_SESSION_REQUEST, loadSession),
+    takeLatest(EventSessionsTypes.CREATE_SESSION_REQUEST, createSession),
+    takeLatest(EventSessionsTypes.UPDATE_SESSION_REQUEST, updateSession),
+    takeLatest(EventSessionsTypes.DELETE_SESSION_REQUEST, deleteSession),
+
+    // Event Speakers
+    takeLatest(EventSessionsTypes.LOAD_SPEAKERS_REQUEST, loadSpeakers),
+    takeLatest(EventSessionsTypes.LOAD_SPEAKER_REQUEST, loadSpeaker),
+    takeLatest(EventSessionsTypes.CREATE_SPEAKER_REQUEST, createSpeaker),
+    takeLatest(EventSessionsTypes.UPDATE_SPEAKER_REQUEST, updateSpeaker),
+    takeLatest(EventSessionsTypes.DELETE_SPEAKER_REQUEST, deleteSpeaker),
+    takeLatest(EventSessionsTypes.ADD_SPEAKER_TO_SESSION_REQUEST, addSpeakerToSession),
+    takeLatest(EventSessionsTypes.REMOVE_SPEAKER_FROM_SESSION_REQUEST, removeSpeakerFromSession),
+
+    // Event Artifacts
+    takeLatest(EventSessionsTypes.LOAD_ARTIFACTS_REQUEST, loadArtifacts),
+    takeLatest(EventSessionsTypes.LOAD_ARTIFACT_REQUEST, loadArtifact),
+    takeLatest(EventSessionsTypes.CREATE_ARTIFACT_REQUEST, createArtifact),
+    takeLatest(EventSessionsTypes.UPDATE_ARTIFACT_REQUEST, updateArtifact),
+    takeLatest(EventSessionsTypes.DELETE_ARTIFACT_REQUEST, deleteArtifact),
   ])
-  // console.log('mounting saga...')  
+  // console.log('mounting saga...')
 }

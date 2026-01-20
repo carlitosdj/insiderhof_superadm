@@ -45,7 +45,7 @@ const SidebarMenuMain = () => {
       <div className="menu-item">
         <div className="menu-content pt-8 pb-2">
           <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-            INFOPRODUTOS
+            PRODUTOS
           </span>
         </div>
       </div>
@@ -63,19 +63,18 @@ const SidebarMenuMain = () => {
         title={intl.formatMessage({ id: "MENU.OFFERS" })}
       />
 
-      {/* <div className="menu-item">
-        <div className="menu-content pt-8 pb-2">
-          <span className="menu-section text-muted text-uppercase fs-8 ls-1">
-            LANÇAMENTOS
-          </span>
-        </div>
-      </div> */}
-
       <SidebarMenuItem
         to="/launch"
         icon="rocket"
         fontIcon="bi-app-indicator"
         title={intl.formatMessage({ id: "MENU.LAUNCHES" })}
+      />
+
+      <SidebarMenuItem
+        to="/events"
+        icon="calendar-8"
+        fontIcon="bi-app-indicator"
+        title={intl.formatMessage({ id: "MENU.EVENTS" })}
       />
 
       <div className="menu-item">

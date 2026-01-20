@@ -129,13 +129,30 @@ const PrivateRoutes = () => {
     []
   );
 
+  const Events = useMemo(
+    () => lazy(() => import("../pages/admin/events")),
+    []
+  );
 
+  const EventDashboardPage = useMemo(
+    () => lazy(() => import("../pages/admin/events/dashboard")),
+    []
+  );
 
   return (
     <Routes>
       <Route element={<MasterLayout />}>
         {/* Redirect to Dashboard after success login/registartion */}
         <Route path="auth/*" element={<Navigate to="/products" />} />
+
+        <Route
+          path="events/:eventId"
+          element={
+            <SuspensedView>
+              <EventDashboardPage />
+            </SuspensedView>
+          }
+        />
 
         <Route
           path="sells/:startDate?/:endDate?/:launchId?"
@@ -424,6 +441,14 @@ const PrivateRoutes = () => {
           }
         />
 
+        <Route
+          path="events"
+          element={
+            <SuspensedView>
+              <Events />
+            </SuspensedView>
+          }
+        />
 
         {/* Lazy Modules */}
         <Route

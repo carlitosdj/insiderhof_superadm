@@ -43,6 +43,11 @@ import { LaunchQuestionState } from './ducks/dlaunchquestion/types'
 import { LaunchQuestionOptionState } from './ducks/dlaunchquestionoption/types'
 import { ProjectState } from './ducks/projects'
 
+// Events
+import { EventsState } from './ducks/events/types'
+import { EventTicketsState } from './ducks/eventtickets/types'
+import { EventCheckinsState } from './ducks/eventcheckins/types'
+import { EventSessionsState } from './ducks/eventsessions/types'
 
 export interface ApplicationState {
   carts: CartsState
@@ -90,6 +95,12 @@ export interface ApplicationState {
   
   launchquestion: LaunchQuestionState
   launchquestionoption: LaunchQuestionOptionState
+
+  // Events
+  events: EventsState
+  eventtickets: EventTicketsState
+  eventcheckins: EventCheckinsState
+  eventsessions: EventSessionsState
 }
 
 const sagaMiddleware = createSagaMiddleware()

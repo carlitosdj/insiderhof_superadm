@@ -212,6 +212,28 @@ const Create = ({ handleClose }: handleCloseProps) => {
                   {/* end::Label */}
                 </div>
               </div>
+              <div className="separator separator-dashed my-5"></div>
+
+              <div className="d-flex fv-row">
+                <div className="form-check form-check-custom form-check-solid">
+                  {/* begin::Input */}
+                  <input
+                    className="form-check-input me-3"
+                    type="radio"
+                    id="event"
+                    onChange={(e: any) => setType("event")}
+                    name="event"
+                    checked={type === "event"}
+                  />
+                  {/* end::Input */}
+                  {/* begin::Label */}
+                  <label className="form-check-label" htmlFor="event">
+                    <div className="fw-bolder text-gray-800">Evento</div>
+                    <div className="text-gray-600">Presencial</div>
+                  </label>
+                  {/* end::Label */}
+                </div>
+              </div>
             </Form.Group>
           </div>
           <div className="col-lg-6 py-lg-2 px-lg-6">

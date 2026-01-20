@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { KTIcon } from "../../../../_metronic/helpers";
-
+import EventCreationModal from "../../../components/products/EventCreationModal";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import api from "../../../../services/api";
@@ -32,10 +32,14 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
   const [price, setPrice] = useState("");
   const [oldPrice, setOldPrice] = useState("");
   const [type, setType] = useState("");
+  const previousTypeRef = useRef<string>("");
 
   const [selectedFile, setSelectedFile] = useState<any>();
   const [croppedImage, setCroppedImage] = useState<any>("");
   const [image, setImage] = useState("");
+
+  // Event Creation Modal
+  const [showEventModal, setShowEventModal] = useState(false);
 
   useEffect(() => {
     setName(child.name);
@@ -44,8 +48,27 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setStatus(child.status!);
     setPrice(child.price!.toString());
     setType(child.type!);
-    setDuration(child.duration!)
+    setDuration(child.duration!);
+    previousTypeRef.current = child.type!;
   }, [child.name, child.description]);
+
+  // Detectar mudança de tipo para "event"
+  useEffect(() => {
+    console.log('🔍 [Update] useEffect - Tipo:', type, '| Anterior:', previousTypeRef.current);
+
+    if (type === "event" && previousTypeRef.current !== "event" && previousTypeRef.current !== "") {
+      console.log('✅ [Update] TIPO MUDOU PARA EVENT! Abrindo modal...');
+      console.log('📦 [Update] ProductId:', child.id, '| ProductName:', name);
+      // Tipo mudou para "event"
+      setShowEventModal(true);
+    } else if (type === "event" && previousTypeRef.current === "event") {
+      console.log('ℹ️ [Update] Tipo já era event, não abre modal');
+    } else if (type === "event" && previousTypeRef.current === "") {
+      console.log('ℹ️ [Update] Inicialização, não abre modal');
+    }
+
+    previousTypeRef.current = type;
+  }, [type]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //console.log("submit", component.data.id);
@@ -90,6 +113,18 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
 
   return (
     <>
+      {/* Event Creation Modal */}
+      <EventCreationModal
+        show={showEventModal}
+        productId={child.id!}
+        productName={name || ""}
+        onClose={() => setShowEventModal(false)}
+        onSuccess={() => {
+          // Atualizar lista ou mostrar mensagem de sucesso
+          console.log("Evento e tickets criados com sucesso!");
+        }}
+      />
+
       <Form validated={validated} onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-lg-6 py-lg-2 px-lg-6">
@@ -220,6 +255,27 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
                   <label className="form-check-label" htmlFor="audiobook">
                     <div className="fw-bolder text-gray-800">Audiobook</div>
                     <div className="text-gray-600">Livro em audio</div>
+                  </label>
+                  {/* end::Label */}
+                </div>
+              </div>
+              <div className="separator separator-dashed my-5"></div>
+              <div className="d-flex fv-row">
+                <div className="form-check form-check-custom form-check-solid">
+                  {/* begin::Input */}
+                  <input
+                    className="form-check-input me-3"
+                    type="radio"
+                    id="event"
+                    onChange={(e: any) => setType("event")}
+                    name="event"
+                    checked={type === "event"}
+                  />
+                  {/* end::Input */}
+                  {/* begin::Label */}
+                  <label className="form-check-label" htmlFor="event">
+                    <div className="fw-bolder text-gray-800">Evento</div>
+                    <div className="text-gray-600">Presencial</div>
                   </label>
                   {/* end::Label */}
                 </div>

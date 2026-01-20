@@ -27,21 +27,16 @@ import {
 
 import {Product} from './types'
 
+// Import auto-create event action
+import { autoCreateEventForProductRequest } from '../events/actions'
+
 
 export function* loadMyProducts(payload: ReturnType<typeof loadMyProductsRequest>) {
   try {
-    console.log('=== loadMyProducts saga iniciado ===');
-    console.log('Payload:', payload.payload);
     put(loadMyProductsRequest(payload.payload))
-    // Usar o endpoint que já usa o contexto do projeto atual
     const response: Product[] = yield call(api.get, 'product')
-    console.log('API Response:', response);
-    console.log('Produtos extraídos:', response);
-    console.log('=== loadMyProducts saga finalizado ===');
     yield put(loadMyProductsSuccess(response))
   } catch (error: any) {
-    console.error('Error loading products:', error);
-    console.error('Error response:', error.response);
     yield put(loadMyProductsFailure(error.response.data))
   }
 }
@@ -72,8 +67,24 @@ export function* createProduct(payload: ReturnType<typeof createProductRequest>)
 export function* updateProduct(payload: ReturnType<typeof updateProductRequest>) {
   try {
     put(updateProductRequest(payload.payload))
+
+    // Get current product to check if type changed
+    const currentProduct: Product = yield call(api.get, 'product/' + payload.payload.id)
+    const oldType = currentProduct.type
+    const newType = payload.payload.type
+
+    // Update product
     const response: Product = yield call(api.patch, 'product/' + payload.payload.id, payload.payload)
     yield put(updateProductSuccess(response))
+
+    // Check if type changed to 'event'
+    if (oldType !== 'event' && newType === 'event') {
+      yield put(autoCreateEventForProductRequest(
+        payload.payload.id!,
+        payload.payload.name || currentProduct.name || '',
+        payload.payload.description || currentProduct.description
+      ))
+    }
   } catch (error: any) {
     yield put(updateProductFailure(error.response.data))
   }
