@@ -187,7 +187,7 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                     </div>
                   </div>
 
-                  <div className="mb-0">
+                  <div className="mb-4">
                     <label className="fw-bold text-muted mb-2">Data da Confirmação</label>
                     <div className="text-gray-700">
                       {MOMENT((ticket.rsvp as any).confirmedAt).format(
@@ -195,6 +195,30 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                       )}
                     </div>
                   </div>
+
+                  {/* Mostrar notas quando RSVP foi recusado */}
+                  {(ticket.rsvp as any).status === "declined" && (ticket.rsvp as any).notes && (
+                    <div className="mb-0">
+                      <label className="fw-bold text-muted mb-2">Motivo da Recusa</label>
+                      <div className="bg-light-warning rounded p-4 border border-warning border-dashed">
+                        <div className="text-gray-800" style={{ whiteSpace: 'pre-line' }}>
+                          {(ticket.rsvp as any).notes}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Mostrar notas quando RSVP foi confirmado (se houver) */}
+                  {(ticket.rsvp as any).status === "confirmed" && (ticket.rsvp as any).notes && (
+                    <div className="mb-0">
+                      <label className="fw-bold text-muted mb-2">Observações</label>
+                      <div className="bg-light-info rounded p-4 border border-info border-dashed">
+                        <div className="text-gray-800" style={{ whiteSpace: 'pre-line' }}>
+                          {(ticket.rsvp as any).notes}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
