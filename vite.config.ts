@@ -1,28 +1,80 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(({ mode }) => {
+  const isProd = mode === 'production'
 
-  build: {
-    chunkSizeWarningLimit: 3000,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-      requireReturnsDefault: 'auto'
-    }
-  },
+  return {
+    plugins: [
+      react(),
+    ],
 
-  optimizeDeps: {
-    include: [
-      'redux-saga',
-      'moment-duration-format',
-      'jspdf-autotable',
-      'xlsx',
-      'socket.io-client'
-    ]
-  },
+    resolve: {
+      alias: {
+        // evita imports errados do tipo "process", "__dirname", etc
+        process: 'process/browser',
+      },
+    },
 
-  server: {
-    port: 3003
+    define: {
+      'process.env': {},
+      global: 'globalThis',
+    },
+
+    optimizeDeps: {
+      esbuildOptions: {
+        target: 'es2017',
+      },
+
+      include: [
+        // 🔥 libs CommonJS problemáticas
+        'redux-saga',
+        'moment',
+        'moment-duration-format',
+        'xlsx',
+        'jspdf-autotable',
+        'socket.io-client',
+      ],
+    },
+
+    build: {
+      target: 'es2017',
+      outDir: 'dist',
+      assetsDir: 'assets',
+      sourcemap: false,
+      minify: 'esbuild',
+
+      chunkSizeWarningLimit: 3000,
+
+      commonjsOptions: {
+        include: [/node_modules/],
+        transformMixedEsModules: true,
+        requireReturnsDefault: 'auto',
+        ignoreDynamicRequires: false,
+      },
+
+      rollupOptions: {
+        treeshake: {
+          moduleSideEffects: 'no-external',
+        },
+
+        output: {
+          format: 'es',
+          entryFileNames: `assets/[name]-[hash].js`,
+          chunkFileNames: `assets/[name]-[hash].js`,
+          assetFileNames: `assets/[name]-[hash].[ext]`,
+        },
+      },
+    },
+
+    server: {
+      port: 3003,
+      strictPort: true,
+    },
+
+    preview: {
+      port: 3003,
+      strictPort: true,
+    },
   }
 })
