@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import commonjs from '@rollup/plugin-commonjs'
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production'
@@ -7,16 +9,23 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+
+      // 🔥 força conversão de require() no build
+      commonjs({
+        include: [/node_modules/],
+        transformMixedEsModules: true,
+        requireReturnsDefault: 'auto',
+      }),
     ],
 
     resolve: {
       alias: {
-        // evita imports errados do tipo "process", "__dirname", etc
         process: 'process/browser',
       },
     },
 
     define: {
+      'process.env.NODE_ENV': JSON.stringify(mode),
       'process.env': {},
       global: 'globalThis',
     },
@@ -24,10 +33,17 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       esbuildOptions: {
         target: 'es2017',
+
+        // 🔥 polyfills só para DEV
+        plugins: [
+          NodeGlobalsPolyfillPlugin({
+            process: true,
+            buffer: true,
+          }),
+        ],
       },
 
       include: [
-        // 🔥 libs CommonJS problemáticas
         'redux-saga',
         'moment',
         'moment-duration-format',
@@ -46,23 +62,12 @@ export default defineConfig(({ mode }) => {
 
       chunkSizeWarningLimit: 3000,
 
-      commonjsOptions: {
-        include: [/node_modules/],
-        transformMixedEsModules: true,
-        requireReturnsDefault: 'auto',
-        ignoreDynamicRequires: false,
-      },
-
       rollupOptions: {
-        treeshake: {
-          moduleSideEffects: 'no-external',
-        },
-
         output: {
           format: 'es',
-          entryFileNames: `assets/[name]-[hash].js`,
-          chunkFileNames: `assets/[name]-[hash].js`,
-          assetFileNames: `assets/[name]-[hash].[ext]`,
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]',
         },
       },
     },

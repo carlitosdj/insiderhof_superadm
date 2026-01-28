@@ -2,7 +2,6 @@
   "name": "demo1",
   "private": true,
   "version": "8.2.7",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
