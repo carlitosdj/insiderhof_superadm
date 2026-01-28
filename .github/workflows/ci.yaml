@@ -1,45 +1,20 @@
-name: CARLITOS CI
+name: Docker CI/CD - ADM
 
-on: 
+on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       # 1️⃣ Checkout
-      - name: Checkout do Repositorio
+      - name: Checkout código
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      # 3️⃣ Instalar Yarn globalmente
-      - name: Instalar Yarn
-        run: npm install --global yarn
-
-      # 4️⃣ Instalar dependências
-      - name: Instalar dependências
-        run: |
-          CI=false
-          yarn install
-
-      # 5️⃣ Build
-      - name: Build
-        run: yarn build
-
-      # 6️⃣ Garantir permissões de leitura nos arquivos da build
-      - name: Preparar dist para deploy
-        run: chmod -R +r dist/
-
-      # 7️⃣ Deploy via rsync direto (ignora exit code 23)
-      - name: Deploy to Server
+      # 2️⃣ Deploy via rsync
+      - name: Deploy código via rsync
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
@@ -50,7 +25,36 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-          rsync -avz --delete --progress --stats \
-            --exclude '.DS_Store' --exclude '*.tmp' --exclude '*.lock' \
+          # rsync TODO o código
+          rsync -avz --delete \
+            --exclude 'node_modules/' \
+            --exclude '.git/' \
+            --exclude 'dist/' \
+            --exclude 'coverage/' \
+            --exclude '*.log' \
             -e "ssh -i ~/.ssh/deploy_key -p $REMOTE_PORT -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa" \
-            dist/ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/adm.insiderhof.com.br/ || true
+            ./ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/nodeapps/adm/
+
+      # 3️⃣ Build Docker e restart no servidor
+      - name: Build Docker e restart
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_PORT }}
+          script: |
+            cd /www/wwwroot/nodeapps/bin
+            
+            echo "🔨 Buildando imagem Docker do ADM..."
+            docker compose -f docker-compose.prod.yml build adm
+            
+            echo "🚀 Reiniciando container do ADM..."
+            docker compose -f docker-compose.prod.yml up -d adm
+            
+            echo "🧹 Limpando imagens antigas..."
+            docker image prune -f
+            
+            echo "✅ Deploy do ADM concluído!"
+            echo "📊 Status:"
+            docker compose -f docker-compose.prod.yml ps adm
