@@ -18,8 +18,8 @@ RUN npm install
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação
-RUN npm run build
+# Build da aplicação (skip tsc, only vite build)
+RUN npx vite build
 
 # ==========================================
 # Stage 2: Production - Nginx
