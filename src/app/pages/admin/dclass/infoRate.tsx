@@ -8,7 +8,7 @@ import momentDurationFormatSetup from 'moment-duration-format';
 import { Class } from '../../../../store/ducks/dclass/types'
 
 import moment from 'moment'
-momentDurationFormatSetup(MOMENT)
+momentDurationFormatSetup(moment)
 
 interface handleCloseProps {
   handleClose: () => void

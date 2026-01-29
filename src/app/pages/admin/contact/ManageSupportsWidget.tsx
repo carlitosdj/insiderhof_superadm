@@ -13,6 +13,7 @@ import {useIntl} from 'react-intl'
 import { Contact, ContactState } from '../../../../store/ducks/contact/types'
 import { deletecontactRequest } from '../../../../store/ducks/contact/actions'
 import { useDispatch } from 'react-redux'
+import moment from 'moment'
 
 type Props = {
   className: string
@@ -23,7 +24,6 @@ const ManageSupportsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   contactList,
 }) => {
-  const MOMENT = require('moment')
   const intl = useIntl()
 
   const [show, setShow] = useState<boolean>(false)
