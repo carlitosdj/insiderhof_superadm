@@ -66,5 +66,5 @@ __tests__/
 .eslintrc*
 .prettierrc
 .editorconfig
-tsconfig*.json
-vite.config.*
+# tsconfig*.json  # NECESSÁRIO para build do Vite
+# vite.config.*    # NECESSÁRIO para build do Vite
