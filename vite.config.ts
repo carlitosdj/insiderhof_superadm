@@ -35,6 +35,9 @@ export default defineConfig(({ mode }) => {
         'jspdf-autotable',
         'socket.io-client',
       ],
+
+      // Force pre-bundle these packages
+      force: true,
     },
 
     build: {
@@ -64,6 +67,9 @@ export default defineConfig(({ mode }) => {
           entryFileNames: `assets/[name]-[hash].js`,
           chunkFileNames: `assets/[name]-[hash].js`,
           assetFileNames: `assets/[name]-[hash].[ext]`,
+
+          // Inject global to avoid require() calls
+          intro: 'const require = () => {};',
         },
       },
     },
