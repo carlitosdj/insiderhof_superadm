@@ -4,6 +4,7 @@ import { useIntl } from "react-intl";
 import { AnnotationsState } from "../../../../store/ducks/annotations/types";
 import Loading from "../../../loading";
 import { Annotation } from "../../../../store/ducks/annotation/types";
+import moment from "moment";
 
 type Props = {
   className: string;
@@ -14,7 +15,7 @@ const AnnotationWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   annotations,
 }) => {
-  import moment from "moment";
+  
   const intl = useIntl();
 
   if (annotations.loading) return <Loading />;
