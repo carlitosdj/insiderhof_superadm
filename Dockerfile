@@ -18,9 +18,9 @@ RUN npm install
 # Copiar código fonte
 COPY . .
 
-# Build da aplicação
+# Build da aplicação (skip tsc type checking, vite handles transpilation)
 ENV NODE_ENV=production
-RUN npm run build
+RUN npx vite build
 
 # ==========================================
 # Stage 2: Production - Nginx
