@@ -5,6 +5,7 @@ import { KTIcon, KTSVG } from "../../../../_metronic/helpers";
 import { User } from "../../../../store/ducks/me/types";
 // import CreateEmail from './create'
 import { Support, SupportState } from "../../../../store/ducks/support/types";
+import moment from "moment";
 
 import Info from "./info";
 // import Create from './create'
@@ -20,7 +21,6 @@ const ManageSupportsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   supportsList,
 }) => {
-  import moment from "moment";
   const intl = useIntl();
 
   const [show, setShow] = useState<boolean>(false);
