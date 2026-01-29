@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({
   // PRODUÇÃO: API roda no Docker (porta 4001), Nginx faz proxy para api.insiderhof.com.br
-  baseURL: 'https://api-new.insiderhof.com.br'
+  baseURL: 'https://api.insiderhof.com.br'
 
   // DEV LOCAL: Descomentar para desenvolvimento (API no Docker em localhost:4001)
   // baseURL: 'http://localhost:4001',
