@@ -50,7 +50,8 @@ export default defineConfig(({ mode }) => {
         include: [/node_modules/],
         transformMixedEsModules: true,
         requireReturnsDefault: 'auto',
-        ignoreDynamicRequires: false,
+        ignoreDynamicRequires: true,
+        defaultIsModuleExports: 'auto',
       },
 
       rollupOptions: {
