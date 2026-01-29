@@ -22,8 +22,8 @@ import {
   updateLaunchPhaseExtrasRequest,
 } from "../../../../store/ducks/dlaunchphaseextras/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS customizados inspirados no Resume.tsx
 const widgetStyles = `

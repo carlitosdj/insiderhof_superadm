@@ -25,8 +25,8 @@ import { Class } from "../../../../store/ducks/dclass/types";
 import InfoProgress from "./infoProgress";
 import InfoRate from "./infoRate";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;
@@ -203,7 +203,7 @@ const ClassItem: React.FC<{
                     <div className="d-flex align-items-center gap-1">
                       <KTIcon iconName="timer" className="fs-6 text-primary" />
                       <span className="text-muted fs-8 fs-md-7">
-                        {MOMENT.duration(child.duration, "seconds").format(
+                        {moment.duration(child.duration, "seconds").format(
                           "hh:mm:ss",
                           {
                             trim: false,

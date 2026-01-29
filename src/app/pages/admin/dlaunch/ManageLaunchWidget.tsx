@@ -23,8 +23,8 @@ import {
 import Manage from "../dlaunchhasoffers/Manage";
 import Create from "./create";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

@@ -22,8 +22,8 @@ import { ApplicationState } from "../../../../store";
 import momentDurationFormatSetup from "moment-duration-format";
 import { Launch } from "../../../../store/ducks/dlaunch/types";
 import Loading from "../../../loading";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

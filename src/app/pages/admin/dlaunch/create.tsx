@@ -11,8 +11,8 @@ import momentDurationFormatSetup from "moment-duration-format";
 import { Launch } from "../../../../store/ducks/dlaunch/types";
 import { createLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -146,18 +146,18 @@ const Create = ({ handleClose }: handleCloseProps) => {
         eventName,
         eventGroupLink,
         expertName,
-        cartOpenDate: MOMENT(cartOpenDate.toString()).format(
+        cartOpenDate: moment(cartOpenDate.toString()).format(
           "DD/MM/YYYY HH:mm"
         ),
-        cartCloseDate: MOMENT(cartCloseDate.toString()).format(
+        cartCloseDate: moment(cartCloseDate.toString()).format(
           "DD/MM/YYYY HH:mm"
         ),
         leadSignUpStartDate:
-          MOMENT(leadSignUpStartDate).format("DD/MM/YYYY HH:mm"),
-        leadSignUpEndDate: MOMENT(leadSignUpEndDate).format("DD/MM/YYYY HH:mm"),
-        dateCpl1: MOMENT(dateCpl1).format("DD/MM/YYYY HH:mm"),
-        dateCpl2: MOMENT(dateCpl2).format("DD/MM/YYYY HH:mm"),
-        dateCpl3: MOMENT(dateCpl3).format("DD/MM/YYYY HH:mm"),
+          moment(leadSignUpStartDate).format("DD/MM/YYYY HH:mm"),
+        leadSignUpEndDate: moment(leadSignUpEndDate).format("DD/MM/YYYY HH:mm"),
+        dateCpl1: moment(dateCpl1).format("DD/MM/YYYY HH:mm"),
+        dateCpl2: moment(dateCpl2).format("DD/MM/YYYY HH:mm"),
+        dateCpl3: moment(dateCpl3).format("DD/MM/YYYY HH:mm"),
         cpl1,
         cpl2,
         cpl3,
@@ -580,25 +580,25 @@ const Create = ({ handleClose }: handleCloseProps) => {
         </div>
         <div className="d-flex flex-column flex-xl-row flex-row-fluid">
           Início Inscrição Lead:{" "}
-          {MOMENT(leadSignUpStartDate).format("DD/MM/YYYY")}
+          {moment(leadSignUpStartDate).format("DD/MM/YYYY")}
           <br />
           Fechamento Inscrição Lead:{" "}
-          {MOMENT(leadSignUpEndDate).format("DD/MM/YYYY")}
+          {moment(leadSignUpEndDate).format("DD/MM/YYYY")}
           <br />
           <br />
-          CPL1: {MOMENT(dateCpl1).format("DD/MM/YYYY")}
+          CPL1: {moment(dateCpl1).format("DD/MM/YYYY")}
           <br />
-          CPL2: {MOMENT(dateCpl2).format("DD/MM/YYYY")}
+          CPL2: {moment(dateCpl2).format("DD/MM/YYYY")}
           <br />
-          CPL3: {MOMENT(dateCpl3).format("DD/MM/YYYY")}
+          CPL3: {moment(dateCpl3).format("DD/MM/YYYY")}
           <br />
           <br />
-          Abertura Carrinho: {MOMENT(cartOpenDate).format(
+          Abertura Carrinho: {moment(cartOpenDate).format(
             "DD/MM/YYYY HH:mm"
           )}{" "}
           <br />
           Fechamento Carrinho:{" "}
-          {MOMENT(cartCloseDate).format("DD/MM/YYYY HH:mm")}
+          {moment(cartCloseDate).format("DD/MM/YYYY HH:mm")}
           <br />
         </div>
         <div className="d-flex flex-stack pt-2 justify-content-start py-lg-2 px-lg-6">

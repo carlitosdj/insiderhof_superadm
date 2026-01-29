@@ -6,7 +6,7 @@ import { KTIcon, KTSVG } from "../../../../_metronic/helpers";
 import CreateEmail from "./create";
 import DOMPurify from "dompurify";
 import { SingleMailState } from "../../../../store/ducks/singlemail/types";
-const MOMENT = require("moment");
+import moment from "moment";
 type Props = {
   className: string;
   singlemail: SingleMailState;
@@ -136,7 +136,7 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className="text-muted fw-bold d-block fs-7">
-                          {MOMENT(child.createdAt).format("DD/MM/YY HH:mm")}
+                          {moment(child.createdAt).format("DD/MM/YY HH:mm")}
                         </span>
                       </td>
                       <td>
@@ -148,7 +148,7 @@ const ManageSingleMailWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <span className="text-muted fw-bold d-block fs-7">
                           {child.openedSingleMail?.map((item: any) => {
                             if (item) {
-                              return MOMENT(item.createdAt).format("DD/MM/YY HH:mm")
+                              return moment(item.createdAt).format("DD/MM/YY HH:mm")
                             }
                           })}
                         </span>

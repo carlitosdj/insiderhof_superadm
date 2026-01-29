@@ -10,8 +10,8 @@ import { updateModuleRequest } from "../../../../store/ducks/dmodule/actions";
 import { Module } from "../../../../store/ducks/dmodule/types";
 import api from "../../../../services/api";
 import SelectImg from "../../crop/SelectImg";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

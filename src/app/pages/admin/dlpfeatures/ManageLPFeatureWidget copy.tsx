@@ -23,8 +23,8 @@ import {
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

@@ -26,8 +26,8 @@ import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 import { LP } from "../../../../store/ducks/dlps/types";
 import { loadMyLPFeaturesRequest } from "../../../../store/ducks/dlpfeatures/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS para o header e botão de ação
 const widgetStyles = `

@@ -12,7 +12,7 @@ import SpeakersList from "./SpeakersList";
 import ArtifactsList from "./ArtifactsList";
 import Update from "../../pages/admin/events/update";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface EventDashboardProps {
   eventId: number;
@@ -105,9 +105,9 @@ const EventDashboard: React.FC<EventDashboardProps> = ({ eventId }) => {
               <div className="d-flex align-items-center text-muted fs-6">
                 <KTIcon iconName="calendar" className="fs-3 me-2" />
                 <span className="me-5">
-                  {event.startDate ? MOMENT(event.startDate).format("DD/MM/YYYY HH:mm") : "-"}
-                  {event.endDate && MOMENT(event.startDate).format("DD/MM/YYYY") !== MOMENT(event.endDate).format("DD/MM/YYYY") && (
-                    <> - {MOMENT(event.endDate).format("DD/MM/YYYY HH:mm")}</>
+                  {event.startDate ? moment(event.startDate).format("DD/MM/YYYY HH:mm") : "-"}
+                  {event.endDate && moment(event.startDate).format("DD/MM/YYYY") !== moment(event.endDate).format("DD/MM/YYYY") && (
+                    <> - {moment(event.endDate).format("DD/MM/YYYY HH:mm")}</>
                   )}
                 </span>
                 <KTIcon iconName="geolocation" className="fs-3 me-2" />
@@ -403,7 +403,7 @@ const EventDashboard: React.FC<EventDashboardProps> = ({ eventId }) => {
                           <div className="col-lg-8">
                             <span className="fw-semibold fs-6 text-gray-900">
                               {event.startDate
-                                ? MOMENT(event.startDate).format("DD/MM/YYYY HH:mm")
+                                ? moment(event.startDate).format("DD/MM/YYYY HH:mm")
                                 : "-"}
                             </span>
                           </div>
@@ -413,7 +413,7 @@ const EventDashboard: React.FC<EventDashboardProps> = ({ eventId }) => {
                           <div className="col-lg-8">
                             <span className="fw-semibold fs-6 text-gray-900">
                               {event.endDate
-                                ? MOMENT(event.endDate).format("DD/MM/YYYY HH:mm")
+                                ? moment(event.endDate).format("DD/MM/YYYY HH:mm")
                                 : "-"}
                             </span>
                           </div>

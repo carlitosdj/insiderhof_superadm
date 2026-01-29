@@ -9,8 +9,8 @@ import SelectImg from "../../crop/SelectImg";
 import api from "../../../../services/api";
 
 import momentDurationFormatSetup from "moment-duration-format";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

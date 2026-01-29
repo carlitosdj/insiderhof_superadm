@@ -37,8 +37,8 @@ import { loadMyLPsRequest } from "../../../../store/ducks/dlps/actions";
 import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
 import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS para o novo layout
 const layoutStyles = `

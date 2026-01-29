@@ -7,7 +7,7 @@ import { loadTicketsByEventRequest } from "../../../store/ducks/eventtickets/act
 import { EventTicket } from "../../../store/ducks/eventtickets/types";
 import { KTIcon } from "../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface CheckinModalProps {
   show: boolean;
@@ -142,7 +142,7 @@ const CheckinModal: React.FC<CheckinModalProps> = ({ show, onHide, ticket }) => 
                       Check-in Realizado
                     </span>
                     <div className="text-muted fs-7">
-                      Em {MOMENT((ticket.checkin as any).checkinAt).format("DD/MM/YYYY HH:mm")}
+                      Em {moment((ticket.checkin as any).checkinAt).format("DD/MM/YYYY HH:mm")}
                     </div>
                     <div className="text-muted fs-7">
                       Método: {(ticket.checkin as any).checkinMethod}

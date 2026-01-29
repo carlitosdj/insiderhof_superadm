@@ -9,7 +9,7 @@ import {
 import { EventSession } from "../../../store/ducks/eventsessions/types";
 import { KTIcon } from "../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface SessionFormProps {
   eventId: number;
@@ -234,7 +234,7 @@ const SessionForm: React.FC<SessionFormProps> = ({
                 name="startTime"
                 value={
                   formData.startTime
-                    ? MOMENT(formData.startTime).format("YYYY-MM-DDTHH:mm")
+                    ? moment(formData.startTime).format("YYYY-MM-DDTHH:mm")
                     : ""
                 }
                 onChange={handleChange}
@@ -251,7 +251,7 @@ const SessionForm: React.FC<SessionFormProps> = ({
                 name="endTime"
                 value={
                   formData.endTime
-                    ? MOMENT(formData.endTime).format("YYYY-MM-DDTHH:mm")
+                    ? moment(formData.endTime).format("YYYY-MM-DDTHH:mm")
                     : ""
                 }
                 onChange={handleChange}

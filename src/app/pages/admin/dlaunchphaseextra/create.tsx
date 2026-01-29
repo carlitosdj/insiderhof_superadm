@@ -10,8 +10,8 @@ import { LaunchPhaseExtras, LaunchPhaseExtraType } from "../../../../store/ducks
 import { createLaunchPhaseExtrasRequest } from "../../../../store/ducks/dlaunchphaseextras/actions";
 
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

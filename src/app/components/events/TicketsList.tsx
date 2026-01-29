@@ -8,7 +8,7 @@ import UpdateTicketModal from "./UpdateTicketModal";
 import CheckinModal from "./CheckinModal";
 import TicketDetailsModal from "./TicketDetailsModal";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface TicketsListProps {
   eventId: number;
@@ -318,7 +318,7 @@ const TicketsList: React.FC<TicketsListProps> = ({ eventId }) => {
                                 Confirmado
                               </span>
                               <span className="text-muted fs-7">
-                                {MOMENT((ticket.rsvp as any).confirmedAt).format("DD/MM/YYYY HH:mm")}
+                                {moment((ticket.rsvp as any).confirmedAt).format("DD/MM/YYYY HH:mm")}
                               </span>
                             </>
                           ) : (
@@ -328,7 +328,7 @@ const TicketsList: React.FC<TicketsListProps> = ({ eventId }) => {
                                 Recusado
                               </span>
                               <span className="text-muted fs-7">
-                                {MOMENT((ticket.rsvp as any).confirmedAt).format("DD/MM/YYYY HH:mm")}
+                                {moment((ticket.rsvp as any).confirmedAt).format("DD/MM/YYYY HH:mm")}
                               </span>
                             </>
                           )}
@@ -350,7 +350,7 @@ const TicketsList: React.FC<TicketsListProps> = ({ eventId }) => {
                             Realizado
                           </span>
                           <span className="text-muted fs-7">
-                            {MOMENT(ticket.checkin.checkinAt).format("DD/MM/YYYY HH:mm")}
+                            {moment(ticket.checkin.checkinAt).format("DD/MM/YYYY HH:mm")}
                           </span>
                         </div>
                       ) : (
@@ -365,7 +365,7 @@ const TicketsList: React.FC<TicketsListProps> = ({ eventId }) => {
                     <td>
                       <span className="text-muted fw-semibold d-block fs-7">
                         {ticket.createdAt
-                          ? MOMENT(ticket.createdAt).format("DD/MM/YYYY HH:mm")
+                          ? moment(ticket.createdAt).format("DD/MM/YYYY HH:mm")
                           : "-"}
                       </span>
                     </td>

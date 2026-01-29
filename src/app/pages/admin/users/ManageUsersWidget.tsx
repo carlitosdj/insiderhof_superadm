@@ -37,7 +37,7 @@ const buildFormatter = require("react-timeago/lib/formatters/buildFormatter");
 
 const formatter = buildFormatter(portugueseStrings);
 
-const MOMENT = require("moment");
+import moment from "moment";
 import "moment-timezone";
 import { Overview } from "./profile/components/Overview";
 import { Cart } from "../../../../store/ducks/carts/types";
@@ -129,7 +129,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
   }, [users.exportData, users.exportLoading, users.selectedLaunch]);
   //const navigate = useNavigate();
   //console.log("TIMEZONE", Intl.DateTimeFormat().resolvedOptions().timeZone);
-  //console.log("MOMENT TIMEZONE", MOMENT.tz.guess());
+  //console.log("MOMENT TIMEZONE", moment.tz.guess());
 
   //const { hasCart } = useParams();
 
@@ -426,7 +426,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         {utmData.map((utm, index) => (
                           <tr key={index}>
                             <td>
-                              {MOMENT(utm.createdAt).format('DD/MM/YYYY HH:mm')}
+                              {moment(utm.createdAt).format('DD/MM/YYYY HH:mm')}
                             </td>
                             <td>
                               <span className="badge badge-light-info">
@@ -541,7 +541,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 )}
                               </td>
                               <td>
-                                {MOMENT(lead.createdAt).format('DD/MM/YYYY HH:mm')}
+                                {moment(lead.createdAt).format('DD/MM/YYYY HH:mm')}
                               </td>
                               <td>
                                 {lead.origin ? (
@@ -773,11 +773,11 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                 {users.data?.map((child, index) => {
                   //console.log('CHILD', child)
                   //let dateCreatedAt = child.createdAt
-                  var createdAt = MOMENT(child.createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
+                  var createdAt = moment(child.createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
                   var lastLoginAt = child.lastLoginAt
-                    ? MOMENT(child.lastLoginAt).utc()
+                    ? moment(child.lastLoginAt).utc()
                     : "";
-                  var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
+                  var now = moment(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
                   const regex = /\('([^']+)',\)/g;
                   const whats = child.whatsapp?.replace(
                     /[|&;$%@"<>()+,-]/g,
@@ -883,7 +883,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         {lastLoginAt && (
                           <span className="badge badge-light-primary justify-content-center ">
                             <TimeAgo
-                              date={MOMENT(child.lastLoginAt).utc().toDate()}
+                              date={moment(child.lastLoginAt).utc().toDate()}
                               formatter={formatter}
                             />
                           </span>

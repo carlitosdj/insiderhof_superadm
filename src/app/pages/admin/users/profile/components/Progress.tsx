@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { User } from "../../../../../../store/ducks/me/types";
 import _ from "lodash";
 
-const MOMENT = require("moment");
+import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
-momentDurationFormatSetup(MOMENT);
+momentDurationFormatSetup(moment);
 
 type progressProps = {
   user: User;
@@ -96,19 +96,19 @@ export function Progress({ user }: progressProps) {
                             <td>
                               <div className="d-flex align-items-center">
                                 <div className="d-flex justify-content-start flex-column">
-                                  {MOMENT(aula.createdAt).utc().format("DD/MM/YY HH:mm")}
+                                  {moment(aula.createdAt).utc().format("DD/MM/YY HH:mm")}
                                 </div>
                               </div>
                             </td>
                             <td>
                               <div className="d-flex align-items-center">
                                 <div className="d-flex justify-content-start flex-column">
-                                  {MOMENT(aula.updatedAt).utc().format("DD/MM/YY HH:mm")}
+                                  {moment(aula.updatedAt).utc().format("DD/MM/YY HH:mm")}
                                 </div>
                               </div>
                             </td>
                             <td>
-                              {MOMENT.duration(
+                              {moment.duration(
                                 aula.class?.duration,
                                 "seconds"
                               ).format("hh:mm:ss", {
@@ -116,7 +116,7 @@ export function Progress({ user }: progressProps) {
                               })}
                             </td>
                             <td>
-                              {MOMENT.duration(
+                              {moment.duration(
                                 aula.timeWatched,
                                 "seconds"
                               ).format("hh:mm:ss", {

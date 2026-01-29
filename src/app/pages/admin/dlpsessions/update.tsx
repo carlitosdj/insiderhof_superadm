@@ -7,8 +7,8 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import momentDurationFormatSetup from "moment-duration-format";
 import { LPSession } from "../../../../store/ducks/dlpsessions/types";
 import { updateLPSessionRequest } from "../../../../store/ducks/dlpsessions/actions";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Session type enum
 enum SessionType {

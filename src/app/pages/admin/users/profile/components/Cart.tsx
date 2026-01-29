@@ -18,8 +18,8 @@ import { Modal } from "react-bootstrap";
 import Create from "./create";
 import Update from "./update";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type paymentProps = {
   user: User;
@@ -177,7 +177,7 @@ export function CartPage({ user }: paymentProps) {
                               <td>
                                 <div className="d-flex align-items-center">
                                   <div className="d-flex justify-content-start flex-column">
-                                    {MOMENT(payment.createdAt).format(
+                                    {moment(payment.createdAt).format(
                                       "DD/MM/YYYY"
                                     )}
                                   </div>
@@ -186,7 +186,7 @@ export function CartPage({ user }: paymentProps) {
                               <td>
                                 <div className="d-flex align-items-center">
                                   <div className="d-flex justify-content-start flex-column">
-                                    {MOMENT(payment.updatedAt).format(
+                                    {moment(payment.updatedAt).format(
                                       "DD/MM/YYYY"
                                     )}
                                   </div>

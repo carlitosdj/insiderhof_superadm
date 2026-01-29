@@ -21,8 +21,8 @@ import {
   updateLPSessionRequest,
 } from "../../../../store/ducks/dlpsessions/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Config Display Component
 const ConfigDisplay: React.FC<{ config: any; isInactive?: boolean }> = ({ config, isInactive = false }) => {

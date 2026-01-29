@@ -7,7 +7,7 @@ import { Event } from "../../../../store/ducks/events/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { ApplicationState } from "../../../../store";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface handleCloseProps {
   handleClose: () => void;

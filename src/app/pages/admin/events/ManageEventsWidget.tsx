@@ -9,7 +9,7 @@ import { deleteEventRequest } from "../../../../store/ducks/events/actions";
 import Create from "./create";
 import Update from "./update";
 
-const MOMENT = require("moment");
+import moment from "moment";
 import "moment-timezone";
 
 type Props = {
@@ -172,9 +172,9 @@ const ManageEventsWidget: React.FC<React.PropsWithChildren<Props>> = ({
 
                 {filteredEvents.map((event, index) => {
                   const eventDate = event.startDate
-                    ? MOMENT(event.startDate).format("DD/MM/YYYY HH:mm") +
-                      (event.endDate && MOMENT(event.startDate).format("DD/MM/YYYY") !== MOMENT(event.endDate).format("DD/MM/YYYY")
-                        ? " - " + MOMENT(event.endDate).format("DD/MM/YYYY HH:mm")
+                    ? moment(event.startDate).format("DD/MM/YYYY HH:mm") +
+                      (event.endDate && moment(event.startDate).format("DD/MM/YYYY") !== moment(event.endDate).format("DD/MM/YYYY")
+                        ? " - " + moment(event.endDate).format("DD/MM/YYYY HH:mm")
                         : "")
                     : "-";
 

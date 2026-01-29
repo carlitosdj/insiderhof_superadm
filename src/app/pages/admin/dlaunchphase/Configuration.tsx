@@ -10,8 +10,8 @@ import { updateLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 import { useParams } from "react-router-dom";
 import Manage from "../dlaunchhasoffers/Manage";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS customizados inspirados no Resume copy.tsx
 const configurationStyles = `

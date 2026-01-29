@@ -6,7 +6,7 @@ import { updateCommentRequest } from '../../../../store/ducks/comments/actions'
 import { ApplicationState } from '../../../../store'
 import { KTSVG } from '../../../../_metronic/helpers'
 
-const MOMENT = require('moment')
+import moment from 'moment'
 
 type Props = {
   show: boolean
@@ -71,7 +71,7 @@ const CommentEditModal: React.FC<Props> = ({ show, comment, onHide, onSuccess })
               <div className="flex-grow-1">
                 <div className="fs-6 fw-semibold text-gray-800">{comment.parentUser?.name}</div>
                 <div className="fs-7 text-muted">
-                  {MOMENT(comment.createdAt).utc().format('DD/MM/YYYY HH:mm')}
+                  {moment(comment.createdAt).utc().format('DD/MM/YYYY HH:mm')}
                   {comment.status === 'edited' && (
                     <span className="badge badge-secondary ms-2">Editado</span>
                   )}

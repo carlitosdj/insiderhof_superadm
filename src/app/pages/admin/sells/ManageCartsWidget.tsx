@@ -13,8 +13,8 @@ import Filter from "./filter";
 import ExportSell from "./export";
 import { selectCartsAddRequest, selectCartsRemoveRequest } from "../../../../store/ducks/carts/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;
@@ -305,7 +305,7 @@ const ManageCartsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           <td>{child.id}</td>
                           <td>
                             <div className="d-flex align-items-center border-0">
-                              {MOMENT(child.createdAt)
+                              {moment(child.createdAt)
                                 .utc()
                                 .format("DD/MM/YYYY HH:mm")}
                             </div>

@@ -3,7 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import { EventTicket } from "../../../store/ducks/eventtickets/types";
 import { KTIcon } from "../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface TicketDetailsModalProps {
   show: boolean;
@@ -190,7 +190,7 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                   <div className="mb-4">
                     <label className="fw-bold text-muted mb-2">Data da Confirmação</label>
                     <div className="text-gray-700">
-                      {MOMENT((ticket.rsvp as any).confirmedAt).format(
+                      {moment((ticket.rsvp as any).confirmedAt).format(
                         "DD/MM/YYYY HH:mm"
                       )}
                     </div>
@@ -250,7 +250,7 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                     <div className="mb-4">
                       <label className="fw-bold text-muted mb-2">Data e Hora</label>
                       <div className="text-gray-700">
-                        {MOMENT((ticket.checkin as any).checkinAt).format(
+                        {moment((ticket.checkin as any).checkinAt).format(
                           "DD/MM/YYYY HH:mm"
                         )}
                       </div>
@@ -296,7 +296,7 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                   <label className="fw-bold text-muted mb-2">Criado em</label>
                   <div className="text-gray-700">
                     {ticket.createdAt
-                      ? MOMENT(ticket.createdAt).format("DD/MM/YYYY HH:mm")
+                      ? moment(ticket.createdAt).format("DD/MM/YYYY HH:mm")
                       : "-"}
                   </div>
                 </div>
@@ -305,7 +305,7 @@ const TicketDetailsModal: React.FC<TicketDetailsModalProps> = ({ show, onHide, t
                   <label className="fw-bold text-muted mb-2">Atualizado em</label>
                   <div className="text-gray-700">
                     {ticket.updatedAt
-                      ? MOMENT(ticket.updatedAt).format("DD/MM/YYYY HH:mm")
+                      ? moment(ticket.updatedAt).format("DD/MM/YYYY HH:mm")
                       : "-"}
                   </div>
                 </div>

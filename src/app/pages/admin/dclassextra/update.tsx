@@ -6,8 +6,8 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import momentDurationFormatSetup from "moment-duration-format";
 import { ClassExtra } from "../../../../store/ducks/dclassextra/types";
 import { updateClassExtraRequest } from "../../../../store/ducks/dclassextra/actions";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

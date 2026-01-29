@@ -7,7 +7,7 @@ import {ApplicationState} from '../../../../store'
 import momentDurationFormatSetup from 'moment-duration-format';
 import { Class } from '../../../../store/ducks/dclass/types'
 
-const MOMENT = require('moment')
+import moment from 'moment'
 momentDurationFormatSetup(MOMENT)
 
 interface handleCloseProps {
@@ -35,7 +35,7 @@ const InfoProgress = ({handleClose, child}: handleCloseProps) => {
           <br />
           <h3>
             Duração:{' '}
-            {MOMENT.duration(child.duration, 'seconds').format('hh:mm:ss', {
+            {moment.duration(child.duration, 'seconds').format('hh:mm:ss', {
               trim: false,
             })}
           </h3>
@@ -83,7 +83,7 @@ const InfoProgress = ({handleClose, child}: handleCloseProps) => {
                     </td>
                     <td>{childCompleted.user?.name}</td>
                     <td>
-                      {MOMENT.duration(childCompleted.timeWatched, 'seconds').format('hh:mm:ss', {
+                      {moment.duration(childCompleted.timeWatched, 'seconds').format('hh:mm:ss', {
                         trim: false,
                       })}
                     </td>

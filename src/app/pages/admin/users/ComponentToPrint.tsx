@@ -1,5 +1,5 @@
 import React from "react";
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface Props {
   data: any[];
@@ -7,7 +7,7 @@ interface Props {
 // Using a class component, everything works without issue
 export class ComponentToPrint extends React.Component<Props> {
   render() {
-    var now = MOMENT(Date()).utc().format("DD/MM/YYYY HH:mm");
+    var now = moment(Date()).utc().format("DD/MM/YYYY HH:mm");
     return (
       <div style={{ color: "black" }}>
         <h1 style={{ color: "black" }}>Relatório Defelícibus Soluções</h1>
@@ -23,8 +23,8 @@ export class ComponentToPrint extends React.Component<Props> {
         <br />
         {this.props.data.map((user) => {
           // var data = new Date(apiResponse.createdAt*1000);
-          let createdAt = MOMENT(Number(user.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
-          var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
+          let createdAt = moment(Number(user.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
+          var now = moment(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
           var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
           var dst = "$1.$2.$3-$4";
           var cpfformat = user.cpf?.replace(src, dst);
@@ -49,7 +49,7 @@ export class ComponentToPrint extends React.Component<Props> {
               <br />
               <span style={{ color: "black" }}>
                 Última renovação:{" "}
-                {MOMENT(user.createdAt).utc().format("DD/MM/YYYY HH:mm")}
+                {moment(user.createdAt).utc().format("DD/MM/YYYY HH:mm")}
               </span>
               <span className="text-gray-900 fw-bold fs-6">Turma: </span>
                 <span className="text-gray-900 fs-6">{user.numTurma}</span>
@@ -58,7 +58,7 @@ export class ComponentToPrint extends React.Component<Props> {
                   <div className="p-4">
                     <span className="text-gray-900 fw-bold fs-6">Data: </span>
                     <span className="text-gray-900 fs-6">
-                      {MOMENT(item.createdAt).format("DD/MM/YYYY HH:mm")}
+                      {moment(item.createdAt).format("DD/MM/YYYY HH:mm")}
                     </span>
                     <br />
                     <span className="text-gray-900 fw-bold fs-6">Método: </span>

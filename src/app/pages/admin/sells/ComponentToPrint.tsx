@@ -1,6 +1,6 @@
 import React from "react";
 import { Cart } from "../../../../store/ducks/carts/types";
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface Props {
   data: Cart[];
@@ -8,7 +8,7 @@ interface Props {
 // Using a class component, everything works without issue
 export class ComponentToPrint extends React.Component<Props> {
   render() {
-    var now = MOMENT(Date()).utc().format("DD/MM/YYYY HH:mm");
+    var now = moment(Date()).utc().format("DD/MM/YYYY HH:mm");
     return (
       <div style={{ color: "black" }}>
         <h1 style={{ color: "black" }}>Relatório de Vendas</h1>
@@ -24,8 +24,8 @@ export class ComponentToPrint extends React.Component<Props> {
         <br />
         {this.props.data.map((cart) => {
           // var data = new Date(apiResponse.createdAt*1000);
-          let createdAt = MOMENT(Number(cart.user?.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
-          var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
+          let createdAt = moment(Number(cart.user?.createdAt) * 1000).utc(); //.format('DD/MM/YYYY HH:mm')
+          var now = moment(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
           var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
           var dst = "$1.$2.$3-$4";
           var cpfformat = cart.user?.cpf?.replace(src, dst);
@@ -77,7 +77,7 @@ export class ComponentToPrint extends React.Component<Props> {
              
               {/* <span style={{ color: "black" }}>
                 Última renovação:{" "}
-                {MOMENT(cart.user?.createdAt).utc().format("DD/MM/YYYY HH:mm")}
+                {moment(cart.user?.createdAt).utc().format("DD/MM/YYYY HH:mm")}
               </span> */}
               
             

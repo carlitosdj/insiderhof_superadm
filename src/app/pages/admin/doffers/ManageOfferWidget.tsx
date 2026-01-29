@@ -19,8 +19,8 @@ import {
 } from "../../../../store/ducks/doffer/actions";
 import Manage from "../dofferhasproduct/Manage";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

@@ -26,8 +26,8 @@ import { LPSession } from "../../../../store/ducks/dlpsessions/types";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS padronizados para o novo layout
 const widgetStyles = `

@@ -10,7 +10,7 @@ import * as XLSX from "xlsx";
 import { Button } from "react-bootstrap";
 import { KTIcon } from "../../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -35,7 +35,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
         Cidade: user.city?.name,
         Estado: user.state?.name,
         "Código Postal": user.postalCode,
-        "Data do registro": MOMENT(user.createdAt).format("DD/MM/YYYY HH:mm"),
+        "Data do registro": moment(user.createdAt).format("DD/MM/YYYY HH:mm"),
         Email: user.email,
         Turma: user.numTurma,
         "Tipo Documento": user.type,
@@ -55,7 +55,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(
       workbook,
-      "InsiderHOF-" + MOMENT(Date()).format("DD_MM_YYYY-HH_mm") + ".xlsx"
+      "InsiderHOF-" + moment(Date()).format("DD_MM_YYYY-HH_mm") + ".xlsx"
     );
   };
 
@@ -97,8 +97,8 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
           <br/> */}
           {users.selectedUsers.map((user, index) => {
             // var data = new Date(apiResponse.createdAt*1000);
-            // let createdAt = MOMENT(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
-            // var now = MOMENT(Date()) //.format('DD/MM/YYYY HH:mm')
+            // let createdAt = moment(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
+            // var now = moment(Date()) //.format('DD/MM/YYYY HH:mm')
             var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
             var dst = "$1.$2.$3-$4";
             var cpfformat = user.cpf?.replace(src, dst);
@@ -130,7 +130,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
                   Última renovação:{" "}
                 </span>
                 <span className="text-gray-900 fs-6">
-                  {MOMENT(user.createdAt).format("DD/MM/YYYY HH:mm")}
+                  {moment(user.createdAt).format("DD/MM/YYYY HH:mm")}
                 </span>
                 <br />
                 <span className="text-gray-900 fw-bold fs-6">Turma: </span>
@@ -141,7 +141,7 @@ const ExportUser = ({ handleClose }: handleCloseProps) => {
                     <div className="p-4">
                       <span className="text-gray-900 fw-bold fs-6">Data: </span>
                       <span className="text-gray-900 fs-6">
-                        {MOMENT(item.createdAt).format("DD/MM/YYYY HH:mm")}
+                        {moment(item.createdAt).format("DD/MM/YYYY HH:mm")}
                       </span>
                       <br />
                       <span className="text-gray-900 fw-bold fs-6">

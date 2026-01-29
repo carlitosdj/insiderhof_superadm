@@ -8,8 +8,8 @@ import momentDurationFormatSetup from "moment-duration-format";
 
 import { updateClassRequest } from "../../../../store/ducks/dclass/actions";
 import { Class } from "../../../../store/ducks/dclass/types";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -37,7 +37,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
     setStatus(child.status!);
     setModuleId(child.moduleId!);
     setDuration(
-      MOMENT.duration(child.duration, "seconds").format("hh:mm:ss", {
+      moment.duration(child.duration, "seconds").format("hh:mm:ss", {
         trim: false,
       })
     );
@@ -64,7 +64,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
         video,
         tags,
         moduleId,
-        duration: MOMENT.duration(duration).asSeconds(),
+        duration: moment.duration(duration).asSeconds(),
       };
 
       console.log("----------------- COMPONENT TO UPDATExx", componentToUpdate);

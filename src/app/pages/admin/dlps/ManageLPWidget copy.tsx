@@ -22,8 +22,8 @@ import {
   clearExportLP,
 } from "../../../../store/ducks/dlps/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS para o botão de ação
 const widgetStyles = `

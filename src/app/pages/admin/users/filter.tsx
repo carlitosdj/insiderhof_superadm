@@ -13,7 +13,7 @@ import { filterUserRequest, selectUsersRemoveRequest, setFilterEndDateRequest, s
 import { useNavigate, useParams } from 'react-router-dom';
 
 // registerLocale('ptBR', ptBR)
-const MOMENT = require('moment') 
+import moment from 'moment' 
 
 interface handleCloseProps {
   handleClose: () => void

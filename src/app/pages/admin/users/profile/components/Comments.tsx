@@ -1,7 +1,7 @@
 import momentDurationFormatSetup from "moment-duration-format";
 import { User } from "../../../../../../store/ducks/me/types";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type commentsProps = {
   user: User;
@@ -53,7 +53,7 @@ export function Comments({ user }: commentsProps) {
                             <td>
                               <div className="d-flex align-items-center">
                                 <div className="d-flex justify-content-start flex-column">
-                                  {MOMENT(comment.createdAt).format(
+                                  {moment(comment.createdAt).format(
                                     "DD/MM/YYYY"
                                   )}
                                 </div>

@@ -5,7 +5,7 @@ import { updateEventRequest } from "../../../../store/ducks/events/actions";
 import { Event } from "../../../../store/ducks/events/types";
 import { KTIcon } from "../../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface UpdateProps {
   handleClose: () => void;
@@ -19,11 +19,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   const [name, setName] = useState(child.name || "");
   const [description, setDescription] = useState(child.description || "");
   const [startDate, setStartDate] = useState(
-    child.startDate ? MOMENT(child.startDate).format("YYYY-MM-DDTHH:mm") : ""
+    child.startDate ? moment(child.startDate).format("YYYY-MM-DDTHH:mm") : ""
   );
   const [endDate, setEndDate] = useState(
     child.endDate
-      ? MOMENT(child.endDate).format("YYYY-MM-DDTHH:mm")
+      ? moment(child.endDate).format("YYYY-MM-DDTHH:mm")
       : ""
   );
   const [location, setLocation] = useState(child.location || "");
@@ -226,7 +226,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
                 <span className="text-muted fw-bold fs-7">Criado em</span>
                 <span className="text-gray-800 fw-bold fs-6">
                   {child.createdAt
-                    ? MOMENT(child.createdAt).format("DD/MM/YYYY HH:mm")
+                    ? moment(child.createdAt).format("DD/MM/YYYY HH:mm")
                     : "-"}
                 </span>
               </div>

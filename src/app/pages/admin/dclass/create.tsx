@@ -10,8 +10,8 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import { createClassRequest } from "../../../../store/ducks/dclass/actions";
 import { Class } from "../../../../store/ducks/dclass/types";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // import { Modal } from 'react-bootstrap'
 type ParamTypes = {
@@ -50,7 +50,7 @@ const Create = ({ handleClose, moduleId }: handleCloseProps) => {
         name,
         description,
         image,
-        duration: MOMENT.duration(duration).asSeconds(),
+        duration: moment.duration(duration).asSeconds(),
         moduleId,
         video,
         tags,

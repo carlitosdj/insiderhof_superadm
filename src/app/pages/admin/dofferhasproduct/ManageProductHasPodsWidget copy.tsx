@@ -21,8 +21,8 @@ import {
   reorderOfferHasProductsRequest,
   updateOfferHasProductsRequest,
 } from "../../../../store/ducks/dofferhasproduct/actions";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

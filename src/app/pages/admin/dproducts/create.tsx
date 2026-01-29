@@ -12,8 +12,8 @@ import { Product } from "../../../../store/ducks/dproduct/types";
 import { createProductRequest } from "../../../../store/ducks/dproduct/actions";
 
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

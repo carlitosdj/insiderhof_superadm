@@ -11,7 +11,7 @@ import { Button } from "react-bootstrap";
 import { KTIcon } from "../../../../_metronic/helpers";
 import { ComponentToPrint } from "./ComponentToPrint";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -88,7 +88,7 @@ const ExportSell = ({ handleClose }: handleCloseProps) => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(
       workbook,
-      "InsiderHOF-" + MOMENT(Date()).format("DD_MM_YYYY-HH_mm") + ".xlsx"
+      "InsiderHOF-" + moment(Date()).format("DD_MM_YYYY-HH_mm") + ".xlsx"
     );
   };
 
@@ -130,8 +130,8 @@ const ExportSell = ({ handleClose }: handleCloseProps) => {
           <br/> */}
           {carts.selectedCarts.map((cart, index) => {
             // var data = new Date(apiResponse.createdAt*1000);
-            // let createdAt = MOMENT(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
-            // var now = MOMENT(Date()) //.format('DD/MM/YYYY HH:mm')
+            // let createdAt = moment(Number(user.createdAt) * 1000) //.format('DD/MM/YYYY HH:mm')
+            // var now = moment(Date()) //.format('DD/MM/YYYY HH:mm')
             var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
             var dst = "$1.$2.$3-$4";
             var cpfformat = cart.user?.cpf?.replace(src, dst);

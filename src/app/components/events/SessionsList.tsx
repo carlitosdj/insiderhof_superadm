@@ -10,7 +10,7 @@ import { KTIcon } from "../../../_metronic/helpers";
 import SessionForm from "./SessionForm";
 import ManageSessionSpeakersModal from "./ManageSessionSpeakersModal";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface SessionsListProps {
   eventId: number;
@@ -227,15 +227,15 @@ const SessionsList: React.FC<SessionsListProps> = ({ eventId }) => {
                             {/* Horário */}
                             <div className="text-muted fs-7 mb-1">
                               {session.startTime
-                                ? MOMENT(session.startTime).format("DD/MM/YYYY")
+                                ? moment(session.startTime).format("DD/MM/YYYY")
                                 : "-"}{" "}
                               •{" "}
                               {session.startTime
-                                ? MOMENT(session.startTime).format("HH:mm")
+                                ? moment(session.startTime).format("HH:mm")
                                 : "-"}{" "}
                               -{" "}
                               {session.endTime
-                                ? MOMENT(session.endTime).format("HH:mm")
+                                ? moment(session.endTime).format("HH:mm")
                                 : "-"}
                             </div>
 

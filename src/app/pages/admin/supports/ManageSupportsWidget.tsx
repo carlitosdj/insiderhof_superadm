@@ -20,7 +20,7 @@ const ManageSupportsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   supportsList,
 }) => {
-  const MOMENT = require("moment");
+  import moment from "moment";
   const intl = useIntl();
 
   const [show, setShow] = useState<boolean>(false);
@@ -116,7 +116,7 @@ const ManageSupportsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td> */}
                       <td>
                         <span className="text-muted fw-bold d-block fs-7">
-                          {MOMENT(support.createdAt).format("DD/MM/YYYY HH:mm")}
+                          {moment(support.createdAt).format("DD/MM/YYYY HH:mm")}
                         </span>
                       </td>
                       <td>

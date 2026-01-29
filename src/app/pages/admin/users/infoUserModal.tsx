@@ -22,8 +22,8 @@ import {
   //loadconnectedUsersRequest,
 } from "../../../../store/ducks/onlineusers/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -68,8 +68,8 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
   console.log("************LOADED USER************", users.user);
 
   // var data = new Date(apiResponse.createdAt*1000);
-  let createdAt = MOMENT(child.createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
-  var now = MOMENT(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
+  let createdAt = moment(child.createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
+  var now = moment(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
   var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
   var dst = "$1.$2.$3-$4";
   var cpfformat = child.cpf?.replace(src, dst);
@@ -169,7 +169,7 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
                           className="fs-3 text-primary me-2"
                         />
                         <div className="fs-2 fw-bolder">
-                          {MOMENT(child.lastLoginAt).format("DD/MM/YY HH:mm")}
+                          {moment(child.lastLoginAt).format("DD/MM/YY HH:mm")}
                         </div>
                       </div>
 

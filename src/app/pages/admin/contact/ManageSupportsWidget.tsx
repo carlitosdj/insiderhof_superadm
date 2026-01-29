@@ -117,7 +117,7 @@ const ManageSupportsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className='text-muted fw-bold d-block fs-7'>
-                          {MOMENT(support.createdAt).utc().format('DD/MM/YYYY HH:mm')}
+                          {moment(support.createdAt).utc().format('DD/MM/YYYY HH:mm')}
                         </span>
                       </td>
                       <td>

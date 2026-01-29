@@ -8,7 +8,7 @@ import { User } from "../../../../../../store/ducks/me/types";
 import { ChartsWidgetGeral } from "./ChartsWidget";
 import { ChartsWidgetWeek } from "./ChartsWidgetWeek";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 type overviewProps = {
   user: User;
@@ -71,7 +71,7 @@ export function Overview({ user }: overviewProps) {
     cpf,
   } = user;
 
-  let formatedcreatedAt = MOMENT(createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
+  let formatedcreatedAt = moment(createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
   //const component = useSelector((state: ApplicationState) => state.component);
   const onlineusers = useSelector(
     (state: ApplicationState) => state.onlineusers
@@ -160,7 +160,7 @@ export function Overview({ user }: overviewProps) {
 
             <div className="d-flex align-items-center text-gray-500  me-5 mb-2">
               <KTIcon iconName="geolocation" className="fs-4 me-1" />
-              Último login: {MOMENT(lastLoginAt).format("DD/MM/YYYY HH:mm")}
+              Último login: {moment(lastLoginAt).format("DD/MM/YYYY HH:mm")}
             </div>
 
             <div className="d-flex align-items-center text-gray-500  me-5 mb-2">

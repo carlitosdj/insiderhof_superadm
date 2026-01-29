@@ -24,8 +24,8 @@ import {
 } from "../../../../store/ducks/dlaunchphaseextras/actions";
 
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS padronizados para o novo layout
 const widgetStyles = `

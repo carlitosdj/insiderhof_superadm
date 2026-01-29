@@ -11,8 +11,8 @@ import momentDurationFormatSetup from "moment-duration-format";
 import { Launch } from "../../../../store/ducks/dlaunch/types";
 import { createLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -147,18 +147,18 @@ const Create = ({ handleClose }: handleCloseProps) => {
         eventName,
         eventGroupLink,
         expertName,
-        cartOpenDate: MOMENT(cartOpenDate.toString()).format(
+        cartOpenDate: moment(cartOpenDate.toString()).format(
           "DD/MM/YYYY HH:mm"
         ),
-        cartCloseDate: MOMENT(cartCloseDate.toString()).format(
+        cartCloseDate: moment(cartCloseDate.toString()).format(
           "DD/MM/YYYY HH:mm"
         ),
         leadSignUpStartDate:
-          MOMENT(leadSignUpStartDate).format("DD/MM/YYYY HH:mm"),
-        leadSignUpEndDate: MOMENT(leadSignUpEndDate).format("DD/MM/YYYY HH:mm"),
-        dateCpl1: MOMENT(dateCpl1).format("DD/MM/YYYY HH:mm"),
-        dateCpl2: MOMENT(dateCpl2).format("DD/MM/YYYY HH:mm"),
-        dateCpl3: MOMENT(dateCpl3).format("DD/MM/YYYY HH:mm"),
+          moment(leadSignUpStartDate).format("DD/MM/YYYY HH:mm"),
+        leadSignUpEndDate: moment(leadSignUpEndDate).format("DD/MM/YYYY HH:mm"),
+        dateCpl1: moment(dateCpl1).format("DD/MM/YYYY HH:mm"),
+        dateCpl2: moment(dateCpl2).format("DD/MM/YYYY HH:mm"),
+        dateCpl3: moment(dateCpl3).format("DD/MM/YYYY HH:mm"),
         cpl1,
         cpl2,
         cpl3,
@@ -427,13 +427,13 @@ const Create = ({ handleClose }: handleCloseProps) => {
                 <div className="bg-light p-3 rounded">
                   <h6 className="fw-bold mb-2">Cronograma Calculado:</h6>
                   <div className="small">
-                    <div><strong>Início Inscrição Lead:</strong> {MOMENT(leadSignUpStartDate).format("DD/MM/YYYY")}</div>
-                    <div><strong>Fechamento Inscrição Lead:</strong> {MOMENT(leadSignUpEndDate).format("DD/MM/YYYY")}</div>
-                    <div><strong>CPL1:</strong> {MOMENT(dateCpl1).format("DD/MM/YYYY")}</div>
-                    <div><strong>CPL2:</strong> {MOMENT(dateCpl2).format("DD/MM/YYYY")}</div>
-                    <div><strong>CPL3:</strong> {MOMENT(dateCpl3).format("DD/MM/YYYY")}</div>
-                    <div><strong>Abertura Carrinho:</strong> {MOMENT(cartOpenDate).format("DD/MM/YYYY HH:mm")}</div>
-                    <div><strong>Fechamento Carrinho:</strong> {MOMENT(cartCloseDate).format("DD/MM/YYYY HH:mm")}</div>
+                    <div><strong>Início Inscrição Lead:</strong> {moment(leadSignUpStartDate).format("DD/MM/YYYY")}</div>
+                    <div><strong>Fechamento Inscrição Lead:</strong> {moment(leadSignUpEndDate).format("DD/MM/YYYY")}</div>
+                    <div><strong>CPL1:</strong> {moment(dateCpl1).format("DD/MM/YYYY")}</div>
+                    <div><strong>CPL2:</strong> {moment(dateCpl2).format("DD/MM/YYYY")}</div>
+                    <div><strong>CPL3:</strong> {moment(dateCpl3).format("DD/MM/YYYY")}</div>
+                    <div><strong>Abertura Carrinho:</strong> {moment(cartOpenDate).format("DD/MM/YYYY HH:mm")}</div>
+                    <div><strong>Fechamento Carrinho:</strong> {moment(cartCloseDate).format("DD/MM/YYYY HH:mm")}</div>
                   </div>
                 </div>
               </Card.Body>

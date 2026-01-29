@@ -14,7 +14,7 @@ import {Button, Col, Form} from 'react-bootstrap'
 // import {Component} from '../../../../store/ducks/component/types'
 //import {getAllJSDocTagsOfKind} from 'typescript'
 
-const MOMENT = require('moment')
+import moment from 'moment'
 
 interface handleCloseProps {
   handleClose: () => void
@@ -125,8 +125,8 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
   // console.log('component', component)
 
   // var data = new Date(apiResponse.createdAt*1000);
-  // let createdAt = MOMENT(child.createdAt) //.format('DD/MM/YYYY HH:mm')
-  // var now = MOMENT(Date()) //.format('DD/MM/YYYY HH:mm')
+  // let createdAt = moment(child.createdAt) //.format('DD/MM/YYYY HH:mm')
+  // var now = moment(Date()) //.format('DD/MM/YYYY HH:mm')
   // var src = /^(\d{3})(\d{3})(\d{3})(\d{2})$/
   // var dst = '$1.$2.$3-$4'
   // var cpfformat = child.cpf?.replace(src, dst)

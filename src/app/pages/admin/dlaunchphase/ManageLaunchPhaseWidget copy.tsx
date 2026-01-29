@@ -29,8 +29,8 @@ import { loadMyLaunchPhaseExtrasRequest } from "../../../../store/ducks/dlaunchp
 import { loadLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 import { ApplicationState } from "../../../../store";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS customizados
 const tabStyles = `

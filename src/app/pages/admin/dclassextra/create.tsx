@@ -8,8 +8,8 @@ import { createClassExtraRequest } from "../../../../store/ducks/dclassextra/act
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { Class } from "../../../../store/ducks/dclass/types";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

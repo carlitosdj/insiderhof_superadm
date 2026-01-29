@@ -6,7 +6,7 @@ import { EmailToListState } from "../../../../store/ducks/massmail/types";
 import CreateEmail from "./create";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-const MOMENT = require("moment");
+import moment from "moment";
 type Props = {
   className: string;
   emailList: EmailToListState;
@@ -135,7 +135,7 @@ const ManageSentEmailsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>
                         <span className="text-muted fw-bold d-block fs-7">
-                          {MOMENT(child.createdAt).format("DD/MM/YY HH:mm")}
+                          {moment(child.createdAt).format("DD/MM/YY HH:mm")}
                         </span>
                       </td>
 

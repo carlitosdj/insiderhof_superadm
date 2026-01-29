@@ -24,8 +24,8 @@ import {
 } from "framer-motion";
 import ManageAvailable from "./ManageAvailable";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

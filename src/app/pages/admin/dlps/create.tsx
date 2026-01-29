@@ -8,8 +8,8 @@ import momentDurationFormatSetup from "moment-duration-format";
 import { LP } from "../../../../store/ducks/dlps/types";
 import { createLPRequest } from "../../../../store/ducks/dlps/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

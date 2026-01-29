@@ -9,8 +9,8 @@ import { LPFeature } from "../../../../store/ducks/dlpfeatures/types";
 import { updateLPFeatureRequest } from "../../../../store/ducks/dlpfeatures/actions";
 import { CKEditor } from "ckeditor4-react";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

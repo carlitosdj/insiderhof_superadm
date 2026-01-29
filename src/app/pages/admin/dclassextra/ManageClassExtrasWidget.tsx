@@ -21,8 +21,8 @@ import CreateFile from "./create_file";
 import CreateImage from "./create_img";
 import CreateVideo from "./create_video";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;

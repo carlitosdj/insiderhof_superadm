@@ -8,8 +8,8 @@ import momentDurationFormatSetup from "moment-duration-format";
 import { updateLaunchRequest } from "../../../../store/ducks/dlaunch/actions";
 import { LaunchPhases } from "../../../../store/ducks/dlaunchphase/types";
 import { updateLaunchPhasesRequest } from "../../../../store/ducks/dlaunchphase/actions";
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 interface handleCloseProps {
   handleClose: () => void;

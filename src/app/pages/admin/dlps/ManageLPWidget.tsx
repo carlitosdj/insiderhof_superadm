@@ -28,8 +28,8 @@ import { LPSessionState } from "../../../../store/ducks/dlpsessions/types";
 import { LPFeatureState } from "../../../../store/ducks/dlpfeatures/types";
 import { loadMyLPSessionsRequest } from "../../../../store/ducks/dlpsessions/actions";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 // Estilos CSS padronizados para o novo layout
 const widgetStyles = `

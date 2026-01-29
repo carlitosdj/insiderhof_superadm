@@ -6,7 +6,7 @@ import api from "../../../services/api";
 import { EventTicket } from "../../../store/ducks/eventtickets/types";
 import { KTIcon } from "../../../_metronic/helpers";
 
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface CheckinPanelProps {
   eventId: number;
@@ -238,7 +238,7 @@ const CheckinPanel: React.FC<CheckinPanelProps> = ({ eventId }) => {
                           Check-in Realizado
                         </span>
                         <div className="text-muted fs-7">
-                          Em {MOMENT(foundTicket.checkin.checkinAt).format("DD/MM/YYYY HH:mm")}
+                          Em {moment(foundTicket.checkin.checkinAt).format("DD/MM/YYYY HH:mm")}
                         </div>
                         <div className="text-muted fs-7">
                           Método: {foundTicket.checkin.checkinMethod}

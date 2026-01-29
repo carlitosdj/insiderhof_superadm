@@ -28,7 +28,7 @@ import {
 } from "../../../../store/ducks/carts/actions";
 
 // registerLocale('ptBR', ptBR)
-const MOMENT = require("moment");
+import moment from "moment";
 
 interface handleCloseProps {
   handleClose: () => void;

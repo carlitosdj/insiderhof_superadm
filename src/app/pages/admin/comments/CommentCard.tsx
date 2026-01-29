@@ -4,7 +4,7 @@ import { KTSVG } from '../../../../_metronic/helpers'
 import { Comment } from '../../../../store/ducks/comments/types'
 import { useIntl } from 'react-intl'
 
-const MOMENT = require('moment')
+import moment from 'moment'
 
 type Props = {
   comment: Comment
@@ -66,7 +66,7 @@ const CommentCard: React.FC<Props> = ({ comment, onReply, onEdit, onDelete }) =>
             <div className="fs-5 fw-semibold mb-2 d-flex align-items-center justify-content-between">
               <div>
                 <span className="text-muted me-2">
-                  {MOMENT(comment.createdAt).utc().format('DD/MM/YYYY HH:mm')}
+                  {moment(comment.createdAt).utc().format('DD/MM/YYYY HH:mm')}
                 </span>
                 {getStatusBadge()}
                 {comment.status === 'edited' && (
@@ -132,7 +132,7 @@ const CommentCard: React.FC<Props> = ({ comment, onReply, onEdit, onDelete }) =>
                   <div className="bg-light-primary p-3 rounded">
                     <div className="d-flex justify-content-between align-items-start mb-2">
                       <div className="fs-7 text-muted">
-                        <strong>{reply.parentUser?.name}</strong> • {MOMENT(reply.createdAt).utc().format('DD/MM/YYYY HH:mm')}
+                        <strong>{reply.parentUser?.name}</strong> • {moment(reply.createdAt).utc().format('DD/MM/YYYY HH:mm')}
                       </div>
                       <div className="d-flex gap-1">
                         <button

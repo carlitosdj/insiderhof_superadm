@@ -14,7 +14,7 @@ const AnnotationWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   annotations,
 }) => {
-  const MOMENT = require("moment");
+  import moment from "moment";
   const intl = useIntl();
 
   if (annotations.loading) return <Loading />;
@@ -59,7 +59,7 @@ const AnnotationWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         </td>
                         <td>
                           <span className="text-muted fw-bold d-block fs-7">
-                            {MOMENT(annotation.createdAt)
+                            {moment(annotation.createdAt)
                               .utc()
                               .format("DD/MM/YYYY HH:mm")}
                           </span>

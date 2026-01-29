@@ -20,8 +20,8 @@ import { Class } from "../../../../store/ducks/dclass/types";
 import InfoProgress from "./infoProgress";
 import InfoRate from "./infoRate";
 
-const MOMENT = require("moment");
-momentDurationFormatSetup(MOMENT);
+import moment from "moment";
+momentDurationFormatSetup(moment);
 
 type Props = {
   className: string;
@@ -279,7 +279,7 @@ const ManageClassWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 </span>
 
                                 <div className="text-muted fw-semibold text-muted d-block fs-7">
-                                  {MOMENT.duration(
+                                  {moment.duration(
                                     child.duration,
                                     "seconds"
                                   ).format("hh:mm:ss", {
