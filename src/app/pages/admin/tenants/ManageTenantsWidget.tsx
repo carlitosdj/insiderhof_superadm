@@ -245,7 +245,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <div className="d-flex align-items-center">
                           {tenant.logo && (
                             <div className="symbol symbol-45px me-5">
-                              <img src={tenant.logo} alt={tenant.name} />
+                              <img src={`https://app.insiderhof.com.br/files/${tenant.logo}`} alt={tenant.name} />
                             </div>
                           )}
                           <div className="d-flex justify-content-start flex-column">

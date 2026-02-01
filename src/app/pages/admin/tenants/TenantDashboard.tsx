@@ -111,7 +111,7 @@ const TenantDashboard: React.FC<TenantDashboardProps> = ({ tenant }) => {
           <div className="d-flex align-items-center">
             {tenant.logo ? (
               <div className="symbol symbol-100px me-7">
-                <img src={tenant.logo} alt={tenant.name} />
+                <img src={`https://app.insiderhof.com.br/files/${tenant.logo}`} alt={tenant.name} />
               </div>
             ) : (
               <div
