@@ -49,6 +49,9 @@ import { EventTicketsState } from './ducks/eventtickets/types'
 import { EventCheckinsState } from './ducks/eventcheckins/types'
 import { EventSessionsState } from './ducks/eventsessions/types'
 
+// Tenants
+import { TenantsState } from './ducks/tenants/types'
+
 export interface ApplicationState {
   carts: CartsState
   users: UsersState
@@ -101,6 +104,9 @@ export interface ApplicationState {
   eventtickets: EventTicketsState
   eventcheckins: EventCheckinsState
   eventsessions: EventSessionsState
+
+  // Tenants
+  tenants: TenantsState
 }
 
 const sagaMiddleware = createSagaMiddleware()

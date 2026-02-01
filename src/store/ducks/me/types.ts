@@ -114,6 +114,7 @@ export interface User {
   cityId?: string
   stateId?: string
   roles?: string
+  systemRole?: string // 'super-admin' or null
 
   // UTM Tracking Fields
   utmSource?: string

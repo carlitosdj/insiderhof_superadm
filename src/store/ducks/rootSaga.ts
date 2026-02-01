@@ -134,6 +134,10 @@ import { confirmRsvp, loadRsvpsByEvent, loadRsvpByTicket } from './eventrsvps/sa
 import { EventSessionsTypes } from './eventsessions/types'
 import { loadSessions, loadSession, createSession, updateSession, deleteSession, loadSpeakers, loadSpeaker, createSpeaker, updateSpeaker, deleteSpeaker, addSpeakerToSession, removeSpeakerFromSession, loadArtifacts, loadArtifact, createArtifact, updateArtifact, deleteArtifact } from './eventsessions/sagas'
 
+// Tenants
+import { TenantsTypes } from './tenants/types'
+import { loadTenants, loadTenant, createTenant, updateTenant, deleteTenant, loadTenantMetrics } from './tenants/sagas'
+
 export default function* rootSaga() {
   yield all([
     // Projects
@@ -424,6 +428,14 @@ export default function* rootSaga() {
     takeLatest(EventSessionsTypes.CREATE_ARTIFACT_REQUEST, createArtifact),
     takeLatest(EventSessionsTypes.UPDATE_ARTIFACT_REQUEST, updateArtifact),
     takeLatest(EventSessionsTypes.DELETE_ARTIFACT_REQUEST, deleteArtifact),
+
+    // Tenants
+    takeLatest(TenantsTypes.LOAD_TENANTS_REQUEST, loadTenants),
+    takeLatest(TenantsTypes.LOAD_TENANT_REQUEST, loadTenant),
+    takeLatest(TenantsTypes.CREATE_TENANT_REQUEST, createTenant),
+    takeLatest(TenantsTypes.UPDATE_TENANT_REQUEST, updateTenant),
+    takeLatest(TenantsTypes.DELETE_TENANT_REQUEST, deleteTenant),
+    takeLatest(TenantsTypes.LOAD_TENANT_METRICS_REQUEST, loadTenantMetrics),
   ])
   // console.log('mounting saga...')
 }

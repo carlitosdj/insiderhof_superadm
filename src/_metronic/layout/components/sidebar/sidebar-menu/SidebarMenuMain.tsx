@@ -1,10 +1,13 @@
 import { useIntl } from "react-intl";
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../../../../store";
 import { KTIcon } from "../../../../helpers";
 import { SidebarMenuItemWithSub } from "./SidebarMenuItemWithSub";
 import { SidebarMenuItem } from "./SidebarMenuItem";
 
 const SidebarMenuMain = () => {
   const intl = useIntl();
+  const user = useSelector((state: ApplicationState) => state.me.data);
 
   return (
     <>
@@ -232,6 +235,26 @@ const SidebarMenuMain = () => {
         title="ROAS planner"
         fontIcon="bi-app-indicator"
       />
+
+      {/* SUPER ADMIN - Apenas para super-admins */}
+      {user?.systemRole === 'super-admin' && (
+        <>
+          <div className="menu-item">
+            <div className="menu-content pt-8 pb-2">
+              <span className="menu-section text-muted text-uppercase fs-8 ls-1">
+                SUPER ADMIN
+              </span>
+            </div>
+          </div>
+
+          <SidebarMenuItem
+            to="/tenants"
+            icon="office-bag"
+            fontIcon="bi-app-indicator"
+            title="Tenants"
+          />
+        </>
+      )}
 
       {/* <SidebarMenuItem
         to="/manage/4"

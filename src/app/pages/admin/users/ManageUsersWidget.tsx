@@ -31,9 +31,8 @@ import Pagination from "../../../../customHooks/Pagination";
 
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import TimeAgo from "react-timeago";
-
-const portugueseStrings = require("react-timeago/lib/language-strings/pt-br");
-const buildFormatter = require("react-timeago/lib/formatters/buildFormatter");
+import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
+import portugueseStrings from "react-timeago/lib/language-strings/pt-br";
 
 const formatter = buildFormatter(portugueseStrings);
 
@@ -776,7 +775,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   var createdAt = moment(child.createdAt).utc(); //.format('DD/MM/YYYY HH:mm')
                   var lastLoginAt = child.lastLoginAt
                     ? moment(child.lastLoginAt).utc()
-                    : "";
+                    : null;
                   var now = moment(Date()).utc(); //.format('DD/MM/YYYY HH:mm')
                   const regex = /\('([^']+)',\)/g;
                   const whats = child.whatsapp?.replace(
@@ -889,9 +888,7 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                           </span>
                         )}
                         <span className="text-muted fw-bold d-block fs-7">
-                          {lastLoginAt
-                            ? lastLoginAt?.format("DD/MM/YYYY HH:mm")
-                            : ""}
+                          {lastLoginAt ? lastLoginAt.format("DD/MM/YYYY HH:mm") : ""}
                         </span>
                       </td>
 

@@ -139,6 +139,16 @@ const PrivateRoutes = () => {
     []
   );
 
+  const Tenants = useMemo(
+    () => lazy(() => import("../pages/admin/tenants")),
+    []
+  );
+
+  const TenantDashboardPage = useMemo(
+    () => lazy(() => import("../pages/admin/tenants/TenantDashboardPage")),
+    []
+  );
+
   return (
     <Routes>
       <Route element={<MasterLayout />}>
@@ -446,6 +456,24 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <Events />
+            </SuspensedView>
+          }
+        />
+
+        <Route
+          path="tenants"
+          element={
+            <SuspensedView>
+              <Tenants />
+            </SuspensedView>
+          }
+        />
+
+        <Route
+          path="tenants/:tenantId"
+          element={
+            <SuspensedView>
+              <TenantDashboardPage />
             </SuspensedView>
           }
         />

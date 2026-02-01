@@ -17,7 +17,7 @@ const reducer: Reducer<MeState> = (state = INITIAL_STATE, action: any) => {
     case MeTypes.LOGIN_USER_FAILURE:
       return {...state, loading: false, logged: false, me: {}, error: action.payload}
     case MeTypes.AUTH_FROM_COOKIE:
-      return {...state, loading: false, logged: true, me: action.payload}
+      return {...state, loading: false, logged: true, data: action.payload, me: action.payload}
 
     //Logout
     case MeTypes.LOGOUT_USER:

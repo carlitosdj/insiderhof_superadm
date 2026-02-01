@@ -50,6 +50,9 @@ import eventcheckins from './eventcheckins'
 import eventrsvps from './eventrsvps'
 import eventsessions from './eventsessions'
 
+// Tenants
+import tenants from './tenants'
+
 export default combineReducers({
   carts,
   users,
@@ -104,5 +107,8 @@ export default combineReducers({
   eventcheckins,
   eventrsvps,
   eventsessions,
+
+  // Tenants
+  tenants,
 
 })

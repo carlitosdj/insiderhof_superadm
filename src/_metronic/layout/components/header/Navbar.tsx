@@ -4,6 +4,7 @@ import {HeaderNotificationsMenu, HeaderUserMenu, Search, ThemeModeSwitcher} from
 import {useLayout} from '../../core'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../../../../store'
+import { useState, useEffect } from 'react'
 
 const itemClass = 'ms-1 ms-md-4'
 const btnClass =
@@ -15,9 +16,63 @@ const Navbar = () => {
   const {config} = useLayout()
   const me = useSelector((state: ApplicationState) => state.me)
   const { image } = me.me
-  
+
+  // Check impersonation status
+  const [impersonatedTenant, setImpersonatedTenant] = useState<string | null>(null)
+  const [isImpersonating, setIsImpersonating] = useState(false)
+
+  useEffect(() => {
+    const checkImpersonation = () => {
+      const isImpersonatingFlag = localStorage.getItem('isImpersonating') === 'true'
+      const tenantName = localStorage.getItem('impersonatedTenantName')
+
+      setIsImpersonating(isImpersonatingFlag)
+      setImpersonatedTenant(isImpersonatingFlag ? tenantName : null)
+    }
+
+    checkImpersonation()
+
+    // Listen for storage changes (when impersonation is started/stopped)
+    const handleStorageChange = () => {
+      checkImpersonation()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  const handleStopImpersonation = () => {
+    localStorage.removeItem('currentTenantId')
+    localStorage.removeItem('impersonatedTenantName')
+    localStorage.removeItem('isImpersonating')
+    setImpersonatedTenant(null)
+    setIsImpersonating(false)
+    alert('Impersonation encerrado. Voltando ao modo super-admin.')
+    window.location.href = '/tenants'
+  }
+
   return (
     <div className='app-navbar flex-shrink-0'>
+      {/* Impersonation Indicator */}
+      {impersonatedTenant && (
+        <div className={clsx('app-navbar-item', itemClass)}>
+          <div className="d-flex align-items-center bg-warning bg-opacity-10 rounded px-3 py-2">
+            <KTIcon iconName="eye" className="fs-3 text-warning me-2" />
+            <div className="d-flex flex-column">
+              <span className="text-warning fw-bold fs-7">Modo Impersonation</span>
+              <span className="text-gray-700 fs-8">{impersonatedTenant}</span>
+            </div>
+            <button
+              className="btn btn-sm btn-icon btn-light-warning ms-3"
+              onClick={handleStopImpersonation}
+              title="Sair do modo impersonation"
+            >
+              <KTIcon iconName="cross" className="fs-3" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={clsx('app-navbar-item align-items-stretch', itemClass)}>
         <Search />
       </div>
