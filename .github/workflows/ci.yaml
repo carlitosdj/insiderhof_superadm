@@ -33,7 +33,7 @@ jobs:
             --exclude 'coverage/' \
             --exclude '*.log' \
             -e "ssh -i ~/.ssh/deploy_key -p $REMOTE_PORT -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedAlgorithms=+ssh-rsa" \
-            ./ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/nodeapps/adm/
+            ./ $REMOTE_USER@$REMOTE_HOST:/www/wwwroot/nodeapps/superadm/
 
       # 3️⃣ Build Docker e restart no servidor
       - name: Build Docker e restart
@@ -46,15 +46,15 @@ jobs:
           script: |
             cd /www/wwwroot/nodeapps/bin
             
-            echo "🔨 Buildando imagem Docker do ADM..."
-            docker compose -f docker-compose.prod.yml build adm
+            echo "🔨 Buildando imagem Docker do SUPERADM..."
+            docker compose -f docker-compose.prod.yml build superadm
             
-            echo "🚀 Reiniciando container do ADM..."
-            docker compose -f docker-compose.prod.yml up -d adm
+            echo "🚀 Reiniciando container do SUPERADM..."
+            docker compose -f docker-compose.prod.yml up -d superadm
             
             echo "🧹 Limpando imagens antigas..."
             docker image prune -f
             
-            echo "✅ Deploy do ADM concluído!"
+            echo "✅ Deploy do SUPERADM concluído!"
             echo "📊 Status:"
-            docker compose -f docker-compose.prod.yml ps adm
+            docker compose -f docker-compose.prod.yml ps superadm
