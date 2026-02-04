@@ -4,6 +4,7 @@ import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import Update from "./update";
 
@@ -273,13 +274,11 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                                 "https://"
                                               )
                                                 ? hasoffer.offer?.image
-                                                : "https://app.insiderhof.com.br/files/" +
-                                                  hasoffer.offer?.image
+                                                : getAppFileUrl(hasoffer.offer?.image)
                                             }
                                             onError={({ currentTarget }) => {
                                               currentTarget.onerror = null; // prevents looping
-                                              currentTarget.src =
-                                                "https://app.insiderhof.com.br/files/notfound.jpg";
+                                              currentTarget.src = getAppFileUrl("notfound.jpg");
                                             }}
                                           />
                                         </div>
@@ -327,9 +326,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                                         )
                                                           ? product.product
                                                               ?.image
-                                                          : "https://app.insiderhof.com.br/files/" +
-                                                            product.product
-                                                              ?.image
+                                                          : getAppFileUrl(product.product?.image)
                                                       }
                                                       // style={{ width: "100%" }}
                                                       onError={({
@@ -337,8 +334,7 @@ const ManageLaunchWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                                       }) => {
                                                         currentTarget.onerror =
                                                           null; // prevents looping
-                                                        currentTarget.src =
-                                                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                                                        currentTarget.src = getAppFileUrl("notfound.jpg");
                                                       }}
                                                     />
                                                   </div>

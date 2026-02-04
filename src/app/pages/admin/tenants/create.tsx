@@ -3,7 +3,8 @@ import { Form, Button, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { createTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
-import api from "../../../../services/api";
+import { uploadFile } from "../../../../utils/uploadHelper";
+import { getFileUrl } from "../../../../utils/getApiUrl";
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -65,14 +66,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
     }
   };
 
-  // Upload helper
-  const uploadFile = async (file: File): Promise<string> => {
-    const formdata = new FormData();
-    formdata.append("file", file, file.name);
-    const res = await api.post("/upload", formdata);
-    return res.data.filename;
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -94,16 +87,20 @@ const Create = ({ handleClose }: handleCloseProps) => {
       let logoMiniDarkUrl = logoMiniDark;
 
       if (logoFile) {
-        logoUrl = await uploadFile(logoFile);
+        const res = await uploadFile(logoFile, undefined, logoFile.name);
+        logoUrl = res.data.filename;
       }
       if (logoDarkFile) {
-        logoDarkUrl = await uploadFile(logoDarkFile);
+        const res = await uploadFile(logoDarkFile, undefined, logoDarkFile.name);
+        logoDarkUrl = res.data.filename;
       }
       if (logoMiniFile) {
-        logoMiniUrl = await uploadFile(logoMiniFile);
+        const res = await uploadFile(logoMiniFile, undefined, logoMiniFile.name);
+        logoMiniUrl = res.data.filename;
       }
       if (logoMiniDarkFile) {
-        logoMiniDarkUrl = await uploadFile(logoMiniDarkFile);
+        const res = await uploadFile(logoMiniDarkFile, undefined, logoMiniDarkFile.name);
+        logoMiniDarkUrl = res.data.filename;
       }
 
       const newTenant: Tenant = {
@@ -291,7 +288,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logo || logoFile) && (
               <div className="mt-2">
                 <img
-                  src={logoFile ? URL.createObjectURL(logoFile) : `https://api.insiderhof.com.br/upload/file/${logo}`}
+                  src={logoFile ? URL.createObjectURL(logoFile) : getFileUrl(logo)}
                   alt="Preview"
                   style={{ maxHeight: '60px', border: '1px solid #ddd', padding: '5px' }}
                 />
@@ -324,7 +321,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoDark || logoDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : `https://api.insiderhof.com.br/upload/file/${logoDark}`}
+                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getFileUrl(logoDark)}
                   alt="Preview Dark"
                   style={{ maxHeight: '60px', border: '1px solid #555', padding: '5px' }}
                 />
@@ -357,7 +354,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoMini || logoMiniFile) && (
               <div className="mt-2">
                 <img
-                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : `https://api.insiderhof.com.br/upload/file/${logoMini}`}
+                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getFileUrl(logoMini)}
                   alt="Preview Mini"
                   style={{ maxHeight: '40px', border: '1px solid #ddd', padding: '5px' }}
                 />
@@ -390,7 +387,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoMiniDark || logoMiniDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : `https://api.insiderhof.com.br/upload/file/${logoMiniDark}`}
+                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getFileUrl(logoMiniDark)}
                   alt="Preview Mini Dark"
                   style={{ maxHeight: '40px', border: '1px solid #555', padding: '5px' }}
                 />

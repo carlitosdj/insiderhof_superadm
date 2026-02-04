@@ -4,6 +4,7 @@ import { Button, Modal } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import Update from "./update";
 
@@ -126,13 +127,11 @@ const LaunchItem: React.FC<{
                       src={
                         firstOffer.image?.includes("https://")
                           ? firstOffer.image
-                          : "https://app.insiderhof.com.br/files/" +
-                            firstOffer.image
+                          : getAppFileUrl(firstOffer.image)
                       }
                       onError={({ currentTarget }) => {
                         currentTarget.onerror = null;
-                        currentTarget.src =
-                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                        currentTarget.src = getAppFileUrl("notfound.jpg");
                       }}
                     />
                   ) : (
@@ -240,13 +239,11 @@ const LaunchItem: React.FC<{
                                 src={
                                   hasoffer.offer?.image?.includes("https://")
                                     ? hasoffer.offer?.image
-                                    : "https://app.insiderhof.com.br/files/" +
-                                      hasoffer.offer?.image
+                                    : getAppFileUrl(hasoffer.offer?.image)
                                 }
                                 onError={({ currentTarget }) => {
                                   currentTarget.onerror = null;
-                                  currentTarget.src =
-                                    "https://app.insiderhof.com.br/files/notfound.jpg";
+                                  currentTarget.src = getAppFileUrl("notfound.jpg");
                                 }}
                               />
                             )}

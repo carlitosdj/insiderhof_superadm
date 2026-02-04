@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
 //import { loadLastClassRequest } from "../../../../store/ducks/component/actions";
 import { User } from "../../../../store/ducks/me/types";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import { loadUserRequest } from "../../../../store/ducks/users/actions";
 import momentDurationFormatSetup from "moment-duration-format";
@@ -89,13 +90,12 @@ const InfoUser = ({ handleClose, child }: handleCloseProps) => {
                   src={
                     image?.includes("https://")
                       ? image
-                      : "https://app.insiderhof.com.br/files/" + image
+                      : getAppFileUrl(image)
                   }
                   className=""
                   onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
-                    currentTarget.src =
-                      "https://app.insiderhof.com.br/files/notfound.jpg";
+                    currentTarget.src = getAppFileUrl("notfound.jpg");
                   }}
                 />
                 <div className="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-white h-20px w-20px"></div>

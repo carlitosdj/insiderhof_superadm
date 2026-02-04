@@ -47,16 +47,23 @@ import {Tenant, TenantMetrics} from './types'
 // Load all tenants
 export function* loadTenants(payload: ReturnType<typeof loadTenantsRequest>) {
   try {
+    console.log('📡 [Saga] Chamando API getTenants...', payload.payload.filters);
     const response: any = yield call(tenantsService.getTenants, payload.payload.filters)
+    console.log('📦 [Saga] Resposta da API:', response);
 
     // API returns { data, total, page, take }
     const result = response.data || response
+    console.log('📦 [Saga] Result processado:', result);
 
-    yield put(loadTenantsSuccess({
+    const successPayload = {
       tenants: result.data || result,
       total: result.total || 0
-    }))
+    };
+    console.log('✅ [Saga] Chamando loadTenantsSuccess com:', successPayload);
+
+    yield put(loadTenantsSuccess(successPayload))
   } catch (error: any) {
+    console.error('❌ [Saga] Erro ao carregar tenants:', error);
     yield put(loadTenantsFailure(error.response?.data || error))
   }
 }

@@ -20,16 +20,22 @@ const reducer: Reducer<TenantsState> = (state = INITIAL_STATE, action: any) => {
   switch (action.type) {
     // Load all
     case TenantsTypes.LOAD_TENANTS_REQUEST:
+      console.log('🔄 [Reducer] LOAD_TENANTS_REQUEST');
       return {...state, loading: true}
     case TenantsTypes.LOAD_TENANTS_SUCCESS:
+      console.log('✅ [Reducer] LOAD_TENANTS_SUCCESS', action.payload);
+      const newData = action.payload.tenants || action.payload.data || action.payload;
+      const newTotal = action.payload.total || action.payload.length || 0;
+      console.log('📊 [Reducer] Dados processados:', { newData, newTotal });
       return {
         ...state,
         loading: false,
         error: false,
-        data: action.payload.tenants || action.payload.data || action.payload,
-        total: action.payload.total || action.payload.length || 0,
+        data: newData,
+        total: newTotal,
       }
     case TenantsTypes.LOAD_TENANTS_FAILURE:
+      console.error('❌ [Reducer] LOAD_TENANTS_FAILURE', action.payload);
       return {...state, loading: false, error: action.payload, data: []}
 
     // Load one

@@ -3,7 +3,8 @@ import { Form, Button, Alert, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { updateTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
-import api from "../../../../services/api";
+import { uploadFile } from "../../../../utils/uploadHelper";
+import { getFileUrl } from "../../../../utils/getApiUrl";
 
 interface UpdateProps {
   handleClose: () => void;
@@ -25,6 +26,15 @@ const generateSlug = (text: string): string => {
 const Update = ({ handleClose, child }: UpdateProps) => {
   const dispatch = useDispatch();
   const [validated, setValidated] = useState(false);
+
+  console.log('🖼️ [Update] Tenant data:', {
+    id: child.id,
+    name: child.name,
+    logo: child.logo,
+    logoDark: child.logoDark,
+    logoMini: child.logoMini,
+    logoMiniDark: child.logoMiniDark,
+  });
 
   // Dados básicos
   const [name, setName] = useState(child.name || "");
@@ -62,14 +72,6 @@ const Update = ({ handleClose, child }: UpdateProps) => {
     setName(value);
   };
 
-  // Upload helper
-  const uploadFile = async (file: File): Promise<string> => {
-    const formdata = new FormData();
-    formdata.append("file", file, file.name);
-    const res = await api.post("/upload", formdata);
-    return res.data.filename;
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     event.preventDefault();
@@ -84,23 +86,35 @@ const Update = ({ handleClose, child }: UpdateProps) => {
     setUploading(true);
 
     try {
-      // Upload logos se arquivos foram selecionados
+      // Upload logos se arquivos foram selecionados (com deleção automática dos antigos)
       let logoUrl = logo;
       let logoDarkUrl = logoDark;
       let logoMiniUrl = logoMini;
       let logoMiniDarkUrl = logoMiniDark;
 
       if (logoFile) {
-        logoUrl = await uploadFile(logoFile);
+        console.log('📤 Uploading logo...', { oldFile: child.logo, newFile: logoFile.name });
+        const res = await uploadFile(logoFile, child.logo, logoFile.name);
+        console.log('✅ Logo uploaded:', res.data);
+        logoUrl = res.data.filename;
       }
       if (logoDarkFile) {
-        logoDarkUrl = await uploadFile(logoDarkFile);
+        console.log('📤 Uploading logoDark...', { oldFile: child.logoDark, newFile: logoDarkFile.name });
+        const res = await uploadFile(logoDarkFile, child.logoDark, logoDarkFile.name);
+        console.log('✅ LogoDark uploaded:', res.data);
+        logoDarkUrl = res.data.filename;
       }
       if (logoMiniFile) {
-        logoMiniUrl = await uploadFile(logoMiniFile);
+        console.log('📤 Uploading logoMini...', { oldFile: child.logoMini, newFile: logoMiniFile.name });
+        const res = await uploadFile(logoMiniFile, child.logoMini, logoMiniFile.name);
+        console.log('✅ LogoMini uploaded:', res.data);
+        logoMiniUrl = res.data.filename;
       }
       if (logoMiniDarkFile) {
-        logoMiniDarkUrl = await uploadFile(logoMiniDarkFile);
+        console.log('📤 Uploading logoMiniDark...', { oldFile: child.logoMiniDark, newFile: logoMiniDarkFile.name });
+        const res = await uploadFile(logoMiniDarkFile, child.logoMiniDark, logoMiniDarkFile.name);
+        console.log('✅ LogoMiniDark uploaded:', res.data);
+        logoMiniDarkUrl = res.data.filename;
       }
 
       const updatedTenant: Tenant = {
@@ -306,9 +320,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logo || logoFile) && (
               <div className="mt-2">
                 <img
-                  src={logoFile ? URL.createObjectURL(logoFile) : `https://api.insiderhof.com.br/upload/file/${logo}`}
+                  src={logoFile ? URL.createObjectURL(logoFile) : getFileUrl(logo)}
                   alt="Preview"
                   style={{ maxHeight: '60px', border: '1px solid #ddd', padding: '5px' }}
+                  onLoad={() => console.log('✅ Logo image loaded:', logoFile ? 'from file' : getFileUrl(logo))}
+                  onError={(e) => console.error('❌ Logo image failed to load:', logoFile ? 'from file' : getFileUrl(logo), e)}
                 />
               </div>
             )}
@@ -339,7 +355,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoDark || logoDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : `https://api.insiderhof.com.br/upload/file/${logoDark}`}
+                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getFileUrl(logoDark)}
                   alt="Preview Dark"
                   style={{ maxHeight: '60px', border: '1px solid #555', padding: '5px' }}
                 />
@@ -372,7 +388,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoMini || logoMiniFile) && (
               <div className="mt-2">
                 <img
-                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : `https://api.insiderhof.com.br/upload/file/${logoMini}`}
+                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getFileUrl(logoMini)}
                   alt="Preview Mini"
                   style={{ maxHeight: '40px', border: '1px solid #ddd', padding: '5px' }}
                 />
@@ -405,7 +421,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoMiniDark || logoMiniDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : `https://api.insiderhof.com.br/upload/file/${logoMiniDark}`}
+                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getFileUrl(logoMiniDark)}
                   alt="Preview Mini Dark"
                   style={{ maxHeight: '40px', border: '1px solid #555', padding: '5px' }}
                 />

@@ -63,7 +63,16 @@ export const getTenants = (filters?: TenantFilters) => {
     params.append('take', String(filters.take))
   }
 
-  return api.get(`/tenants?${params.toString()}`)
+  const url = `/tenants?${params.toString()}`;
+  console.log('🌐 [TenantsService] Chamando API:', url, 'com filtros:', filters);
+
+  return api.get(url).then(response => {
+    console.log('🌐 [TenantsService] Resposta recebida:', response);
+    return response;
+  }).catch(error => {
+    console.error('🌐 [TenantsService] Erro na requisição:', error);
+    throw error;
+  });
 }
 
 // Get single tenant

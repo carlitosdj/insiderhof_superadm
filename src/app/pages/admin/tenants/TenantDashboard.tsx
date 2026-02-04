@@ -9,6 +9,7 @@ import {
 } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 import TenantMetricsCard from "./TenantMetricsCard";
 import TenantUsersList from "./TenantUsersList";
 import TenantSettingsForm from "./TenantSettingsForm";
@@ -111,7 +112,7 @@ const TenantDashboard: React.FC<TenantDashboardProps> = ({ tenant }) => {
           <div className="d-flex align-items-center">
             {tenant.logo ? (
               <div className="symbol symbol-100px me-7">
-                <img src={`https://app.insiderhof.com.br/files/${tenant.logo}`} alt={tenant.name} />
+                <img src={getAppFileUrl(tenant.logo)} alt={tenant.name} />
               </div>
             ) : (
               <div

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 import { AnimatePresence, Reorder } from "framer-motion";
 import { Button, Card, Alert, Badge } from "react-bootstrap";
 import {
@@ -198,11 +199,11 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                   src={
                                     offer.image.includes("https://")
                                       ? offer.image
-                                      : "https://app.insiderhof.com.br/files/" + offer.image
+                                      : getAppFileUrl(offer.image)
                                   }
                                   onError={({ currentTarget }) => {
                                     currentTarget.onerror = null;
-                                    currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                                    currentTarget.src = getAppFileUrl("notfound.jpg");
                                   }}
                                 />
                               )}
@@ -302,11 +303,11 @@ const ManageLaunchHasOffersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                     src={
                                       child.offer?.image.includes("https://")
                                         ? child.offer?.image
-                                        : "https://app.insiderhof.com.br/files/" + child.offer?.image
+                                        : getAppFileUrl(child.offer?.image)
                                     }
                                     onError={({ currentTarget }) => {
                                       currentTarget.onerror = null;
-                                      currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                                      currentTarget.src = getAppFileUrl("notfound.jpg");
                                     }}
                                   />
                                 )}

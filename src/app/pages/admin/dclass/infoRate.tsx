@@ -8,6 +8,7 @@ import momentDurationFormatSetup from 'moment-duration-format';
 import { Class } from '../../../../store/ducks/dclass/types'
 
 import moment from 'moment'
+import { getAppFileUrl } from '../../../../utils/getApiUrl'
 momentDurationFormatSetup(moment)
 
 interface handleCloseProps {
@@ -89,14 +90,12 @@ const InfoRate = ({handleClose, child}: handleCloseProps) => {
                             src={
                               childCompleted.user?.image?.includes('https://')
                                 ? childCompleted.user?.image
-                                : 'https://app.insiderhof.com.br/files/' +
-                                  childCompleted.user?.image
+                                : getAppFileUrl(childCompleted.user?.image)
                             }
                             style={{width: '35px', height: '35px'}}
                             onError={({currentTarget}) => {
                               currentTarget.onerror = null // prevents looping
-                              currentTarget.src =
-                                'https://app.insiderhof.com.br/files/notfound.jpg'
+                              currentTarget.src = getAppFileUrl('notfound.jpg')
                             }}
                           />
                         </div>

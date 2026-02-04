@@ -3,6 +3,7 @@ import { Card, Row, Col, Badge, ProgressBar, Button, Modal } from "react-bootstr
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 import { ApplicationState } from "../../../../store";
 import Manage from "../dlaunchhasoffers/Manage";
 
@@ -487,11 +488,11 @@ const Resume = () => {
                         src={
                           hasoffer.offer?.image.includes("https://")
                             ? hasoffer.offer?.image
-                            : "https://app.insiderhof.com.br/files/" + hasoffer.offer?.image
+                            : getAppFileUrl(hasoffer.offer?.image)
                         }
                         onError={({ currentTarget }) => {
                           currentTarget.onerror = null;
-                          currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                          currentTarget.src = getAppFileUrl("notfound.jpg");
                         }}
                         alt={hasoffer.offer?.name}
                       />

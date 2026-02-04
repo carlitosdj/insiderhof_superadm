@@ -6,6 +6,7 @@ import { ToolbarWrapper } from "../../../_metronic/layout/components/toolbar";
 import { Content } from "../../../_metronic/layout/components/content";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../../store";
+import { getAppFileUrl } from "../../../utils/getApiUrl";
 
 const ProfileHeader: FC = () => {
   const location = useLocation();
@@ -25,14 +26,13 @@ const ProfileHeader: FC = () => {
                     src={
                       image?.includes("https://")
                         ? image
-                        : "https://app.insiderhof.com.br/files/" + image
+                        : getAppFileUrl(image)
                     }
                     //style={{width: '40px', height:'40px'}}
                     className=""
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null; // prevents looping
-                      currentTarget.src =
-                        "https://app.insiderhof.com.br/files/notfound.jpg";
+                      currentTarget.src = getAppFileUrl("notfound.jpg");
                     }}
                   />
                   <div className="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-white h-20px w-20px"></div>

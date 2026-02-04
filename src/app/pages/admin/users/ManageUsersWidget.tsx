@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { UsersState } from "../../../../store/ducks/users/types";
 import { User, UserUtm } from "../../../../store/ducks/me/types";
 import { getUserUTMHistory, getUserLeadHistory } from "../../../../services/api";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 import {
   deleteUserRequest,
   loadUsersRequest,
@@ -830,14 +831,12 @@ const ManageUsersWidget: React.FC<React.PropsWithChildren<Props>> = ({
                                 src={
                                   child.image?.includes("https://")
                                     ? child.image
-                                    : "https://app.insiderhof.com.br/files/" +
-                                      child.image
+                                    : getAppFileUrl(child.image)
                                 }
                                 style={{ width: "100%" }}
                                 onError={({ currentTarget }) => {
                                   currentTarget.onerror = null; // prevents looping
-                                  currentTarget.src =
-                                    "https://app.insiderhof.com.br/files/notfound.jpg";
+                                  currentTarget.src = getAppFileUrl("notfound.jpg");
                                 }}
                               />
                             </div>

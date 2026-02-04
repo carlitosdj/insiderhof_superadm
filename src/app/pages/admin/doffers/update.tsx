@@ -7,6 +7,7 @@ import { Offer } from "../../../../store/ducks/doffer/types";
 import { updateOfferRequest } from "../../../../store/ducks/doffer/actions";
 import SelectImg from "../../crop/SelectImg";
 import api from "../../../../services/api";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import moment from "moment";
@@ -193,7 +194,7 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
             {logoCertificate && (
               <div style={{ marginBottom: "10px" }}>
                 <img
-                  src={`https://app.insiderhof.com.br/files/${logoCertificate}`}
+                  src={getAppFileUrl(logoCertificate)}
                   alt="Logo Atual"
                   style={{ width: "150px", height: "auto" }}
                 />

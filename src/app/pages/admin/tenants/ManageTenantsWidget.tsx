@@ -6,6 +6,7 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import { useDispatch } from "react-redux";
 import { TenantsState, Tenant } from "../../../../store/ducks/tenants/types";
 import { deleteTenantRequest } from "../../../../store/ducks/tenants/actions";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 import Create from "./create";
 import Update from "./update";
 
@@ -18,6 +19,14 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   tenants,
 }) => {
+  console.log('🎨 [ManageTenantsWidget] Renderizou com:', {
+    tenantsData: tenants.data,
+    tenantsTotal: tenants.total,
+    tenantsDataLength: tenants.data?.length,
+    tenantsError: tenants.error,
+    tenantsLoading: tenants.loading,
+  });
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [planFilter, setPlanFilter] = useState("");
@@ -82,6 +91,14 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
     }
 
     return true;
+  });
+
+  console.log('🔍 [ManageTenantsWidget] Tenants filtrados:', {
+    filteredCount: filteredTenants.length,
+    filteredTenants,
+    search,
+    statusFilter,
+    planFilter,
   });
 
   const getStatusBadge = (status: string) => {
@@ -245,7 +262,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <div className="d-flex align-items-center">
                           {tenant.logo && (
                             <div className="symbol symbol-45px me-5">
-                              <img src={`https://app.insiderhof.com.br/files/${tenant.logoMini}`} alt={tenant.name} />
+                              <img src={getAppFileUrl(tenant.logoMini)} alt={tenant.name} />
                             </div>
                           )}
                           <div className="d-flex justify-content-start flex-column">

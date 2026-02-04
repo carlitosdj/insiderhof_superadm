@@ -6,6 +6,7 @@ import { toAbsoluteUrl } from "../../../helpers";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { useIntl } from "react-intl";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 const HeaderUserMenu: FC = () => {
   // const { currentUser, logout } = useAuth();
@@ -27,14 +28,13 @@ const HeaderUserMenu: FC = () => {
               src={
                 image?.includes("https://")
                   ? image
-                  : "https://app.insiderhof.com.br/files/" + image
+                  : getAppFileUrl(image)
               }
               //style={{width: '40px', height:'40px'}}
               className=""
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null; // prevents looping
-                currentTarget.src =
-                  "https://app.insiderhof.com.br/files/notfound.jpg";
+                currentTarget.src = getAppFileUrl("notfound.jpg");
               }}
             />
           </div>

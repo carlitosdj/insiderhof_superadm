@@ -35,16 +35,25 @@ const ManagePage: React.FC<React.PropsWithChildren<Props>> = ({ tenants }) => (
 const ManageTenants: FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const tenants = useSelector((state: ApplicationState) => state.tenants);
-  const user = useSelector((state: ApplicationState) => state.me.data);
+  const user = useSelector((state: ApplicationState) => state.me.me);
+
+  console.log('🔍 [ManageTenants] Renderizou', {
+    tenantsData: tenants.data,
+    tenantsTotal: tenants.total,
+    tenantsLoading: tenants.loading,
+    tenantsError: tenants.error,
+    user: user
+  });
 
   useEffect(() => {
-    // Carregar todos os tenants (apenas super-admins podem ver)
-    if (user && user.systemRole === 'super-admin') {
-      dispatch(loadTenantsRequest({}));
-    }
-  }, [dispatch, user?.systemRole]);
+    console.log('🚀 [ManageTenants] useEffect disparado - carregando tenants...');
+    dispatch(loadTenantsRequest({}));
+  }, [dispatch]);
 
-  if (tenants.loading) return <Loading />;
+  if (tenants.loading) {
+    console.log('⏳ [ManageTenants] Mostrando loading...');
+    return <Loading />;
+  }
 
   return (
     <SuperAdminGuard>

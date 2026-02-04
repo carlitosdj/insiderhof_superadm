@@ -5,6 +5,7 @@ import {useLayout} from '../../core'
 import { useSelector } from 'react-redux'
 import { ApplicationState } from '../../../../store'
 import { useState, useEffect } from 'react'
+import { getAppFileUrl } from '../../../../utils/getApiUrl'
 
 const itemClass = 'ms-1 ms-md-4'
 const btnClass =
@@ -113,13 +114,13 @@ const Navbar = () => {
           data-kt-menu-attach='parent'
           data-kt-menu-placement='bottom-end'
         >
-          <img 
-            src={ image?.includes('https://') ? image : 'https://app.insiderhof.com.br/files/' + image}
+          <img
+            src={ image?.includes('https://') ? image : getAppFileUrl(image)}
             //style={{width: '40px', height:'40px'}}
             className=''
             onError={({ currentTarget }) => {
               currentTarget.onerror = null; // prevents looping
-              currentTarget.src="https://app.insiderhof.com.br/files/notfound.jpg";
+              currentTarget.src = getAppFileUrl("notfound.jpg");
             }}
             />
         </div>

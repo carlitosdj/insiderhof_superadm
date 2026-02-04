@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import Create from "./create";
 import Update from "./update";
@@ -136,12 +137,11 @@ const ModuleItem: React.FC<{
                       src={
                         image?.includes("https://")
                           ? image
-                          : "https://app.insiderhof.com.br/files/" + image
+                          : getAppFileUrl(image)
                       }
                       onError={({ currentTarget }) => {
                         currentTarget.onerror = null;
-                        currentTarget.src =
-                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                        currentTarget.src = getAppFileUrl("notfound.jpg");
                       }}
                     />
                   </div>

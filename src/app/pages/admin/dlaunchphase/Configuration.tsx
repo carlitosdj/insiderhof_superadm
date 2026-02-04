@@ -3,6 +3,7 @@ import { Form, Button, Card, Row, Col, Alert, Modal, InputGroup } from "react-bo
 import { useSelector, useDispatch } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import momentDurationFormatSetup from "moment-duration-format";
 import { Launch } from "../../../../store/ducks/dlaunch/types";
@@ -528,11 +529,11 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
                                 src={
                                   launch.launchhasoffers[0].offer?.image.includes("https://")
                                     ? launch.launchhasoffers[0].offer?.image
-                                    : "https://app.insiderhof.com.br/files/" + launch.launchhasoffers[0].offer?.image
+                                    : getAppFileUrl(launch.launchhasoffers[0].offer?.image)
                                 }
                                 onError={({ currentTarget }) => {
                                   currentTarget.onerror = null;
-                                  currentTarget.src = "https://app.insiderhof.com.br/files/notfound.jpg";
+                                  currentTarget.src = getAppFileUrl("notfound.jpg");
                                 }}
                                 alt={launch.launchhasoffers[0].offer?.name}
                               />

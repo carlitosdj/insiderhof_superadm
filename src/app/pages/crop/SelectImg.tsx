@@ -10,6 +10,7 @@ import FileResizer from "react-image-file-resizer";
 import { canvasPreview } from "./canvasPreview";
 import { Form } from "react-bootstrap";
 import "react-image-crop/dist/ReactCrop.css";
+import { getAppFileUrl } from "../../../utils/getApiUrl";
 
 function centerAspectCrop(
   mediaWidth: number,
@@ -152,13 +153,12 @@ const SelectImg = ({
                   src={
                     image?.includes("https://")
                       ? image
-                      : "https://app.insiderhof.com.br/files/" + image
+                      : getAppFileUrl(image)
                   }
                   style={{ width: "50%" }}
                   onError={({ currentTarget }) => {
                     currentTarget.onerror = null; // prevents looping
-                    currentTarget.src =
-                      "https://app.insiderhof.com.br/files/notfound.jpg";
+                    currentTarget.src = getAppFileUrl("notfound.jpg");
                   }}
                 />
               )}

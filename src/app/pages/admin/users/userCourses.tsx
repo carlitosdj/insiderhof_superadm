@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
 import {useDispatch} from 'react-redux'
 import {ApplicationState} from '../../../../store'
+import { getAppFileUrl } from '../../../../utils/getApiUrl'
 // import {
 //   createComponentAccessRequest,
 //   //createComponentAccessSuccess,
@@ -147,12 +148,12 @@ const UserCourses = ({handleClose, child}: handleCloseProps) => {
             src={
               child.image?.includes('https://')
                 ? child.image
-                : 'https://app.insiderhof.com.br/files/' + child.image
+                : getAppFileUrl(child.image)
             }
             style={{width: '100%'}}
             onError={({currentTarget}) => {
               currentTarget.onerror = null // prevents looping
-              currentTarget.src = 'https://app.insiderhof.com.br/files/notfound.jpg'
+              currentTarget.src = getAppFileUrl('notfound.jpg')
             }}
           />
         </div>

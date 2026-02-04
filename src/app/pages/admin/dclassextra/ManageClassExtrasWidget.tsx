@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { KTIcon } from "../../../../_metronic/helpers";
+import { getAppFileUrl } from "../../../../utils/getApiUrl";
 
 import Create from "./create";
 import Update from "./update";
@@ -87,13 +88,10 @@ const ClassExtraItem: React.FC<{
                     <img
                       className="w-100 h-100"
                       style={{ objectFit: "cover" }}
-                      src={
-                        "https://app.insiderhof.com.br/files/" + child.value
-                      }
+                      src={getAppFileUrl(child.value)}
                       onError={({ currentTarget }) => {
                         currentTarget.onerror = null;
-                        currentTarget.src =
-                          "https://app.insiderhof.com.br/files/notfound.jpg";
+                        currentTarget.src = getAppFileUrl("notfound.jpg");
                       }}
                     />
                   </div>
@@ -177,9 +175,7 @@ const ClassExtraItem: React.FC<{
                   {child.key === "img" && (
                     <a
                       target="_blank"
-                      href={
-                        "https://app.insiderhof.com.br/files/" + child.value
-                      }
+                      href={getAppFileUrl(child.value)}
                       className="text-decoration-none"
                     >
                       <span className="text-muted fs-8 fs-md-7">
@@ -218,9 +214,7 @@ const ClassExtraItem: React.FC<{
 
                   {child.key === "file" && (
                     <a
-                      href={
-                        "https://app.insiderhof.com.br/files/" + child.value
-                      }
+                      href={getAppFileUrl(child.value)}
                       target="_blank"
                       className="text-decoration-none"
                     >
