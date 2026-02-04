@@ -12,13 +12,29 @@ export async function uploadFile(
   oldFilename?: string,
   filename?: string
 ): Promise<{ data: { filename: string } }> {
+  console.log('📤 [uploadHelper] Iniciando upload...', {
+    filename,
+    oldFilename,
+    fileSize: file.size,
+    fileType: file.type,
+  });
+
   const formdata = new FormData();
   formdata.append('file', file, filename || 'upload.jpg');
 
   // Se houver arquivo antigo, adiciona para deleção
   if (oldFilename) {
+    console.log('🗑️ [uploadHelper] Arquivo antigo para deletar:', oldFilename);
     formdata.append('oldFile', oldFilename);
   }
 
-  return api.post('/upload', formdata);
+  try {
+    const response = await api.post('/upload', formdata);
+    console.log('✅ [uploadHelper] Upload bem-sucedido:', response.data);
+    return response;
+  } catch (error: any) {
+    console.error('❌ [uploadHelper] Erro no upload:', error);
+    console.error('❌ [uploadHelper] Error response:', error.response?.data);
+    throw error;
+  }
 }

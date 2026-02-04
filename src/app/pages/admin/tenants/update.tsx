@@ -136,11 +136,15 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         secondaryColor,
       };
 
+      console.log('📝 Dispatching update:', updatedTenant);
       dispatch(updateTenantRequest(updatedTenant));
       handleClose();
-    } catch (error) {
-      console.error("Erro ao fazer upload:", error);
-      alert("Erro ao fazer upload dos arquivos. Tente novamente.");
+    } catch (error: any) {
+      console.error("❌ Erro completo:", error);
+      console.error("❌ Erro response:", error.response);
+      console.error("❌ Erro message:", error.message);
+      console.error("❌ Erro stack:", error.stack);
+      alert(`Erro ao fazer upload dos arquivos: ${error.response?.data?.message || error.message || 'Erro desconhecido'}`);
     } finally {
       setUploading(false);
     }
@@ -311,7 +315,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logo}
               onChange={(e) => setLogo(e.target.value)}
               placeholder="Ou cole a URL do logo"
@@ -346,7 +350,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoDark}
               onChange={(e) => setLogoDark(e.target.value)}
               placeholder="Ou cole a URL do logo dark"
@@ -358,6 +362,8 @@ const Update = ({ handleClose, child }: UpdateProps) => {
                   src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getFileUrl(logoDark)}
                   alt="Preview Dark"
                   style={{ maxHeight: '60px', border: '1px solid #555', padding: '5px' }}
+                  onLoad={() => console.log('✅ LogoDark image loaded:', logoDarkFile ? 'from file' : getFileUrl(logoDark))}
+                  onError={(e) => console.error('❌ LogoDark image failed to load:', logoDarkFile ? 'from file' : getFileUrl(logoDark), e)}
                 />
               </div>
             )}
@@ -379,7 +385,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoMini}
               onChange={(e) => setLogoMini(e.target.value)}
               placeholder="Ou cole a URL do logo mini"
@@ -391,6 +397,8 @@ const Update = ({ handleClose, child }: UpdateProps) => {
                   src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getFileUrl(logoMini)}
                   alt="Preview Mini"
                   style={{ maxHeight: '40px', border: '1px solid #ddd', padding: '5px' }}
+                  onLoad={() => console.log('✅ LogoMini image loaded:', logoMiniFile ? 'from file' : getFileUrl(logoMini))}
+                  onError={(e) => console.error('❌ LogoMini image failed to load:', logoMiniFile ? 'from file' : getFileUrl(logoMini), e)}
                 />
               </div>
             )}
@@ -412,7 +420,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoMiniDark}
               onChange={(e) => setLogoMiniDark(e.target.value)}
               placeholder="Ou cole a URL do logo mini dark"
@@ -424,6 +432,8 @@ const Update = ({ handleClose, child }: UpdateProps) => {
                   src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getFileUrl(logoMiniDark)}
                   alt="Preview Mini Dark"
                   style={{ maxHeight: '40px', border: '1px solid #555', padding: '5px' }}
+                  onLoad={() => console.log('✅ LogoMiniDark image loaded:', logoMiniDarkFile ? 'from file' : getFileUrl(logoMiniDark))}
+                  onError={(e) => console.error('❌ LogoMiniDark image failed to load:', logoMiniDarkFile ? 'from file' : getFileUrl(logoMiniDark), e)}
                 />
               </div>
             )}

@@ -279,7 +279,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logo}
               onChange={(e) => setLogo(e.target.value)}
               placeholder="Ou cole a URL do logo"
@@ -312,7 +312,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoDark}
               onChange={(e) => setLogoDark(e.target.value)}
               placeholder="Ou cole a URL do logo dark"
@@ -345,7 +345,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoMini}
               onChange={(e) => setLogoMini(e.target.value)}
               placeholder="Ou cole a URL do logo mini"
@@ -378,7 +378,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
               className="mb-2"
             />
             <Form.Control
-              type="url"
+              type="text"
               value={logoMiniDark}
               onChange={(e) => setLogoMiniDark(e.target.value)}
               placeholder="Ou cole a URL do logo mini dark"
