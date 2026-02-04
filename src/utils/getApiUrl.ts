@@ -30,6 +30,33 @@ export function getFileUrl(filename: string): string {
 }
 
 /**
+ * Retorna a URL da imagem de um tenant específico
+ * Usa o domínio do tenant para construir a URL correta
+ * @param filename - Nome do arquivo
+ * @param tenant - Dados do tenant (domain ou customDomain)
+ * @returns URL completa apontando para app.<tenant-domain>/files/<arquivo>
+ */
+export function getTenantFileUrl(filename: string, tenant?: { domain?: string; customDomain?: string }): string {
+  if (!filename) return '';
+
+  // Se não tiver tenant info, usar a API como fallback
+  if (!tenant || (!tenant.domain && !tenant.customDomain)) {
+    return getFileUrl(filename);
+  }
+
+  // Priorizar customDomain, depois domain
+  const domain = tenant.customDomain || tenant.domain;
+
+  // Se o domínio já começa com 'app.', usar direto
+  if (domain?.startsWith('app.')) {
+    return `https://${domain}/files/${filename}`;
+  }
+
+  // Senão, adicionar 'app.' no início
+  return `https://app.${domain}/files/${filename}`;
+}
+
+/**
  * Detecta automaticamente a URL do app (student portal) baseado no domínio
  * Segue a convenção: superadm.<dominio> → app.<dominio>
  *

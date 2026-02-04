@@ -6,7 +6,7 @@ import { KTIcon } from "../../../../_metronic/helpers";
 import { useDispatch } from "react-redux";
 import { TenantsState, Tenant } from "../../../../store/ducks/tenants/types";
 import { deleteTenantRequest } from "../../../../store/ducks/tenants/actions";
-import { getAppFileUrl } from "../../../../utils/getApiUrl";
+import { getTenantFileUrl } from "../../../../utils/getApiUrl";
 import Create from "./create";
 import Update from "./update";
 
@@ -262,7 +262,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                         <div className="d-flex align-items-center">
                           {tenant.logo && (
                             <div className="symbol symbol-45px me-5">
-                              <img src={getAppFileUrl(tenant.logoMini)} alt={tenant.name} />
+                              <img src={getTenantFileUrl(tenant.logoMini || tenant.logo, tenant)} alt={tenant.name} />
                             </div>
                           )}
                           <div className="d-flex justify-content-start flex-column">

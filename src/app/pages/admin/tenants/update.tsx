@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { updateTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
 import { uploadFile } from "../../../../utils/uploadHelper";
-import { getFileUrl } from "../../../../utils/getApiUrl";
+import { getTenantFileUrl } from "../../../../utils/getApiUrl";
 
 interface UpdateProps {
   handleClose: () => void;
@@ -93,26 +93,26 @@ const Update = ({ handleClose, child }: UpdateProps) => {
       let logoMiniDarkUrl = logoMiniDark;
 
       if (logoFile) {
-        console.log('📤 Uploading logo...', { oldFile: child.logo, newFile: logoFile.name });
-        const res = await uploadFile(logoFile, child.logo, logoFile.name);
+        console.log('📤 Uploading logo...', { oldFile: child.logo, newFile: logoFile.name, tenantSlug: slug });
+        const res = await uploadFile(logoFile, child.logo, logoFile.name, slug);
         console.log('✅ Logo uploaded:', res.data);
         logoUrl = res.data.filename;
       }
       if (logoDarkFile) {
-        console.log('📤 Uploading logoDark...', { oldFile: child.logoDark, newFile: logoDarkFile.name });
-        const res = await uploadFile(logoDarkFile, child.logoDark, logoDarkFile.name);
+        console.log('📤 Uploading logoDark...', { oldFile: child.logoDark, newFile: logoDarkFile.name, tenantSlug: slug });
+        const res = await uploadFile(logoDarkFile, child.logoDark, logoDarkFile.name, slug);
         console.log('✅ LogoDark uploaded:', res.data);
         logoDarkUrl = res.data.filename;
       }
       if (logoMiniFile) {
-        console.log('📤 Uploading logoMini...', { oldFile: child.logoMini, newFile: logoMiniFile.name });
-        const res = await uploadFile(logoMiniFile, child.logoMini, logoMiniFile.name);
+        console.log('📤 Uploading logoMini...', { oldFile: child.logoMini, newFile: logoMiniFile.name, tenantSlug: slug });
+        const res = await uploadFile(logoMiniFile, child.logoMini, logoMiniFile.name, slug);
         console.log('✅ LogoMini uploaded:', res.data);
         logoMiniUrl = res.data.filename;
       }
       if (logoMiniDarkFile) {
-        console.log('📤 Uploading logoMiniDark...', { oldFile: child.logoMiniDark, newFile: logoMiniDarkFile.name });
-        const res = await uploadFile(logoMiniDarkFile, child.logoMiniDark, logoMiniDarkFile.name);
+        console.log('📤 Uploading logoMiniDark...', { oldFile: child.logoMiniDark, newFile: logoMiniDarkFile.name, tenantSlug: slug });
+        const res = await uploadFile(logoMiniDarkFile, child.logoMiniDark, logoMiniDarkFile.name, slug);
         console.log('✅ LogoMiniDark uploaded:', res.data);
         logoMiniDarkUrl = res.data.filename;
       }
@@ -324,11 +324,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logo || logoFile) && (
               <div className="mt-2">
                 <img
-                  src={logoFile ? URL.createObjectURL(logoFile) : getFileUrl(logo)}
+                  src={logoFile ? URL.createObjectURL(logoFile) : getTenantFileUrl(logo, child)}
                   alt="Preview"
                   style={{ maxHeight: '60px', border: '1px solid #ddd', padding: '5px' }}
-                  onLoad={() => console.log('✅ Logo image loaded:', logoFile ? 'from file' : getFileUrl(logo))}
-                  onError={(e) => console.error('❌ Logo image failed to load:', logoFile ? 'from file' : getFileUrl(logo), e)}
+                  onLoad={() => console.log('✅ Logo image loaded:', logoFile ? 'from file' : getTenantFileUrl(logo, child))}
+                  onError={(e) => console.error('❌ Logo image failed to load:', logoFile ? 'from file' : getTenantFileUrl(logo, child), e)}
                 />
               </div>
             )}
@@ -359,11 +359,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoDark || logoDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getFileUrl(logoDark)}
+                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getTenantFileUrl(logoDark, child)}
                   alt="Preview Dark"
                   style={{ maxHeight: '60px', border: '1px solid #555', padding: '5px' }}
-                  onLoad={() => console.log('✅ LogoDark image loaded:', logoDarkFile ? 'from file' : getFileUrl(logoDark))}
-                  onError={(e) => console.error('❌ LogoDark image failed to load:', logoDarkFile ? 'from file' : getFileUrl(logoDark), e)}
+                  onLoad={() => console.log('✅ LogoDark image loaded:', logoDarkFile ? 'from file' : getTenantFileUrl(logoDark, child))}
+                  onError={(e) => console.error('❌ LogoDark image failed to load:', logoDarkFile ? 'from file' : getTenantFileUrl(logoDark, child), e)}
                 />
               </div>
             )}
@@ -394,11 +394,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoMini || logoMiniFile) && (
               <div className="mt-2">
                 <img
-                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getFileUrl(logoMini)}
+                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getTenantFileUrl(logoMini, child)}
                   alt="Preview Mini"
                   style={{ maxHeight: '40px', border: '1px solid #ddd', padding: '5px' }}
-                  onLoad={() => console.log('✅ LogoMini image loaded:', logoMiniFile ? 'from file' : getFileUrl(logoMini))}
-                  onError={(e) => console.error('❌ LogoMini image failed to load:', logoMiniFile ? 'from file' : getFileUrl(logoMini), e)}
+                  onLoad={() => console.log('✅ LogoMini image loaded:', logoMiniFile ? 'from file' : getTenantFileUrl(logoMini, child))}
+                  onError={(e) => console.error('❌ LogoMini image failed to load:', logoMiniFile ? 'from file' : getTenantFileUrl(logoMini, child), e)}
                 />
               </div>
             )}
@@ -429,11 +429,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             {(logoMiniDark || logoMiniDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getFileUrl(logoMiniDark)}
+                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getTenantFileUrl(logoMiniDark, child)}
                   alt="Preview Mini Dark"
                   style={{ maxHeight: '40px', border: '1px solid #555', padding: '5px' }}
-                  onLoad={() => console.log('✅ LogoMiniDark image loaded:', logoMiniDarkFile ? 'from file' : getFileUrl(logoMiniDark))}
-                  onError={(e) => console.error('❌ LogoMiniDark image failed to load:', logoMiniDarkFile ? 'from file' : getFileUrl(logoMiniDark), e)}
+                  onLoad={() => console.log('✅ LogoMiniDark image loaded:', logoMiniDarkFile ? 'from file' : getTenantFileUrl(logoMiniDark, child))}
+                  onError={(e) => console.error('❌ LogoMiniDark image failed to load:', logoMiniDarkFile ? 'from file' : getTenantFileUrl(logoMiniDark, child), e)}
                 />
               </div>
             )}

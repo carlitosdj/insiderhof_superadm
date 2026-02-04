@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Tenant } from "../../../../store/ducks/tenants/types";
-import { getAppFileUrl } from "../../../../utils/getApiUrl";
+import { getTenantFileUrl } from "../../../../utils/getApiUrl";
 
 interface TenantCardProps {
   tenant: Tenant;
@@ -54,7 +54,7 @@ const TenantCard: React.FC<TenantCardProps> = ({ tenant }) => {
         <div className="d-flex align-items-center mb-5">
           {tenant.logo ? (
             <div className="symbol symbol-60px me-5">
-              <img src={getAppFileUrl(tenant.logo)} alt={tenant.name} />
+              <img src={getTenantFileUrl(tenant.logo, tenant)} alt={tenant.name} />
             </div>
           ) : (
             <div

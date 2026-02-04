@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { createTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
 import { uploadFile } from "../../../../utils/uploadHelper";
-import { getFileUrl } from "../../../../utils/getApiUrl";
+import { getTenantFileUrl } from "../../../../utils/getApiUrl";
 
 interface handleCloseProps {
   handleClose: () => void;
@@ -87,19 +87,19 @@ const Create = ({ handleClose }: handleCloseProps) => {
       let logoMiniDarkUrl = logoMiniDark;
 
       if (logoFile) {
-        const res = await uploadFile(logoFile, undefined, logoFile.name);
+        const res = await uploadFile(logoFile, undefined, logoFile.name, slug);
         logoUrl = res.data.filename;
       }
       if (logoDarkFile) {
-        const res = await uploadFile(logoDarkFile, undefined, logoDarkFile.name);
+        const res = await uploadFile(logoDarkFile, undefined, logoDarkFile.name, slug);
         logoDarkUrl = res.data.filename;
       }
       if (logoMiniFile) {
-        const res = await uploadFile(logoMiniFile, undefined, logoMiniFile.name);
+        const res = await uploadFile(logoMiniFile, undefined, logoMiniFile.name, slug);
         logoMiniUrl = res.data.filename;
       }
       if (logoMiniDarkFile) {
-        const res = await uploadFile(logoMiniDarkFile, undefined, logoMiniDarkFile.name);
+        const res = await uploadFile(logoMiniDarkFile, undefined, logoMiniDarkFile.name, slug);
         logoMiniDarkUrl = res.data.filename;
       }
 
@@ -288,7 +288,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logo || logoFile) && (
               <div className="mt-2">
                 <img
-                  src={logoFile ? URL.createObjectURL(logoFile) : getFileUrl(logo)}
+                  src={logoFile ? URL.createObjectURL(logoFile) : getTenantFileUrl(logo, { domain, customDomain })}
                   alt="Preview"
                   style={{ maxHeight: '60px', border: '1px solid #ddd', padding: '5px' }}
                 />
@@ -321,7 +321,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoDark || logoDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getFileUrl(logoDark)}
+                  src={logoDarkFile ? URL.createObjectURL(logoDarkFile) : getTenantFileUrl(logoDark, { domain, customDomain })}
                   alt="Preview Dark"
                   style={{ maxHeight: '60px', border: '1px solid #555', padding: '5px' }}
                 />
@@ -354,7 +354,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoMini || logoMiniFile) && (
               <div className="mt-2">
                 <img
-                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getFileUrl(logoMini)}
+                  src={logoMiniFile ? URL.createObjectURL(logoMiniFile) : getTenantFileUrl(logoMini, { domain, customDomain })}
                   alt="Preview Mini"
                   style={{ maxHeight: '40px', border: '1px solid #ddd', padding: '5px' }}
                 />
@@ -387,7 +387,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
             {(logoMiniDark || logoMiniDarkFile) && (
               <div className="mt-2" style={{ backgroundColor: '#1e1e2d', padding: '10px' }}>
                 <img
-                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getFileUrl(logoMiniDark)}
+                  src={logoMiniDarkFile ? URL.createObjectURL(logoMiniDarkFile) : getTenantFileUrl(logoMiniDark, { domain, customDomain })}
                   alt="Preview Mini Dark"
                   style={{ maxHeight: '40px', border: '1px solid #555', padding: '5px' }}
                 />

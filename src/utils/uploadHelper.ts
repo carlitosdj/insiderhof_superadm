@@ -5,16 +5,19 @@ import api from '../services/api';
  * @param file - Arquivo novo para upload (Blob ou File)
  * @param oldFilename - Nome do arquivo antigo para deletar (opcional)
  * @param filename - Nome customizado para o arquivo (opcional)
+ * @param tenantSlug - Slug do tenant de destino (opcional, usado pelo superadm)
  * @returns Promise com a resposta da API contendo { filename: string }
  */
 export async function uploadFile(
   file: Blob | File,
   oldFilename?: string,
-  filename?: string
+  filename?: string,
+  tenantSlug?: string
 ): Promise<{ data: { filename: string } }> {
   console.log('📤 [uploadHelper] Iniciando upload...', {
     filename,
     oldFilename,
+    tenantSlug,
     fileSize: file.size,
     fileType: file.type,
   });
@@ -26,6 +29,12 @@ export async function uploadFile(
   if (oldFilename) {
     console.log('🗑️ [uploadHelper] Arquivo antigo para deletar:', oldFilename);
     formdata.append('oldFile', oldFilename);
+  }
+
+  // Se houver tenantSlug, adiciona para upload no tenant correto
+  if (tenantSlug) {
+    console.log('🏷️ [uploadHelper] Tenant de destino:', tenantSlug);
+    formdata.append('tenantSlug', tenantSlug);
   }
 
   try {
