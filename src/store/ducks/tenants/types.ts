@@ -87,6 +87,11 @@ export interface Tenant {
   primaryColor?: string
   secondaryColor?: string
 
+  // Email Configuration (Resend)
+  mailResendApiKey?: string
+  mailDefaultSender?: string
+  mailDefaultSenderName?: string
+
   // Dates
   trialEndsAt?: string
   createdAt?: string

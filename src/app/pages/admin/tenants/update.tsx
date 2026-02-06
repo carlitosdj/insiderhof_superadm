@@ -61,6 +61,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   const [primaryColor, setPrimaryColor] = useState(child.primaryColor || "#3699FF");
   const [secondaryColor, setSecondaryColor] = useState(child.secondaryColor || "#F1416C");
 
+  // Email Configuration
+  const [mailResendApiKey, setMailResendApiKey] = useState(child.mailResendApiKey || "");
+  const [mailDefaultSender, setMailDefaultSender] = useState(child.mailDefaultSender || "");
+  const [mailDefaultSenderName, setMailDefaultSenderName] = useState(child.mailDefaultSenderName || "");
+
   // Upload states
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoDarkFile, setLogoDarkFile] = useState<File | null>(null);
@@ -134,6 +139,9 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         logoMiniDark: logoMiniDarkUrl,
         primaryColor,
         secondaryColor,
+        mailResendApiKey,
+        mailDefaultSender,
+        mailDefaultSenderName,
       };
 
       console.log('📝 Dispatching update:', updatedTenant);
@@ -232,6 +240,48 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             />
             <Form.Text className="text-muted">
               Domínio personalizado do cliente (opcional)
+            </Form.Text>
+          </Form.Group>
+
+          <hr className="my-5" />
+          <h5 className="mb-4">Configurações de Email (Resend)</h5>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Resend API Key</Form.Label>
+            <Form.Control
+              type="password"
+              value={mailResendApiKey}
+              onChange={(e) => setMailResendApiKey(e.target.value)}
+              placeholder="re_xxxxxxxxxxxxx"
+            />
+            <Form.Text className="text-muted">
+              API Key do Resend para envio de emails automáticos. Deixe em branco para usar a chave global.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Email Remetente Padrão</Form.Label>
+            <Form.Control
+              type="email"
+              value={mailDefaultSender}
+              onChange={(e) => setMailDefaultSender(e.target.value)}
+              placeholder="noreply@meusite.com"
+            />
+            <Form.Text className="text-muted">
+              Email usado como remetente nos emails automáticos do sistema.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Nome do Remetente Padrão</Form.Label>
+            <Form.Control
+              type="text"
+              value={mailDefaultSenderName}
+              onChange={(e) => setMailDefaultSenderName(e.target.value)}
+              placeholder="Minha Plataforma"
+            />
+            <Form.Text className="text-muted">
+              Nome exibido como remetente nos emails automáticos.
             </Form.Text>
           </Form.Group>
         </div>
