@@ -47,6 +47,9 @@ const TenantSettingsForm: React.FC<TenantSettingsFormProps> = ({
   const [smtpPassword, setSmtpPassword] = useState('');
   const [fromEmail, setFromEmail] = useState(settings?.fromEmail || '');
   const [fromName, setFromName] = useState(settings?.fromName || '');
+  const [mailResendApiKey, setMailResendApiKey] = useState(settings?.mailResendApiKey || '');
+  const [mailDefaultSender, setMailDefaultSender] = useState(settings?.mailDefaultSender || '');
+  const [mailDefaultSenderName, setMailDefaultSenderName] = useState(settings?.mailDefaultSenderName || '');
 
   useEffect(() => {
     if (settings) {
@@ -70,6 +73,9 @@ const TenantSettingsForm: React.FC<TenantSettingsFormProps> = ({
       setSmtpUser(settings.smtpUser || '');
       setFromEmail(settings.fromEmail || '');
       setFromName(settings.fromName || '');
+      setMailResendApiKey(settings.mailResendApiKey || '');
+      setMailDefaultSender(settings.mailDefaultSender || '');
+      setMailDefaultSenderName(settings.mailDefaultSenderName || '');
     }
   }, [settings]);
 
@@ -106,10 +112,16 @@ const TenantSettingsForm: React.FC<TenantSettingsFormProps> = ({
       smtpUser,
       fromEmail,
       fromName,
+      mailDefaultSender,
+      mailDefaultSenderName,
     };
 
     if (smtpPassword) {
       updatedSettings.smtpPassword = smtpPassword;
+    }
+
+    if (mailResendApiKey) {
+      updatedSettings.mailResendApiKey = mailResendApiKey;
     }
 
     dispatch(updateTenantSettingsRequest(tenantId, updatedSettings));
@@ -351,6 +363,52 @@ const TenantSettingsForm: React.FC<TenantSettingsFormProps> = ({
               onChange={(e) => setFromName(e.target.value)}
               placeholder="Meu Curso Online"
             />
+          </Form.Group>
+
+          <hr className="my-5" />
+
+          <h5 className="mb-4">Resend API Configuration</h5>
+          <p className="text-muted mb-5">
+            Configurações para envio de emails automáticos do sistema (recuperação de senha, comentários, etc).
+          </p>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Resend API Key</Form.Label>
+            <Form.Control
+              type="password"
+              value={mailResendApiKey}
+              onChange={(e) => setMailResendApiKey(e.target.value)}
+              placeholder="re_xxxxxxxxxxxxx"
+            />
+            <Form.Text className="text-muted">
+              Chave API do Resend. Deixe em branco para usar a chave global do sistema.
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Email Remetente Padrão</Form.Label>
+            <Form.Control
+              type="email"
+              value={mailDefaultSender}
+              onChange={(e) => setMailDefaultSender(e.target.value)}
+              placeholder="noreply@meusite.com"
+            />
+            <Form.Text className="text-muted">
+              Email usado como remetente nos emails automáticos (recuperação de senha, notificações, etc).
+            </Form.Text>
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Nome do Remetente Padrão</Form.Label>
+            <Form.Control
+              type="text"
+              value={mailDefaultSenderName}
+              onChange={(e) => setMailDefaultSenderName(e.target.value)}
+              placeholder="Minha Plataforma"
+            />
+            <Form.Text className="text-muted">
+              Nome exibido como remetente nos emails automáticos.
+            </Form.Text>
           </Form.Group>
         </div>
       </div>

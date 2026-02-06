@@ -151,6 +151,9 @@ export interface TenantSettings {
   fromName?: string
   emailFromName?: string
   emailFromAddress?: string
+  mailResendApiKey?: string
+  mailDefaultSender?: string
+  mailDefaultSenderName?: string
 
   // Limits
   maxProjects?: number
