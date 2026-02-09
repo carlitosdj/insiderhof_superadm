@@ -16,6 +16,7 @@ import TenantSettingsForm from "./TenantSettingsForm";
 import AddTenantUserModal from "./AddTenantUserModal";
 import TenantProjectsList from "./TenantProjectsList";
 import TenantPaymentGatewaysList from "./TenantPaymentGatewaysList";
+import TenantDomainsList from "./TenantDomainsList";
 
 interface TenantDashboardProps {
   tenant: Tenant;
@@ -231,6 +232,12 @@ const TenantDashboard: React.FC<TenantDashboardProps> = ({ tenant }) => {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
+                <Nav.Link eventKey="domains" className="cursor-pointer">
+                  <KTIcon iconName="abstract-41" className="fs-2 me-2" />
+                  Domínios
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
                 <Nav.Link eventKey="settings" className="cursor-pointer">
                   <KTIcon iconName="setting-2" className="fs-2 me-2" />
                   Configurações
@@ -394,6 +401,11 @@ const TenantDashboard: React.FC<TenantDashboardProps> = ({ tenant }) => {
               {/* Payment Gateways */}
               <Tab.Pane eventKey="payment-gateways">
                 <TenantPaymentGatewaysList tenantId={tenant.id!} />
+              </Tab.Pane>
+
+              {/* Domains */}
+              <Tab.Pane eventKey="domains">
+                <TenantDomainsList tenantId={tenant.id!} />
               </Tab.Pane>
 
               {/* Configurações */}
