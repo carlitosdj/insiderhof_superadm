@@ -1,5 +1,4 @@
-import axios from 'axios';
-import apiClient from './apiClient';
+import api from './api';
 
 export interface TenantDomain {
   id: number;
@@ -30,7 +29,7 @@ export interface UpdateDomainDto {
  * Busca todos os domínios de um tenant
  */
 export const getTenantDomains = (tenantId: number) => {
-  return apiClient.get<TenantDomain[]>(
+  return api.get<TenantDomain[]>(
     `/tenant-domains/superadmin/tenant/${tenantId}/domains`
   );
 };
@@ -39,7 +38,7 @@ export const getTenantDomains = (tenantId: number) => {
  * Cria um novo domínio para o tenant
  */
 export const createDomain = (tenantId: number, data: CreateDomainDto) => {
-  return apiClient.post<TenantDomain>(
+  return api.post<TenantDomain>(
     `/tenant-domains/superadmin/tenant/${tenantId}/domains`,
     data
   );
@@ -49,7 +48,7 @@ export const createDomain = (tenantId: number, data: CreateDomainDto) => {
  * Atualiza um domínio existente
  */
 export const updateDomain = (domainId: number, data: UpdateDomainDto) => {
-  return apiClient.patch<TenantDomain>(
+  return api.patch<TenantDomain>(
     `/tenant-domains/superadmin/domains/${domainId}`,
     data
   );
@@ -59,5 +58,5 @@ export const updateDomain = (domainId: number, data: UpdateDomainDto) => {
  * Deleta um domínio
  */
 export const deleteDomain = (domainId: number) => {
-  return apiClient.delete(`/tenant-domains/superadmin/domains/${domainId}`);
+  return api.delete(`/tenant-domains/superadmin/domains/${domainId}`);
 };
