@@ -53,8 +53,8 @@ const TenantCard: React.FC<TenantCardProps> = ({ tenant }) => {
         {/* Logo e Header */}
         <div className="d-flex align-items-center mb-5">
           {tenant.logo ? (
-            <div className="symbol symbol-60px me-5">
-              <img src={getTenantFileUrl(tenant.logo, tenant)} alt={tenant.name} />
+            <div className="">
+              <img style={{height: '45px'}} src={getTenantFileUrl(tenant.logo, tenant)} alt={tenant.name} />
             </div>
           ) : (
             <div

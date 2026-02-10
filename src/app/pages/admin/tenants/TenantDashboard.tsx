@@ -113,8 +113,8 @@ const TenantDashboard: React.FC<TenantDashboardProps> = ({ tenant }) => {
         <div className="card-body">
           <div className="d-flex align-items-center">
             {tenant.logo ? (
-              <div className="symbol symbol-100px me-7">
-                <img src={getTenantFileUrl(tenant.logo, tenant)} alt={tenant.name} />
+              <div className="">
+                <img style={{height: '45px'}} src={getTenantFileUrl(tenant.logo, tenant)} alt={tenant.name} />
               </div>
             ) : (
               <div

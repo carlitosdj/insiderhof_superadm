@@ -261,8 +261,8 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       <td>
                         <div className="d-flex align-items-center">
                           {tenant.logo && (
-                            <div className="symbol symbol-45px me-5">
-                              <img src={getTenantFileUrl(tenant.logoMini || tenant.logo, tenant)} alt={tenant.name} />
+                            <div>
+                              <img style={{ height: '40px' }} src={getTenantFileUrl(tenant.logoMini || tenant.logo, tenant)} alt={tenant.name} />
                             </div>
                           )}
                           <div className="d-flex justify-content-start flex-column">
