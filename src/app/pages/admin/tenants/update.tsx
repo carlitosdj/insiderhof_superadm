@@ -40,6 +40,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   const [name, setName] = useState(child.name || "");
   const [slug, setSlug] = useState(child.slug || "");
   const [description, setDescription] = useState(child.description || "");
+  const [tagline, setTagline] = useState(child.tagline || "");
 
   // Domínios
   const [domain, setDomain] = useState(child.domain || "");
@@ -48,6 +49,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   // Contato
   const [contactEmail, setContactEmail] = useState(child.contactEmail || "");
   const [contactPhone, setContactPhone] = useState(child.contactPhone || "");
+  const [contactWhatsapp, setContactWhatsapp] = useState(child.contactWhatsapp || "");
 
   // Plano e status
   const [plan, setPlan] = useState<Tenant['plan']>(child.plan);
@@ -127,10 +129,12 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         name,
         slug,
         description,
+        tagline,
         domain,
         customDomain,
         contactEmail,
         contactPhone,
+        contactWhatsapp,
         plan,
         status,
         logo: logoUrl,
@@ -215,6 +219,19 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Descrição do tenant..."
             />
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>Tagline</Form.Label>
+            <Form.Control
+              type="text"
+              value={tagline}
+              onChange={(e) => setTagline(e.target.value)}
+              placeholder="Ex: A melhor plataforma de harmonização facial"
+            />
+            <Form.Text className="text-muted">
+              Texto curto e impactante para a landing page
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-5">
@@ -312,6 +329,19 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               onChange={(e) => setContactPhone(e.target.value)}
               placeholder="(11) 99999-9999"
             />
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Label>WhatsApp de Contato</Form.Label>
+            <Form.Control
+              type="tel"
+              value={contactWhatsapp}
+              onChange={(e) => setContactWhatsapp(e.target.value)}
+              placeholder="(11) 99999-9999"
+            />
+            <Form.Text className="text-muted">
+              Número do WhatsApp que aparecerá na landing page
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-5">

@@ -77,9 +77,11 @@ export interface Tenant {
   // Contact
   contactEmail: string
   contactPhone?: string
+  contactWhatsapp?: string
 
   // Branding
   description?: string
+  tagline?: string
   logo?: string
   logoDark?: string
   logoMini?: string

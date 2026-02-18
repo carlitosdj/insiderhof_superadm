@@ -51,7 +51,7 @@ const AddPaymentGatewayModal: React.FC<AddPaymentGatewayModalProps> = ({
     }
   }, [gateway, show]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<any>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
