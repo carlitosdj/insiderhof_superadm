@@ -278,15 +278,7 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [status, setStatus] = useState<string>("1");
-  const [price, setPrice] = useState(0);
-  // const [oldPrice, setOldPrice] = useState(0);
   const [type, setType] = useState("");
-  const [installments, setInstallments] = useState("");
-  const [renovationTime, setRenovationTime] = useState(0);
-  const [renovationPrice, setRenovationPrice] = useState(0);
-  const [antecipateRenovationPrice, setAntecipateRenovationPrice] = useState(0);
-  const [renovationDescription, setRenovationDescription] = useState("");
-  const [renovationInstallments, setRenovationInstallments] = useState("");
 
   // Load launch data when component mounts or launch changes
   useEffect(() => {
@@ -294,15 +286,7 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
       setName(launch.name || "");
       setDescription(launch.description || "");
       setStatus(launch.status || "1");
-      setPrice(launch.price || 0);
-      // setOldPrice(launch.oldPrice || 0);
       setType(launch.type || "");
-      setInstallments(launch.installments || "");
-      setRenovationTime(launch.renovationTime || 0);
-      setRenovationPrice(launch.renovationPrice || 0);
-      setAntecipateRenovationPrice(launch.antecipateRenovationPrice || 0);
-      setRenovationDescription(launch.renovationDescription || "");
-      setRenovationInstallments(launch.renovationInstallments || "");
     }
   }, [launch]);
 
@@ -322,15 +306,7 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
         name,
         description,
         status: status,
-        price: Number(price),
-        // oldPrice: Number(oldPrice),
         type,
-        installments,
-        renovationTime: Number(renovationTime),
-        renovationPrice: Number(renovationPrice),
-        antecipateRenovationPrice: Number(antecipateRenovationPrice),
-        renovationDescription,
-        renovationInstallments
       };
       
       try {
@@ -357,15 +333,7 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
       setName(launch.name || "");
       setDescription(launch.description || "");
       setStatus(launch.status || "1");
-      setPrice(launch.price || 0);
-      // setOldPrice(launch.oldPrice || 0);
       setType(launch.type || "");
-      setInstallments(launch.installments || "");
-      setRenovationTime(launch.renovationTime || 0);
-      setRenovationPrice(launch.renovationPrice || 0);
-      setAntecipateRenovationPrice(launch.antecipateRenovationPrice || 0);
-      setRenovationDescription(launch.renovationDescription || "");
-      setRenovationInstallments(launch.renovationInstallments || "");
       setValidated(false);
     }
   };
@@ -506,17 +474,6 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
                         </Form.Select>
                       </span>
                     </div>
-                    <div className="info-item">
-                      <span className="info-label">Parcelas</span>
-                      <span className="info-value">
-                        <Form.Control
-                          placeholder="Ex: 12x sem juros de R$ 97,00"
-                          value={installments}
-                          onChange={(e) => setInstallments(e.target.value)}
-                          className="form-control"
-                        />
-                      </span>
-                    </div>
                     {launch?.launchhasoffers && launch.launchhasoffers.length > 0 ? (
                       <div className="info-item">
                         <span className="info-label">
@@ -582,21 +539,6 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
                         }
                       </span>
                     </div>
-                    <div className="info-item">
-                      <span className="info-label">Preço Atual</span>
-                      <span className="info-value">
-                        <InputGroup>
-                          <InputGroup.Text>R$</InputGroup.Text>
-                          <Form.Control
-                            type="number"
-                            placeholder="0,00"
-                            value={price}
-                            onChange={(e) => setPrice(Number(e.target.value))}
-                            className="form-control"
-                          />
-                        </InputGroup>
-                      </span>
-                    </div>
                   </div>
                   
                   <div className="form-group mt-4">
@@ -628,100 +570,6 @@ const Configuration = ({ launch: propLaunch, onCancel }: { launch?: any; onCance
               </div>
             </Col>
 
-            {/* Configurações de Renovação */}
-            <Col lg={6} className="h-100">
-              <div className="content-section h-100">
-                <div className="section-header">
-                  <h5>
-                    <KTIcon iconName="refresh" className="fs-5" />
-                    Configurações de Renovação
-                  </h5>
-                </div>
-                <div className="section-body">
-                  <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div className="info-item">
-                      <span className="info-label">Tempo de Renovação (dias)</span>
-                      <span className="info-value">
-                        <Form.Control
-                          type="number"
-                          placeholder="30"
-                          value={renovationTime}
-                          onChange={(e) => setRenovationTime(Number(e.target.value))}
-                          className="form-control"
-                        />
-                      </span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Preço de Renovação</span>
-                      <span className="info-value">
-                        <InputGroup>
-                          <InputGroup.Text>R$</InputGroup.Text>
-                          <Form.Control
-                            type="number"
-                            placeholder="0,00"
-                            value={renovationPrice}
-                            onChange={(e) => setRenovationPrice(Number(e.target.value))}
-                            className="form-control"
-                          />
-                        </InputGroup>
-                      </span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Renovação Antecipada</span>
-                      <span className="info-value">
-                        <InputGroup>
-                          <InputGroup.Text>R$</InputGroup.Text>
-                          <Form.Control
-                            type="number"
-                            placeholder="0,00"
-                            value={antecipateRenovationPrice}
-                            onChange={(e) => setAntecipateRenovationPrice(Number(e.target.value))}
-                            className="form-control"
-                          />
-                        </InputGroup>
-                      </span>
-                    </div>
-                    <div className="info-item">
-                      <span className="info-label">Parcelas de Renovação</span>
-                      <span className="info-value">
-                        <Form.Control
-                          placeholder="Ex: 12x sem juros"
-                          value={renovationInstallments}
-                          onChange={(e) => setRenovationInstallments(e.target.value)}
-                          className="form-control"
-                        />
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="form-group mt-4">
-                    <Form.Label className="form-label">
-                      Descrição da Renovação
-                    </Form.Label>
-                    <Form.Control
-                      placeholder="Descreva os benefícios da renovação..."
-                      value={renovationDescription}
-                      onChange={(e) => setRenovationDescription(e.target.value)}
-                      as="textarea"
-                      rows={3}
-                      className="form-control"
-                    />
-                  </div>
-                  
-                  {renovationDescription && (
-                    <div className="mt-4 p-3 bg-light-warning bg-opacity-10 rounded">
-                      <div className="d-flex align-items-start">
-                        <KTIcon iconName="document" className="fs-2 text-primary me-3 mt-1" />
-                        <div>
-                          <div className="fw-bold text-dark mb-2">Descrição da Renovação</div>
-                          <div className="text-dark">{renovationDescription}</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Col>
           </Row>
 
           {/* Action Buttons */}

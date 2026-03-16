@@ -24,7 +24,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
   const [validated, setValidated] = useState(false);
 
-  const [price, setPrice] = useState(0);
   const [type, setType] = useState("");
 
   const [slug, setSlug] = useState("jan25");
@@ -69,15 +68,7 @@ const Create = ({ handleClose }: handleCloseProps) => {
   const [onboardingVideo, setOnboardingVideo] = useState("");
   const [checkoutPage, setCheckoutPage] = useState("");
 
-  const [installments, setInstallments] = useState("12");
   const [aviso, setAviso] = useState("");
-
-  const [renovationTime, setRenovationTime] = useState(12);
-  const [renovationPrice, setRenovationPrice] = useState(0);
-  const [antecipateRenovationPrice, setAntecipateRenovationPrice] = useState(0);
-  const [renovationDescription, setRenovationDescription] =
-    useState("Renovação");
-  const [renovationInstallments, setRenovationInstallments] = useState("12");
 
   useEffect(() => {
     const d = new Date();
@@ -139,8 +130,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
         name,
         description,
         ownerId: me.me.id,
-        price: Number(price),
-   
         type,
         slug,
         eventName,
@@ -176,13 +165,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
 
         leadForm,
         domain,
-
-        installments,
-        renovationTime,
-        renovationPrice,
-        antecipateRenovationPrice,
-        renovationDescription,
-        renovationInstallments,
       };
 
       dispatch(createLaunchRequest(product));
@@ -452,21 +434,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
             <br />
             <Form.Group controlId="fromName">
               <Form.Label className="required fw-bold fs-6 mb-5">
-                Parcelas
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={installments}
-                onChange={(e: any) => setInstallments(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
                 Aviso: Ex: REFERENTE À ENTRADA PARA MATRÍCULA, O RESTANTE NO DIA
                 DO CURSO.
               </Form.Label>
@@ -494,85 +461,6 @@ const Create = ({ handleClose }: handleCloseProps) => {
               />
               <Form.Control.Feedback type="invalid">
                 Por favor informe o productWaitLink
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-          </div>
-          <div className="flex-row py-lg-2 px-lg-6" style={{ flex: 1 }}>
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationTime
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={renovationTime}
-                onChange={(e: any) => setRenovationTime(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationPrice
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={renovationPrice}
-                onChange={(e: any) => setRenovationPrice(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                antecipateRenovationPrice
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={antecipateRenovationPrice}
-                onChange={(e: any) =>
-                  setAntecipateRenovationPrice(e.target.value)
-                }
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationDescription
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={renovationDescription}
-                onChange={(e: any) => setRenovationDescription(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
-              </Form.Control.Feedback>
-            </Form.Group>
-            <br />
-            <Form.Group controlId="fromName">
-              <Form.Label className="required fw-bold fs-6 mb-5">
-                renovationInstallments
-              </Form.Label>
-              <Form.Control
-                placeholder=""
-                value={renovationInstallments}
-                onChange={(e: any) => setRenovationInstallments(e.target.value)}
-                className="form-control form-control-lg form-control-solid"
-              />
-              <Form.Control.Feedback type="invalid">
-                Por favor informe as Parcelas
               </Form.Control.Feedback>
             </Form.Group>
             <br />

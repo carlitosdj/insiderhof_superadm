@@ -377,13 +377,11 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
     return '0';
   };
 
-  const getRevenue = (launch: any) => {
-    return (launch.cartCount || 0) * (launch.price || 0);
-  };
+  const offerPrice = launch?.launchhasoffers?.[0]?.offer?.price || 0;
 
-  // Extract price values for comparison
-  // const oldPrice = launch?.oldPrice || 0;
-  const price = launch?.price || 0;
+  const getRevenue = (launch: any) => {
+    return (launch.cartCount || 0) * offerPrice;
+  };
 
   const [showOffersModal, setShowOffersModal] = useState(false);
   const handleOpenOffersModal = () => setShowOffersModal(true);
@@ -473,7 +471,7 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
                 <KTIcon iconName="wallet" className="fs-1 text-primary opacity-75" />
               </div>
               <div>
-                <div className="fs-2 fw-bold metric-number">{formatCurrency(price)}</div>
+                <div className="fs-2 fw-bold metric-number">{formatCurrency(offerPrice)}</div>
                 <div className="fs-7 fw-semibold metric-label">Ticket Médio</div>
               </div>
             </div>
@@ -517,10 +515,6 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
                         {getStatusText(launch)}
                       </Badge>
                     </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Parcelas</span>
-                    <span className="info-value">{launch.installments || 'Não informado'}</span>
                   </div>
                   {launch.launchhasoffers && launch.launchhasoffers.length > 0 ? (
                     <div className="info-item">
@@ -592,7 +586,7 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
                   </div>
                   <div className="info-item">
                     <span className="info-label">Preço Atual</span>
-                    <span className="info-value text-success">{formatCurrency(launch.price || 0)}</span>
+                    <span className="info-value text-success">{formatCurrency(offerPrice)}</span>
                   </div>
                   
                   <div className="info-item">
@@ -619,59 +613,7 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
               </div>
             </div>
           </Col>
-          {/* Configurações de Renovação */}
-          {(launch.renovationTime || launch.renovationPrice || launch.renovationDescription) && (
-            <Col lg={6} className="h-100">
-              <div className="content-section h-100">
-                <div className="section-header">
-                  <h5>
-                    <KTIcon iconName="refresh" className="fs-5" />
-                    Configurações de Renovação
-                  </h5>
-                </div>
-                <div className="section-body">
-                  <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {launch.renovationTime && (
-                      <div className="info-item">
-                        <span className="info-label">Tempo de Renovação (dias)</span>
-                        <span className="info-value">{launch.renovationTime}</span>
-                      </div>
-                    )}
-                    {launch.renovationPrice && (
-                      <div className="info-item">
-                        <span className="info-label">Preço de Renovação</span>
-                        <span className="info-value">{formatCurrency(launch.renovationPrice)}</span>
-                      </div>
-                    )}
-                    {launch.antecipateRenovationPrice && (
-                      <div className="info-item">
-                        <span className="info-label">Renovação Antecipada</span>
-                        <span className="info-value">{formatCurrency(launch.antecipateRenovationPrice)}</span>
-                      </div>
-                    )}
-                    {launch.renovationInstallments && (
-                      <div className="info-item">
-                        <span className="info-label">Parcelas de Renovação</span>
-                        <span className="info-value">{launch.renovationInstallments}</span>
-                      </div>
-                    )}
-
-                  </div>
-                  
-                  {launch.renovationDescription && (
-                    <div className="mt-4 p-3 bg-light-warning bg-opacity-10 rounded">
-                      <div className="d-flex align-items-start">
-                        <KTIcon iconName="document" className="fs-2 text-primary me-3 mt-1" />
-                        <div>
-                          <div className="fw-bold text-dark mb-2">Descrição da Renovação</div>
-                          <div className="text-dark">{launch.renovationDescription}</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
+          <Col lg={6} className="h-100">
               <div className="content-section">
               <div className="section-header">
                 <h5>
@@ -794,7 +736,6 @@ const Resume = ({ launch: propLaunch, onEdit }: { launch?: any; onEdit?: () => v
               </div>
             </div>
             </Col>
-          )}
         </Row>
 
             {/* Lead Scoring Navigation */}

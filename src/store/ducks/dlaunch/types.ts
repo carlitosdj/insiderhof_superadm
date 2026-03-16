@@ -40,20 +40,12 @@ export interface Launch {
   id?: number | undefined;
   name?: string | undefined;
   description?: string | undefined;
-  price?: number | undefined;
   type?: string | undefined;
   order?: number | undefined;
   createdAt?: Date | undefined;
   updatedAt?: Date | undefined;
   status?: string | undefined;
   ownerId?: number | undefined;
-
-  installments?: string | undefined
-  renovationTime?: number | undefined;
-  renovationPrice?: number | undefined;
-  antecipateRenovationPrice?: number | undefined;
-  renovationDescription?: string | undefined;
-  renovationInstallments?: string | undefined;
 
   launchhasoffers?: LaunchHasOffers[] | undefined;
   phases? : LaunchPhases[] | undefined;
