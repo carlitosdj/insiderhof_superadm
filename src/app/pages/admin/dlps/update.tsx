@@ -156,7 +156,6 @@ const Update = ({ handleClose, child }: handleCloseProps) => {
               >
                 <option value="">Selecione um layout</option>
                 <option value="halo">Halo (padrão)</option>
-                <option value="halo-wise">Halo Wise (Sábio)</option>
                 <option value="halo-amber">Halo Amber</option>
                 <option value="halo-green">Halo Green</option>
                 <option value="halo-orange">Halo Orange</option>

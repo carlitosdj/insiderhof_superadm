@@ -96,6 +96,17 @@ export interface Launch {
   onboardingVideo?: string
   checkoutPage?: string
   aviso?: string
+  price?: number | string
+  installments?: number | string
+  renovationTime?: number | string
+  renovationPrice?: number | string
+  antecipateRenovationPrice?: number | string
+  renovationDescription?: string
+  renovationInstallments?: number | string
+  oldPrice?: number | string
+  currency?: string
+  isActive?: boolean | number
+  completeLaunch?: boolean | number
 }
 /**
  * State type
