@@ -22,7 +22,13 @@ interface SuperAdminGuardProps {
  * ```
  */
 const SuperAdminGuard: FC<SuperAdminGuardProps> = ({ children }) => {
-  const user = useSelector((state: ApplicationState) => state.me.data);
+  const user = useSelector((state: ApplicationState) => state.me.me);
+  const loading = useSelector((state: ApplicationState) => state.me.loading);
+
+  // Wait for user data to load before deciding
+  if (loading || !user?.id) {
+    return null;
+  }
 
   // Check if user has super-admin system role
   if (user?.systemRole !== "super-admin") {
