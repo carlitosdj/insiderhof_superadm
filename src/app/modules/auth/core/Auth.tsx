@@ -5,8 +5,6 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
-import {useDispatch} from 'react-redux'
-import * as projectActions from '../../../../store/ducks/projects/actions'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -57,7 +55,6 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
 const AuthInit: FC<WithChildren> = ({children}) => {
   const {auth, currentUser, logout, setCurrentUser} = useAuth()
   const [showSplashScreen, setShowSplashScreen] = useState(true)
-  const dispatch = useDispatch()
 
   // We should request user by authToken (IN OUR EXAMPLE IT'S API_TOKEN) before rendering the application
   useEffect(() => {
@@ -67,8 +64,6 @@ const AuthInit: FC<WithChildren> = ({children}) => {
           const {data} = await getUserByToken(apiToken)
           if (data) {
             setCurrentUser(data)
-            // Initialize projects after user is authenticated
-            dispatch(projectActions.loadProjectsRequest())
           }
         }
       } catch (error) {

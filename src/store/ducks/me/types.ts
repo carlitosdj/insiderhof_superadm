@@ -1,7 +1,4 @@
-import { City } from "../city/types"
-import { Completed } from "../dclass/types"
-//import { Completed } from "../component/types"
-import { State } from "../state/types"
+// Inline types to avoid dependencies on removed ducks
 
 export interface UserUtm {
   id: number
@@ -106,10 +103,10 @@ export interface User {
   profileUserId?: number
   postalCode?:string
 
-  completed?: Completed[]
+  completed?: any[]
 
-  city?: City
-  state?: State
+  city?: any
+  state?: any
   data?: any
   cityId?: string
   stateId?: string
