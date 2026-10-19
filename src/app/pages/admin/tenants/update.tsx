@@ -587,7 +587,6 @@ const Update = ({ handleClose, child }: UpdateProps) => {
 
           <PwaAppSection
             tenantName={name}
-            primaryColor={primaryColor}
             values={pwaFields}
             onChange={(changes) => setPwaFields((current) => ({ ...current, ...changes }))}
             savedIconUrl={pwaIcon ? getTenantFileUrl(pwaIcon, child) : ""}

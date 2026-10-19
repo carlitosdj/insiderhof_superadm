@@ -1,8 +1,44 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 
-/** Mesmo fundo padrão da API (api/src/pwa/pwa.service.ts) */
+/** Mesmos padrões da API (api/src/pwa/pwa.service.ts) */
 export const DEFAULT_PWA_BACKGROUND = "#151521";
+const DEFAULT_PWA_THEME = "#0F1014";
+const LIGHT_ICON_BACKGROUND = "#FFFFFF";
+
+/**
+ * Mesma regra da API para o fundo do ícone sem cor escolhida: mede a
+ * luminosidade dos pixels visíveis da logo (logo escura → fundo branco).
+ * null = não deu para medir (ex.: imagem de outro domínio sem CORS).
+ */
+const measureLuminance = (url: string): Promise<number | null> =>
+  new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(null);
+        ctx.drawImage(img, 0, 0, 64, 64);
+        const { data } = ctx.getImageData(0, 0, 64, 64);
+        let sum = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i + 3] < 128) continue;
+          sum += (0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]) / 255;
+          count++;
+        }
+        resolve(count ? sum / count : null);
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
 const SHORT_NAME_MAX = 12;
 const MIN_ICON_SIZE = 512;
 
@@ -15,7 +51,6 @@ export interface PwaFields {
 
 interface PwaAppSectionProps {
   tenantName: string;
-  primaryColor: string;
   values: PwaFields;
   onChange: (changes: Partial<PwaFields>) => void;
   /** URL do ícone já salvo; vazio = o app usa a logo mini/logo como reserva */
@@ -33,7 +68,6 @@ interface PwaAppSectionProps {
  */
 const PwaAppSection = ({
   tenantName,
-  primaryColor,
   values,
   onChange,
   savedIconUrl,
@@ -50,7 +84,24 @@ const PwaAppSection = ({
 
   const previewUrl = fileUrl || savedIconUrl || fallbackLogoUrl;
   const usingFallback = !fileUrl && !savedIconUrl;
-  const background = values.pwaBackgroundColor || DEFAULT_PWA_BACKGROUND;
+
+  // Fundo do ícone: a cor escolhida; vazia, o que dá contraste com a logo (igual à API)
+  const [autoIconBackground, setAutoIconBackground] = useState(DEFAULT_PWA_BACKGROUND);
+  useEffect(() => {
+    if (!previewUrl) return;
+    let active = true;
+    measureLuminance(previewUrl).then((luminance) => {
+      if (active) {
+        setAutoIconBackground(luminance !== null && luminance < 0.5 ? LIGHT_ICON_BACKGROUND : DEFAULT_PWA_BACKGROUND);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [previewUrl]);
+  const iconBackground = values.pwaBackgroundColor || autoIconBackground;
+  // A tela de abertura não muda com a logo: vazia, fica escura
+  const splashBackground = values.pwaBackgroundColor || DEFAULT_PWA_BACKGROUND;
   const shortName = values.pwaShortName || tenantName;
 
   // O ícone precisa ser quadrado e grande o bastante para o 512px do Android
@@ -185,10 +236,15 @@ const PwaAppSection = ({
 
       <div className="row">
         <div className="col-md-6">
-          {colorField("Cor de fundo do app", "pwaBackgroundColor", DEFAULT_PWA_BACKGROUND, "Fundo da splash e do ícone")}
+          {colorField(
+            "Cor de fundo do app",
+            "pwaBackgroundColor",
+            DEFAULT_PWA_BACKGROUND,
+            "Fundo da splash e do ícone. Vazio: splash escura e ícone com fundo automático (branco para logo escura)"
+          )}
         </div>
         <div className="col-md-6">
-          {colorField("Cor da barra do sistema", "pwaThemeColor", primaryColor || DEFAULT_PWA_BACKGROUND, "Vazio = cor primária")}
+          {colorField("Cor da barra do sistema", "pwaThemeColor", DEFAULT_PWA_THEME, "Vazio = preto (cor do header)")}
         </div>
       </div>
 
@@ -198,7 +254,7 @@ const PwaAppSection = ({
           <div className="d-flex flex-column align-items-center">
             <div
               className="d-flex align-items-center justify-content-center overflow-hidden"
-              style={{ width: 64, height: 64, borderRadius: "50%", backgroundColor: background }}
+              style={{ width: 64, height: 64, borderRadius: "50%", backgroundColor: iconBackground }}
             >
               {iconImage(0.6)}
             </div>
@@ -210,7 +266,7 @@ const PwaAppSection = ({
           <div className="d-flex flex-column align-items-center">
             <div
               className="d-flex align-items-center justify-content-center overflow-hidden"
-              style={{ width: 64, height: 64, borderRadius: "22%", backgroundColor: background }}
+              style={{ width: 64, height: 64, borderRadius: "22%", backgroundColor: iconBackground }}
             >
               {iconImage(0.8)}
             </div>
@@ -222,7 +278,7 @@ const PwaAppSection = ({
           <div className="d-flex flex-column align-items-center">
             <div
               className="d-flex flex-column align-items-center justify-content-center rounded border border-gray-400"
-              style={{ width: 90, height: 160, backgroundColor: background }}
+              style={{ width: 90, height: 160, backgroundColor: splashBackground }}
             >
               <div style={{ width: 40, height: 40 }} className="d-flex align-items-center justify-content-center">
                 {iconImage(1)}
