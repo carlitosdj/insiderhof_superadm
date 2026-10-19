@@ -1,11 +1,11 @@
 import axios from 'axios'
+import { getApiUrl } from '../utils/getApiUrl'
 
 const api = axios.create({
-  // PRODUÇÃO: API roda no Docker (porta 4001), Nginx faz proxy para api.insiderhof.com.br
-  baseURL: 'https://api.insiderhof.com.br'
-
-  // DEV LOCAL: Descomentar para desenvolvimento (API no Docker em localhost:4001)
-  // baseURL: 'http://localhost:4001',
+  // Detecta pela URL do superadm (igual ao app):
+  // superadm.insiderhof.com.br → https://api.insiderhof.com.br
+  // localhost → http://localhost:3107 (API do docker-compose.dev.yml)
+  baseURL: getApiUrl()
 })
 
 // Add a request interceptor

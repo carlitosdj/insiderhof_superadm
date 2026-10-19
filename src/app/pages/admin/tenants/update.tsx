@@ -5,6 +5,7 @@ import { updateTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { Tenant } from "../../../../store/ducks/tenants/types";
 import { uploadFile } from "../../../../utils/uploadHelper";
 import { getTenantFileUrl } from "../../../../utils/getApiUrl";
+import PwaAppSection, { PwaFields } from "./PwaAppSection";
 
 interface UpdateProps {
   handleClose: () => void;
@@ -62,6 +63,16 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   const [logoMiniDark, setLogoMiniDark] = useState(child.logoMiniDark || "");
   const [primaryColor, setPrimaryColor] = useState(child.primaryColor || "#3699FF");
   const [secondaryColor, setSecondaryColor] = useState(child.secondaryColor || "#F1416C");
+
+  // App instalável (PWA)
+  const [pwaIcon] = useState(child.pwaIcon || "");
+  const [pwaIconFile, setPwaIconFile] = useState<File | null>(null);
+  const [pwaFields, setPwaFields] = useState<PwaFields>({
+    pwaName: child.pwaName || "",
+    pwaShortName: child.pwaShortName || "",
+    pwaBackgroundColor: child.pwaBackgroundColor || "",
+    pwaThemeColor: child.pwaThemeColor || "",
+  });
 
   // Email Configuration
   const [mailResendApiKey, setMailResendApiKey] = useState(child.mailResendApiKey || "");
@@ -123,6 +134,11 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         console.log('✅ LogoMiniDark uploaded:', res.data);
         logoMiniDarkUrl = res.data.filename;
       }
+      let pwaIconUrl = pwaIcon;
+      if (pwaIconFile) {
+        const res = await uploadFile(pwaIconFile, child.pwaIcon, pwaIconFile.name, slug);
+        pwaIconUrl = res.data.filename;
+      }
 
       const updatedTenant: Tenant = {
         ...child,
@@ -143,6 +159,8 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         logoMiniDark: logoMiniDarkUrl,
         primaryColor,
         secondaryColor,
+        pwaIcon: pwaIconUrl,
+        ...pwaFields,
         mailResendApiKey,
         mailDefaultSender,
         mailDefaultSenderName,
@@ -566,6 +584,17 @@ const Update = ({ handleClose, child }: UpdateProps) => {
               </Form.Group>
             </div>
           </div>
+
+          <PwaAppSection
+            tenantName={name}
+            primaryColor={primaryColor}
+            values={pwaFields}
+            onChange={(changes) => setPwaFields((current) => ({ ...current, ...changes }))}
+            savedIconUrl={pwaIcon ? getTenantFileUrl(pwaIcon, child) : ""}
+            fallbackLogoUrl={getTenantFileUrl(logoMini || logo, child)}
+            iconFile={pwaIconFile}
+            onIconFileChange={setPwaIconFile}
+          />
         </div>
       </div>
 

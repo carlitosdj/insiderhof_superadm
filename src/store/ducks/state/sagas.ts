@@ -17,6 +17,6 @@ export function* loadState(payload: ReturnType<typeof loadStateRequest>) {
     console.log("response", response)
     yield put(loadStateSuccess(response))
   } catch (error: any) {
-    yield put(loadStateFailure(error.response.data))
+    yield put(loadStateFailure(error.response?.data))
   }
 }

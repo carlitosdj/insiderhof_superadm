@@ -73,7 +73,7 @@ export function* loadUsers(payload: ReturnType<typeof loadUsersRequest>) {
     console.log('Response', response)
     yield put(loadUsersSuccess(response))
   } catch (error: any) {
-    yield put(loadUsersFailure(error.response.data))
+    yield put(loadUsersFailure(error.response?.data))
   }
 }
 
@@ -85,7 +85,7 @@ export function* loadUser(payload: ReturnType<typeof loadUserRequest>) {
         yield put(loadUserSuccess(response));
         yield console.log('response*****USER', response)
     } catch (error: any) {
-        yield put(loadUserFailure(error.response.data));
+        yield put(loadUserFailure(error.response?.data));
     }
 }
 
@@ -110,7 +110,7 @@ export function* searchUser(payload: ReturnType<typeof searchUserRequest>) {
     console.log('response', response)
   } catch (error: any) {
     console.log('errorya', error)
-    yield put(searchUserFailure(error.response.data))
+    yield put(searchUserFailure(error.response?.data))
   }
 }
 
@@ -125,7 +125,7 @@ export function* filterUser(payload: ReturnType<typeof filterUserRequest>) {
     )
     yield put(filterUserSuccess(response))
   } catch (error: any) {
-    yield put(filterUserFailure(error.response.data))
+    yield put(filterUserFailure(error.response?.data))
   }
 }
 
@@ -138,7 +138,7 @@ export function* createUser(payload: ReturnType<typeof createUserRequest>) {
     yield put(createUserSuccess(response))
   } catch (error: any) {
     console.log('ERror', error)
-    yield put(createUserFailure(error.response.data))
+    yield put(createUserFailure(error.response?.data))
   }
 }
 
@@ -149,7 +149,7 @@ export function* updateUser(payload: ReturnType<typeof updateUserRequest>) {
     const response: User = yield call(api.patch, 'user/' + payload.payload.id, payload.payload)
     yield put(updateUserSuccess(response))
   } catch (error: any) {
-    yield put(updateUserFailure(error.response.data))
+    yield put(updateUserFailure(error.response?.data))
   }
 }
 
@@ -159,7 +159,7 @@ export function* deleteUser(payload: ReturnType<typeof deleteUserRequest>) {
     const response: User = yield call(api.delete, 'user/' + payload.payload)
     yield put(deleteUserSuccess(response))
   } catch (error: any) {
-    yield put(deleteUserFailure(error.response.data))
+    yield put(deleteUserFailure(error.response?.data))
   }
 }
 
@@ -171,7 +171,7 @@ export function* selectUsersAdd(payload: ReturnType<typeof selectUsersAddRequest
     yield put(selectUsersAddSuccess(payload.payload))
   } catch (error: any) {
     //yield put(deleteUserFailure())
-    console.log('ERrro', error.response.data)
+    console.log('ERrro', error.response?.data)
   }
 }
 
@@ -182,7 +182,7 @@ export function* selectUsersRemove(payload: ReturnType<typeof selectUsersRemoveR
     yield put(selectUsersRemoveSuccess(payload.payload))
   } catch (error: any) {
     //yield put(deleteUserFailure())
-    console.log('ERrro', error.response.data)
+    console.log('ERrro', error.response?.data)
   }
 }
 
@@ -193,7 +193,7 @@ export function* loadUserLaunches() {
     const response = yield call(api.get, 'user/launches')
     yield put(loadUserLaunchesSuccess(response.data))
   } catch (error: any) {
-    yield put(loadUserLaunchesFailure(error.response.data))
+    yield put(loadUserLaunchesFailure(error.response?.data))
   }
 }
 
@@ -203,7 +203,7 @@ export function* loadUsersByLaunch(payload: ReturnType<typeof loadUsersByLaunchR
     const response: User[] = yield call(api.get, 'user/launch/' + payload.payload)
     yield put(loadUsersByLaunchSuccess(response))
   } catch (error: any) {
-    yield put(loadUsersByLaunchFailure(error.response.data))
+    yield put(loadUsersByLaunchFailure(error.response?.data))
   }
 }
 
@@ -214,7 +214,7 @@ export function* loadExportUsers(payload: ReturnType<typeof loadExportUsersReque
     const response = yield call(api.get, 'user/launch/' + payload.payload)
     yield put(loadExportUsersSuccess(response.data))
   } catch (error: any) {
-    yield put(loadExportUsersFailure(error.response.data))
+    yield put(loadExportUsersFailure(error.response?.data))
   }
 }
 
@@ -224,7 +224,7 @@ export function* loadExportUsers(payload: ReturnType<typeof loadExportUsersReque
 //     yield put(setUserStartDateRequest(payload.payload))
 //   } catch (error: any) {
 //     //yield put(setUserStartDateRequest(payload.payload))
-//     console.log('ERRO', error.response.data)
+//     console.log('ERRO', error.response?.data)
 //   }
 // }
 
@@ -233,6 +233,6 @@ export function* loadExportUsers(payload: ReturnType<typeof loadExportUsersReque
 //     yield put(setUserEndDateRequest(payload.payload))
 //   } catch (error: any) {
 //     //yield put(setUserEndDateRequest(payload.payload))
-//     console.log('ERRO', error.response.data)
+//     console.log('ERRO', error.response?.data)
 //   }
 // }

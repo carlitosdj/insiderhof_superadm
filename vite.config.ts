@@ -75,12 +75,12 @@ export default defineConfig(({ mode }) => {
     },
 
     server: {
-      port: 3004,
+      port: 3104,
       strictPort: true,
     },
 
     preview: {
-      port: 3004,
+      port: 3104,
       strictPort: true,
     },
   }

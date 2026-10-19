@@ -12,6 +12,13 @@ const SidebarMenuMain = () => {
         fontIcon="bi-app-indicator"
         title="Tenants"
       />
+      {/* Quem instalou o app do aluno (PWA), por tenant */}
+      <SidebarMenuItem
+        to="/installations"
+        icon="phone"
+        fontIcon="bi-phone"
+        title="Apps instalados"
+      />
     </>
   );
 };

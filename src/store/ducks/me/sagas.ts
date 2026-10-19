@@ -55,7 +55,7 @@ export function* loginUser(payload: ReturnType<typeof loginUserRequest>) {
     
     //window.location.reload()
   } catch (error: any) {
-    yield put(loginUserFailure(error.response.data))
+    yield put(loginUserFailure(error.response?.data))
   }
 }
 
@@ -65,7 +65,7 @@ export function* recoveryUser(payload: ReturnType<typeof recoveryUserRequest>) {
     const response: string = yield call(api.post, 'recovery', {email: payload.payload}) //Payload.payload está ok
     yield put(recoveryUserSuccess(response))
   } catch (error: any) {
-    yield put(recoveryUserFailure(error.response.data))
+    yield put(recoveryUserFailure(error.response?.data))
   }
 }
 
@@ -75,7 +75,7 @@ export function* loadMe(payload: ReturnType<typeof loadMeRequest>) {
     const response: User = yield call(api.post, 'userrecovery', payload.payload)
     yield put(loadMeSuccess(response))
   } catch (error: any) {
-    yield put(loadMeFailure(error.response.data))
+    yield put(loadMeFailure(error.response?.data))
   }
 }
 
@@ -86,7 +86,7 @@ export function* createMe(payload: ReturnType<typeof createMeRequest>) {
     const response: User = yield call(api.post, 'users', payload.payload)
     yield put(createMeSuccess(response))
   } catch (error: any) {
-    yield put(createMeFailure(error.response.data))
+    yield put(createMeFailure(error.response?.data))
   }
 }
 
@@ -96,7 +96,7 @@ export function* updateMe(payload: ReturnType<typeof updateMeRequest>) {
     const response: User = yield call(api.post, 'users', payload.payload)
     yield put(updateMeSuccess(response))
   } catch (error: any) {
-    yield put(updateMeFailure(error.response.data))
+    yield put(updateMeFailure(error.response?.data))
   }
 }
 
@@ -106,6 +106,6 @@ export function* deleteMe(payload: ReturnType<typeof deleteMeRequest>) {
     const response: User = yield call(api.delete, 'users/' + payload.payload)
     yield put(deleteMeSuccess(response))
   } catch (error: any) {
-    yield put(deleteMeFailure(error.response.data))
+    yield put(deleteMeFailure(error.response?.data))
   }
 }

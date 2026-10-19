@@ -5,14 +5,14 @@
  * Exemplos:
  * - superadm.insiderhof.com.br → https://api.insiderhof.com.br
  * - superadm.insiderflow.com.br → https://api.insiderflow.com.br
- * - localhost → http://localhost:3007
+ * - localhost → http://localhost:3107
  */
 export function getApiUrl(): string {
   const hostname = window.location.hostname;
 
   // Localhost development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3007';
+    return 'http://localhost:3107';
   }
 
   // Produção: Extrai domínio base e cria URL da API
@@ -63,14 +63,14 @@ export function getTenantFileUrl(filename: string, tenant?: { domain?: string; c
  * Exemplos:
  * - superadm.insiderhof.com.br → https://app.insiderhof.com.br
  * - superadm.insiderflow.com.br → https://app.insiderflow.com.br
- * - localhost → http://localhost:3002
+ * - localhost → http://localhost:3102
  */
 export function getAppUrl(): string {
   const hostname = window.location.hostname;
 
   // Localhost development
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return 'http://localhost:3002';
+    return 'http://localhost:3102';
   }
 
   // Se já está em app.*, retorna a própria URL base

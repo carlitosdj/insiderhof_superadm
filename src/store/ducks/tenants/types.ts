@@ -89,6 +89,13 @@ export interface Tenant {
   primaryColor?: string
   secondaryColor?: string
 
+  // App instalável (PWA)
+  pwaIcon?: string
+  pwaName?: string
+  pwaShortName?: string
+  pwaBackgroundColor?: string
+  pwaThemeColor?: string
+
   // Email Configuration (Resend)
   mailResendApiKey?: string
   mailDefaultSender?: string
