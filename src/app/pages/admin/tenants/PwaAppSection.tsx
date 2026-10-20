@@ -244,7 +244,12 @@ const PwaAppSection = ({
           )}
         </div>
         <div className="col-md-6">
-          {colorField("Cor da barra do sistema", "pwaThemeColor", DEFAULT_PWA_THEME, "Vazio = preto (cor do header)")}
+          {colorField(
+            "Cor da barra do sistema (tema escuro)",
+            "pwaThemeColor",
+            DEFAULT_PWA_THEME,
+            "Vazio = preto (cor do header). No tema claro a barra fica branca, como o header"
+          )}
         </div>
       </div>
 
