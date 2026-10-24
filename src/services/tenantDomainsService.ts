@@ -5,6 +5,10 @@ export interface TenantDomain {
   tenantId: number;
   domain: string;
   redirectPath: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoImage?: string | null;
+  facebookDomainVerification?: string | null;
   isPrimary: boolean;
   isActive: boolean;
   createdAt: string;
@@ -14,6 +18,10 @@ export interface TenantDomain {
 export interface CreateDomainDto {
   domain: string;
   redirectPath?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: string;
+  facebookDomainVerification?: string;
   isPrimary?: boolean;
   isActive?: boolean;
 }
@@ -21,6 +29,10 @@ export interface CreateDomainDto {
 export interface UpdateDomainDto {
   domain?: string;
   redirectPath?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: string;
+  facebookDomainVerification?: string;
   isPrimary?: boolean;
   isActive?: boolean;
 }

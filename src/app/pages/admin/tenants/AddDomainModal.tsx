@@ -19,6 +19,10 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
   const [formData, setFormData] = useState({
     domain: "",
     redirectPath: "",
+    seoTitle: "",
+    seoDescription: "",
+    seoImage: "",
+    facebookDomainVerification: "",
     isPrimary: false,
     isActive: true,
   });
@@ -30,6 +34,10 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
       setFormData({
         domain: domain.domain,
         redirectPath: domain.redirectPath || "",
+        seoTitle: domain.seoTitle || "",
+        seoDescription: domain.seoDescription || "",
+        seoImage: domain.seoImage || "",
+        facebookDomainVerification: domain.facebookDomainVerification || "",
         isPrimary: domain.isPrimary,
         isActive: domain.isActive,
       });
@@ -37,6 +45,10 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
       setFormData({
         domain: "",
         redirectPath: "",
+        seoTitle: "",
+        seoDescription: "",
+        seoImage: "",
+        facebookDomainVerification: "",
         isPrimary: false,
         isActive: true,
       });
@@ -61,6 +73,10 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
       newErrors.redirectPath = "Caminho deve começar com /";
     }
 
+    if (formData.seoImage.trim() && !/^https?:\/\//i.test(formData.seoImage.trim())) {
+      newErrors.seoImage = "Use a URL completa da imagem (https://...)";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -78,6 +94,11 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
       const submitData = {
         domain: formData.domain.trim().toLowerCase(),
         redirectPath: formData.redirectPath.trim() || undefined,
+        // Vazio = usa o SEO do tenant (string vazia permite apagar o valor salvo)
+        seoTitle: formData.seoTitle.trim(),
+        seoDescription: formData.seoDescription.trim(),
+        seoImage: formData.seoImage.trim(),
+        facebookDomainVerification: formData.facebookDomainVerification.trim(),
         isPrimary: formData.isPrimary,
         isActive: formData.isActive,
       };
@@ -162,6 +183,94 @@ const AddDomainModal: React.FC<AddDomainModalProps> = ({
               Exemplo: /subscribe/voz-de-comando-nov-25
             </div>
           </div>
+
+          {/* SEO (prévia de link) */}
+          <div className="separator separator-dashed my-8"></div>
+          <h4 className="mb-2">Prévia de link (SEO)</h4>
+          <div className="form-text mb-5">
+            Título, descrição e imagem que aparecem ao divulgar este domínio no
+            WhatsApp, Facebook e Instagram. Campos vazios usam o SEO do tenant.
+            Páginas de lançamento usam o produto da página (ou os extras
+            ogTitle, ogDescription e ogImage da fase) antes destes valores.
+          </div>
+
+          <div className="mb-5">
+            <label className="form-label">Título</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Ex.: Intercorrências Faciais"
+              maxLength={255}
+              value={formData.seoTitle}
+              onChange={(e) =>
+                setFormData({ ...formData, seoTitle: e.target.value })
+              }
+              disabled={loading}
+            />
+          </div>
+
+          <div className="mb-5">
+            <label className="form-label">Descrição</label>
+            <textarea
+              className="form-control"
+              rows={3}
+              placeholder="Uma ou duas frases sobre o que este domínio oferece"
+              value={formData.seoDescription}
+              onChange={(e) =>
+                setFormData({ ...formData, seoDescription: e.target.value })
+              }
+              disabled={loading}
+            />
+          </div>
+
+          <div className="mb-5">
+            <label className="form-label">Imagem (URL)</label>
+            <input
+              type="url"
+              className={`form-control ${errors.seoImage ? "is-invalid" : ""}`}
+              placeholder="https://app.seudominio.com.br/files/imagem.jpg"
+              maxLength={500}
+              value={formData.seoImage}
+              onChange={(e) =>
+                setFormData({ ...formData, seoImage: e.target.value })
+              }
+              disabled={loading}
+            />
+            {errors.seoImage && (
+              <div className="invalid-feedback">{errors.seoImage}</div>
+            )}
+            <div className="form-text">
+              Ideal: 1200×630 px (paisagem).
+            </div>
+            {formData.seoImage && !errors.seoImage && (
+              <img
+                src={formData.seoImage}
+                alt="Prévia"
+                className="mt-3 rounded border"
+                style={{ maxWidth: 240, maxHeight: 140, objectFit: "cover" }}
+              />
+            )}
+          </div>
+
+          <div className="mb-5">
+            <label className="form-label">Verificação de domínio do Facebook</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Código da meta tag facebook-domain-verification"
+              maxLength={100}
+              value={formData.facebookDomainVerification}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  facebookDomainVerification: e.target.value,
+                })
+              }
+              disabled={loading}
+            />
+          </div>
+
+          <div className="separator separator-dashed my-8"></div>
 
           {/* Is Primary */}
           <div className="mb-5">

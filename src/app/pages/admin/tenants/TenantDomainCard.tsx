@@ -79,6 +79,18 @@ const TenantDomainCard: React.FC<TenantDomainCardProps> = ({
                   </div>
                 )}
 
+                {domain.seoTitle && (
+                  <div className="d-flex align-items-center mb-1">
+                    <KTIcon iconName="share" className="fs-6 me-1" />
+                    <span>
+                      Prévia de link:{" "}
+                      <span className="fw-semibold text-gray-700">
+                        {domain.seoTitle}
+                      </span>
+                    </span>
+                  </div>
+                )}
+
                 <div className="d-flex align-items-center">
                   <KTIcon iconName="calendar" className="fs-6 me-1" />
                   <span>
