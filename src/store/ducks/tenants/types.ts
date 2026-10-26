@@ -95,6 +95,8 @@ export interface Tenant {
   pwaShortName?: string
   pwaBackgroundColor?: string
   pwaThemeColor?: string
+  // Programa de Parceiros liberado para o tenant (0/1)
+  partnerProgramEnabled?: number
 
   // Email Configuration (Resend)
   mailResendApiKey?: string

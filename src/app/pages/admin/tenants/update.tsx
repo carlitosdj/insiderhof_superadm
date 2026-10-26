@@ -55,6 +55,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   // Plano e status
   const [plan, setPlan] = useState<Tenant['plan']>(child.plan);
   const [status, setStatus] = useState<Tenant['status']>(child.status);
+  const [partnerProgramEnabled, setPartnerProgramEnabled] = useState(Boolean(child.partnerProgramEnabled));
 
   // Branding
   const [logo, setLogo] = useState(child.logo || "");
@@ -153,6 +154,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         contactWhatsapp,
         plan,
         status,
+        partnerProgramEnabled: partnerProgramEnabled ? 1 : 0,
         logo: logoUrl,
         logoDark: logoDarkUrl,
         logoMini: logoMiniUrl,
@@ -393,6 +395,21 @@ const Update = ({ handleClose, child }: UpdateProps) => {
                 O status do tenant principal não pode ser alterado
               </Form.Text>
             )}
+          </Form.Group>
+
+          <Form.Group className="mb-5">
+            <Form.Check
+              type="switch"
+              id="partnerProgramEnabled"
+              label="Programa de Parceiros liberado"
+              checked={partnerProgramEnabled}
+              onChange={(e) => setPartnerProgramEnabled(e.target.checked)}
+            />
+            <Form.Text className="text-muted">
+              Libera o programa de closers e afiliados para este tenant (menu no adm e painel
+              parceiros.&lt;domínio&gt;). Desligado: o painel e o adm recusam o acesso e nenhuma
+              venda gera comissão.
+            </Form.Text>
           </Form.Group>
 
           <h4 className="mb-3 mt-6">Branding - Logos</h4>
