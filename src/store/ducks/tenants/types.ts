@@ -91,6 +91,7 @@ export interface Tenant {
 
   // App instalável (PWA)
   pwaIcon?: string
+  loginImage?: string
   pwaName?: string
   pwaShortName?: string
   pwaBackgroundColor?: string

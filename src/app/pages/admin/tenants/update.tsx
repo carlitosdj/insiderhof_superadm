@@ -85,6 +85,14 @@ const Update = ({ handleClose, child }: UpdateProps) => {
   const [logoDarkFile, setLogoDarkFile] = useState<File | null>(null);
   const [logoMiniFile, setLogoMiniFile] = useState<File | null>(null);
   const [logoMiniDarkFile, setLogoMiniDarkFile] = useState<File | null>(null);
+  // Imagem da tela de login do app (nome de arquivo ou URL completa)
+  const [loginImage, setLoginImage] = useState(child.loginImage || "");
+  const [loginImageFile, setLoginImageFile] = useState<File | null>(null);
+  const loginImagePreview = loginImageFile
+    ? URL.createObjectURL(loginImageFile)
+    : /^https?:\/\//.test(loginImage)
+      ? loginImage
+      : getTenantFileUrl(loginImage, child);
   const [uploading, setUploading] = useState(false);
 
   const handleNameChange = (value: string) => {
@@ -140,6 +148,12 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         const res = await uploadFile(pwaIconFile, child.pwaIcon, pwaIconFile.name, slug);
         pwaIconUrl = res.data.filename;
       }
+      let loginImageUrl = loginImage;
+      if (loginImageFile) {
+        const oldLoginImage = /^https?:\/\//.test(child.loginImage || "") ? undefined : child.loginImage;
+        const res = await uploadFile(loginImageFile, oldLoginImage, loginImageFile.name, slug);
+        loginImageUrl = res.data.filename;
+      }
 
       const updatedTenant: Tenant = {
         ...child,
@@ -162,6 +176,7 @@ const Update = ({ handleClose, child }: UpdateProps) => {
         primaryColor,
         secondaryColor,
         pwaIcon: pwaIconUrl,
+        loginImage: loginImageUrl,
         ...pwaFields,
         mailResendApiKey,
         mailDefaultSender,
@@ -554,6 +569,37 @@ const Update = ({ handleClose, child }: UpdateProps) => {
             )}
             <Form.Text className="text-muted">
               Fallback: logoMini → logoDark → logo
+            </Form.Text>
+          </Form.Group>
+
+          {/* Imagem da tela de login */}
+          <Form.Group className="mb-5">
+            <Form.Label>Imagem da tela de login</Form.Label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              onChange={(e: any) => {
+                const file = e.target.files?.[0];
+                if (file) setLoginImageFile(file);
+              }}
+              className="mb-2"
+            />
+            <Form.Control
+              type="text"
+              value={loginImage}
+              onChange={(e) => setLoginImage(e.target.value)}
+              placeholder="Ou cole a URL da imagem"
+              className="mb-2"
+            />
+            {(loginImage || loginImageFile) && (
+              <img
+                src={loginImagePreview}
+                alt="Prévia da imagem do login"
+                style={{ width: '150px', height: '200px', objectFit: 'cover', borderRadius: '8px', display: 'block' }}
+              />
+            )}
+            <Form.Text className="text-muted">
+              Foto vertical, pelo menos 1200 px de altura. Aparece ao lado do formulário no computador e no topo no celular.
             </Form.Text>
           </Form.Group>
 
