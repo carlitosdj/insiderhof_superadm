@@ -45,4 +45,21 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Sessão expirada/substituída (401): limpa o token e leva para o login, sem ficar na tela com erro
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const currentPath = window.location.pathname;
+      // Evita laço nas telas de entrada/saída e na própria tentativa de login
+      const isLoginCall = String(error.config?.url || '').includes('/auth/login');
+      if (!isLoginCall && !currentPath.startsWith('/auth') && !currentPath.startsWith('/logout')) {
+        localStorage.removeItem('TOKEN');
+        window.location.href = '/logout';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api
