@@ -9,6 +9,7 @@ import { deleteTenantRequest } from "../../../../store/ducks/tenants/actions";
 import { getTenantFileUrl } from "../../../../utils/getApiUrl";
 import Create from "./create";
 import Update from "./update";
+import { OnlineCell, useOnlineSummary } from "./OnlineNow";
 
 type Props = {
   className: string;
@@ -19,6 +20,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
   className,
   tenants,
 }) => {
+  const online = useOnlineSummary();
   console.log('🎨 [ManageTenantsWidget] Renderizou com:', {
     tenantsData: tenants.data,
     tenantsTotal: tenants.total,
@@ -244,6 +246,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                   <th className="min-w-140px">Domínio</th>
                   <th className="min-w-100px">Plano</th>
                   <th className="min-w-100px">Status</th>
+                  <th className="min-w-80px" title="Alunos com o app aberto agora">Online</th>
                   <th className="min-w-120px">Projetos</th>
                   <th className="min-w-100px text-end">Ações</th>
                 </tr>
@@ -251,7 +254,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
               <tbody>
                 {filteredTenants.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-10">
+                    <td colSpan={7} className="text-center py-10">
                       <div className="text-muted">Nenhum tenant encontrado</div>
                     </td>
                   </tr>
@@ -292,6 +295,7 @@ const ManageTenantsWidget: React.FC<React.PropsWithChildren<Props>> = ({
                       </td>
                       <td>{getPlanBadge(tenant.plan)}</td>
                       <td>{getStatusBadge(tenant.status)}</td>
+                      <td><OnlineCell tenant={tenant} count={tenant.id ? online[tenant.id] : 0} /></td>
                       <td>
                         <span className="badge badge-light fs-7">
                           {tenant.totalProjects || 0} projetos
